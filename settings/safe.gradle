@@ -1,5 +1,8 @@
 Properties local_properties = new Properties()
-local_properties.load(new FileInputStream(rootProject.file('local.properties')))
+File localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    local_properties.load(new FileInputStream(localPropertiesFile))
+}
 
 android {
     signingConfigs {

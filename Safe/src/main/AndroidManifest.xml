@@ -156,15 +156,8 @@
       android:name=".CryptoContentProvider"
       android:exported="false"
       android:authorities="org.openintents.safe" />
-    <!-- NON-FOSS -->
-    <provider
-      android:name="org.openintents.safe.backup.MyBackupPro"
-      android:exported="true"
-      android:authorities="org.openintents.safe.backup.MyBackupPro" />
-    <!-- END NON-FOSS -->
 
-    <activity android:name="org.openintents.distribution.EulaActivity" android:exported="false" />
-    <activity android:name="org.openintents.distribution.NewVersionActivity" android:exported="false" />
+
 
   </application>
 
