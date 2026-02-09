@@ -1,17 +1,18 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 
 
 android {
+    namespace "org.openintents.samples.testsafe"
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    // buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "org.openintents.samples.testsafe"
         versionCode 2
         versionName "1.0.1"
-        minSdkVersion 14
+        minSdkVersion 23
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
@@ -23,13 +24,6 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -38,39 +32,19 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    def file = output.outputFile
-                    output.outputFileName = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk"))
-                }
-            }
         }
     }
-
-    def propertyFile = new File(projectDir, "build-private.properties")
-    if (propertyFile && propertyFile.exists()) {
-        signingConfigs {
-            release {
-                Properties props = new Properties()
-                props.load(new FileInputStream(propertyFile))
-
-                storeFile file(props.getProperty("key.store"))
-                storePassword props.getProperty("key.store.password")
-                keyAlias props.getProperty("key.alias")
-                keyPassword props.getProperty("key.alias.password")
-            }
-        }
-        buildTypes.release.signingConfig signingConfigs.release
-        println "Release apks will be signed!"
-    } else {
-        println "For signed release apks you need to create a build-private.properties file"
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
 }
-repositories {
-    mavenCentral()
-}
+
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.6.1'
 }
