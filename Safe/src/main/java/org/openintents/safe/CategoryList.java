@@ -50,8 +50,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.openintents.distribution.AboutDialog;
-import org.openintents.intents.AboutMiniIntents;
 import org.openintents.intents.CryptoIntents;
 import org.openintents.safe.dialog.DialogHostingActivity;
 import org.openintents.safe.model.CategoryEntry;
@@ -442,7 +440,7 @@ public class CategoryList extends AppCompatActivity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case ABOUT_KEY:
-                return new AboutDialog(this);
+                return createAboutDialog();
         }
         return null;
     }
@@ -528,12 +526,10 @@ public class CategoryList extends AppCompatActivity {
 
         menu.add(0, PREFERENCES_INDEX, 0, R.string.preferences);
 
-        if (IntentUtils.isIntentAvailable(this, new Intent(AboutMiniIntents.ACTION_SHOW_ABOUT_DIALOG))) {
-            // Only show "About" dialog, if OI About (or compatible) is installed.
-            menu.add(0, ABOUT_INDEX, 0, R.string.oi_distribution_about).setIcon(
-                    android.R.drawable.ic_menu_info_details
-            );
-        }
+        // Only show "About" dialog, if OI About (or compatible) is installed.
+        menu.add(0, ABOUT_INDEX, 0, R.string.about).setIcon(
+                android.R.drawable.ic_menu_info_details
+        );
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -645,7 +641,7 @@ public class CategoryList extends AppCompatActivity {
                 startActivity(preferences);
                 break;
             case ABOUT_INDEX:
-                AboutDialog.showDialogOrStartActivity(this, ABOUT_KEY);
+                showDialog(ABOUT_KEY);
                 break;
             default:
                 Log.e(TAG, "Unknown itemId");
@@ -1115,5 +1111,13 @@ public class CategoryList extends AppCompatActivity {
             }
             taskBackup = null;
         }
+    }
+
+    private Dialog createAboutDialog() {
+        return new AlertDialog.Builder(this)
+            .setTitle(R.string.app_name)
+            .setMessage("Version: " + org.openintents.util.VersionUtils.getVersionNumber(this))
+            .setPositiveButton(android.R.string.ok, null)
+            .create();
     }
 }

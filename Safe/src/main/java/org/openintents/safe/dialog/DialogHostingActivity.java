@@ -1,5 +1,7 @@
 package org.openintents.safe.dialog;
 
+import org.openintents.safe.R;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.EditText;
 
-import org.openintents.distribution.DownloadOIAppDialog;
+import android.app.AlertDialog;
 import org.openintents.intents.FileManagerIntents;
 import org.openintents.util.IntentUtils;
 
@@ -144,10 +146,10 @@ public class DialogHostingActivity extends AppCompatActivity {
                 if (debug) {
                     Log.i(TAG, "fmd - create");
                 }
-                dialog = new DownloadOIAppDialog(
-                        this,
-                        DownloadOIAppDialog.OI_FILEMANAGER
-                );
+                dialog = new AlertDialog.Builder(this)
+                        .setMessage(R.string.download_oi_filemanager)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create();
                 break;
             case DIALOG_ID_ALLOW_EXTERNAL_ACCESS:
                 dialog = new AllowExternalAccessDialog(this);
@@ -181,7 +183,6 @@ public class DialogHostingActivity extends AppCompatActivity {
             case DIALOG_ID_OPEN:
                 break;
             case DIALOG_ID_NO_FILE_MANAGER_AVAILABLE:
-                DownloadOIAppDialog.onPrepareDialog(this, dialog);
                 break;
         }
     }

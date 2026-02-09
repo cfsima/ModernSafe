@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import org.openintents.distribution.DownloadOIAppDialog;
 import org.openintents.intents.CryptoIntents;
 
 import java.util.List;
@@ -215,30 +214,7 @@ public class PreferenceActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        Dialog d = super.onCreateDialog(id);
-        switch (id) {
-            case DIALOG_DOWNLOAD_OI_FILEMANAGER:
-                d = new DownloadOIAppDialog(
-                        this,
-                        DownloadOIAppDialog.OI_FILEMANAGER
-                );
-                break;
-        }
-        return d;
-    }
 
-    @Override
-    protected void onPrepareDialog(int id, Dialog dialog) {
-        super.onPrepareDialog(id, dialog);
-
-        switch (id) {
-            case DIALOG_DOWNLOAD_OI_FILEMANAGER:
-                DownloadOIAppDialog.onPrepareDialog(this, dialog);
-                break;
-        }
-    }
 
     public static class PreferenceFragment extends PreferenceFragmentCompat implements OnSharedPreferenceChangeListener {
 
@@ -301,7 +277,6 @@ public class PreferenceActivity extends AppCompatActivity {
 
         private void askForFileManager() {
             Toast.makeText(getActivity(), R.string.download_oi_filemanager, Toast.LENGTH_LONG).show();
-            getActivity().showDialog(DIALOG_DOWNLOAD_OI_FILEMANAGER);
         }
 
 

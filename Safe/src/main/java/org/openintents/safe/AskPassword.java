@@ -38,7 +38,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.openintents.distribution.DistributionLibraryActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import org.openintents.safe.password.Master;
 import org.openintents.safe.service.AutoLockService;
 import org.openintents.util.VersionUtils;
@@ -54,7 +54,7 @@ import java.security.NoSuchAlgorithmException;
  *
  * @author Steven Osborn - http://steven.bitsetters.com
  */
-public class AskPassword extends DistributionLibraryActivity {
+public class AskPassword extends AppCompatActivity {
 
     public static final int REQUEST_RESTORE = 0;
     public static final int REQUEST_RESTORE_FIRST_TIME = 1;
@@ -64,9 +64,7 @@ public class AskPassword extends DistributionLibraryActivity {
     public static final int VIEW_NORMAL = 0;
     public static final int VIEW_KEYPAD = 1;
     private final static boolean debug = false;
-    private static final int MENU_DISTRIBUTION_START = Menu.FIRST + 100; // MUST BE LAST
 
-    private static final int DIALOG_DISTRIBUTION_START = 100; // MUST BE LAST
     public static String EXTRA_IS_LOCAL = "org.openintents.safe.bundle.EXTRA_IS_REMOTE";
     private static String TAG = "AskPassword";
     private int viewMode = VIEW_NORMAL;
@@ -103,13 +101,7 @@ public class AskPassword extends DistributionLibraryActivity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        mDistribution.setFirst(MENU_DISTRIBUTION_START, DIALOG_DISTRIBUTION_START);
 
-        // Check whether EULA has been accepted
-        // or information about new version can be presented.
-        if (mDistribution.showEulaOrNewVersion()) {
-            return;
-        }
 
         if (debug) {
             Log.d(TAG, "onCreate(" + icicle + ")");
@@ -458,7 +450,6 @@ public class AskPassword extends DistributionLibraryActivity {
         miMute.setVisible(viewMode == VIEW_KEYPAD);
 
         // Add distribution menu items last.
-        mDistribution.onCreateOptionsMenu(menu);
 
         return true;
     }
