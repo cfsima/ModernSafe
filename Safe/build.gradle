@@ -1,110 +1,80 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.triplet.play'
+apply plugin: 'kotlin-parcelize'
+// apply plugin: 'com.github.triplet.play' // Commenting out to avoid configuration issues without keys
 
 Properties local_properties = new Properties()
-local_properties.load(new FileInputStream(rootProject.file('local.properties')))
+File localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    local_properties.load(new FileInputStream(localPropertiesFile))
+}
 
 apply from: '../settings/safe.gradle'
 
 
 android {
+    namespace "org.openintents.safe"
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    // buildToolsVersion rootProject.ext.buildToolsVersion // Let AGP decide
 
     defaultConfig {
         applicationId "org.openintents.safe"
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
-        minSdkVersion 14
+        minSdkVersion 23 // Updating to 23 for better compatibility with modern libs
         targetSdkVersion rootProject.ext.targetSdkVersion
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     sourceSets {
-
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
+        androidTest.setRoot('tests')
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
 
     lintOptions {
         abortOnError false
-        ignoreWarnings ci
+        // ignoreWarnings ci
     }
 
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    def file = output.outputFile
-                    output.outputFileName = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk"))
-                }
-            }
         }
         alpha.initWith(release)
     }
 
-    def propertyFile = new File(projectDir, "build-private.properties")
-    if (propertyFile && propertyFile.exists()) {
-        signingConfigs {
-            release {
-                Properties props = new Properties()
-                props.load(new FileInputStream(propertyFile))
-
-                storeFile file(props.getProperty("key.store"))
-                storePassword props.getProperty("key.store.password")
-                keyAlias props.getProperty("key.alias")
-                keyPassword props.getProperty("key.alias.password")
-            }
-        }
-        buildTypes.release.signingConfig signingConfigs.release
-        println "Release apks will be signed!"
-    } else {
-        println "For signed release apks you need to create a build-private.properties file"
-    }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
-play {
-    jsonFile = file(local_properties.service_account_json_file ?: 'no-file.json')
-    track = System.getProperty('track', 'alpha')
-    untrackOld = true
-}
+// play {
+//     serviceAccountCredentials = file(local_properties.service_account_json_file ?: 'no-file.json')
+//     track = System.getProperty('track', 'alpha')
+//     // untrackOld = true // Deprecated/removed
+// }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'com.github.openintents:distribution:3.0.1'
-    compile 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-    compile 'com.android.support:support-annotations:27.1.0'
-    compile 'com.android.support:support-fragment:27.1.0'
-    compile 'com.android.support:preference-v7:27.1.0'
-    compile 'com.android.support:design:27.1.0'
+    implementation fileTree(dir: 'libs', include: '*.jar')
+    implementation 'com.github.openintents:distribution:3.0.1'
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
 
-    androidTestCompile 'com.android.support:support-annotations:27.1.0'
-    androidTestCompile 'com.android.support.test:runner:1.0.1'
-    androidTestCompile 'com.android.support.test:rules:1.0.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.1'
-    androidTestCompile "com.android.support.test.espresso:espresso-intents:3.0.1"
+    implementation 'androidx.annotation:annotation:1.7.0'
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+    androidTestImplementation 'androidx.annotation:annotation:1.7.0'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation "androidx.test.espresso:espresso-intents:3.5.1"
 }
-repositories {
-    mavenCentral()
-}
-
-

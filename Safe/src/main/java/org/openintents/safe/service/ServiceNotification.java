@@ -23,8 +23,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat.Builder;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationCompat.Builder;
+import androidx.core.app.NotificationManagerCompat;
 
 import org.openintents.safe.LogOffActivity;
 import org.openintents.safe.R;
@@ -60,7 +60,7 @@ public class ServiceNotification {
         Intent intent = new Intent(context, LogOffActivity.class);
         PendingIntent pi = PendingIntent.getActivity(
                 context, 0, intent,
-                PendingIntent.FLAG_CANCEL_CURRENT
+                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
         wrapBuilder = new Builder(context, CHANNEL_ID);

@@ -1,13 +1,12 @@
 buildscript {
-    ext.kotlin_version = '1.2.30'
+    ext.kotlin_version = '1.9.22'
     repositories {
-        jcenter()
         google()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'com.github.triplet.gradle:play-publisher:1.2.0'
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
+        classpath 'com.android.tools.build:gradle:8.2.0'
+        classpath 'com.github.triplet.gradle:play-publisher:3.9.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -25,28 +24,17 @@ ext {
     versionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
-    compileSdkVersion = 27
-    buildToolsVersion = "27.0.3"
-    targetSdkVersion = 27
+    compileSdkVersion = 35
+    buildToolsVersion = "34.0.0"
+    targetSdkVersion = 35
 }
 
 allprojects {
     repositories {
-        jcenter()
         google()
+        mavenCentral()
         maven {
             url 'https://jitpack.io'
         }
-
-    }
-
-    apply plugin: 'findbugs'
-    findbugs {
-        ignoreFailures = true
-    }
-
-    apply plugin: 'pmd'
-    pmd {
-        ignoreFailures = true
     }
 }
