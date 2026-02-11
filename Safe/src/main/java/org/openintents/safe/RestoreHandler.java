@@ -83,7 +83,14 @@ public class RestoreHandler extends DefaultHandler {
         if (localName.equals("OISafe")) {
             in_oisafe = true;
             String attrValue = atts.getValue("version");
-            int version = Integer.parseInt(attrValue);
+            int version = 0;
+            if (attrValue != null) {
+                try {
+                    version = Integer.parseInt(attrValue);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
 
             String date = atts.getValue("date");
 

@@ -77,6 +77,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
 
+    testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.annotation:annotation:1.7.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
