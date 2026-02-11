@@ -268,6 +268,10 @@ public class Restore extends AppCompatActivity {
 
         String salt = restoreDataSet.getSalt();
         String masterKeyEncrypted = restoreDataSet.getMasterKeyEncrypted();
+        if (salt == null || salt.length() == 0 || masterKeyEncrypted == null || masterKeyEncrypted.length() == 0) {
+            Toast.makeText(Restore.this, getString(R.string.restore_error), Toast.LENGTH_LONG).show();
+            return false;
+        }
         masterKey = "";
         try {
             ch.init(CryptoHelper.EncryptionStrong, salt);
