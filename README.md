@@ -1,6 +1,6 @@
-# OI Safe
+# Modern Safe
 
-Password manager for Android.
+Updated OI Safe Password manager for newer Android.
 Please see https://www.openintents.org/safe for description using Trivium streaming encryption.
 
 ## Build Instructions
