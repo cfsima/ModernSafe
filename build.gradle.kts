@@ -1,13 +1,11 @@
 buildscript {
-    val kotlin_version = "2.1.0"
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.8.0")
+        classpath("com.android.tools.build:gradle:9.1.0-alpha08")
         classpath("com.github.triplet.gradle:play-publisher:3.9.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }
 
