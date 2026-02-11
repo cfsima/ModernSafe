@@ -28,8 +28,8 @@ public class RestoreDataSet {
 
     private int version = 0;
     private String date = null;
-    private String salt = null;
-    private String masterKeyEncrypted = null;
+    private String salt = "";
+    private String masterKeyEncrypted = "";
     private Long currentCategoryId = Long.valueOf(0);
     private CategoryEntry currentCategory = null;
     private ArrayList<CategoryEntry> categoryEntries = new ArrayList<>();
@@ -60,7 +60,12 @@ public class RestoreDataSet {
     }
 
     public void setSalt(String extractedSalt) {
-        salt = extractedSalt;
+        if (salt == null) {
+            salt = "";
+        }
+        if (extractedSalt != null) {
+            salt += extractedSalt;
+        }
     }
 
     public String getMasterKeyEncrypted() {
@@ -68,7 +73,12 @@ public class RestoreDataSet {
     }
 
     public void setMasterKeyEncrypted(String extractedKey) {
-        masterKeyEncrypted = extractedKey;
+        if (masterKeyEncrypted == null) {
+            masterKeyEncrypted = "";
+        }
+        if (extractedKey != null) {
+            masterKeyEncrypted += extractedKey;
+        }
     }
 
     public ArrayList<CategoryEntry> getCategories() {
