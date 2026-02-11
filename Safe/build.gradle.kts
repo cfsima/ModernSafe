@@ -3,8 +3,6 @@ import java.util.Properties
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-parcelize")
 }
 
 val localProperties = Properties()
@@ -55,7 +53,7 @@ android {
         }
         getByName("release") {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.txt")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.txt")
             signingConfig = signingConfigs.getByName("release")
         }
         create("alpha") {
@@ -68,15 +66,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("com.jakewharton:butterknife:10.2.3")
-    annotationProcessor("com.jakewharton:butterknife-compiler:10.2.3")
 
     implementation("androidx.annotation:annotation:1.7.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")

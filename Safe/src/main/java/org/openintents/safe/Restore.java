@@ -59,8 +59,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import butterknife.ButterKnife;
-import butterknife.BindView;
 
 public class Restore extends AppCompatActivity {
 
@@ -90,13 +88,13 @@ public class Restore extends AppCompatActivity {
             }
         }
     };
-    @BindView(R.id.restore_filename)
+
     TextView filenameText;
-    @BindView(R.id.restore_info)
+
     TextView restoreInfoText;
-    @BindView(R.id.restore_password)
+
     EditText passwordText;
-    @BindView(R.id.restore_button)
+
     Button restoreButton;
     private boolean startRestore;
 
@@ -122,7 +120,7 @@ public class Restore extends AppCompatActivity {
         Passwords.Initialize(this);
 
         setContentView(R.layout.restore);
-        ButterKnife.bind(this);
+        filenameText = findViewById(R.id.restore_filename); restoreInfoText = findViewById(R.id.restore_info); passwordText = findViewById(R.id.restore_password); restoreButton = findViewById(R.id.restore_button);
 
         String title = getResources().getString(R.string.app_name) + " - " +
                 getResources().getString(R.string.restore);
