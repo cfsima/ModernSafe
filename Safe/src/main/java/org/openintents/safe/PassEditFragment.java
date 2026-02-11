@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import androidx.core.content.ContextCompat;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -294,7 +295,7 @@ public class PassEditFragment extends Fragment {
         IntentFilter filter = new IntentFilter(
                 CryptoIntents.ACTION_CRYPTO_LOGGED_OUT
         );
-        getActivity().registerReceiver(mIntentReceiver, filter);
+        ContextCompat.registerReceiver(getActivity(), mIntentReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         Passwords.Initialize(getActivity());
 

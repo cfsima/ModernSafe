@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import androidx.core.content.ContextCompat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -206,7 +207,7 @@ public class SearchFragment extends ListFragment {
         IntentFilter filter = new IntentFilter(
                 CryptoIntents.ACTION_CRYPTO_LOGGED_OUT
         );
-        getActivity().registerReceiver(mIntentReceiver, filter);
+        ContextCompat.registerReceiver(getActivity(), mIntentReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         Passwords.Initialize(getActivity());
     }
