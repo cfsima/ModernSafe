@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import androidx.core.content.ContextCompat;
 import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -70,7 +71,7 @@ public class AutoLockService extends Service {
         IntentFilter filter = new IntentFilter();
         filter.addAction(CryptoIntents.ACTION_RESTART_TIMER);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(mIntentReceiver, filter);
+        ContextCompat.registerReceiver(this, mIntentReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         serviceNotification = new ServiceNotification(this);
