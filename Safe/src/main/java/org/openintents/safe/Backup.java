@@ -175,7 +175,7 @@ public class Backup {
             editor.commit();
 
             result = myCtx.getString(R.string.backup_complete) + " " +
-                    Integer.toString(totalPasswords);
+                    Integer.toString(totalPasswords) + "\n" + filename;
         } catch (IOException e) {
             e.printStackTrace();
             result = myCtx.getString(R.string.backup_failed) + " " +

@@ -696,14 +696,19 @@ public class CategoryList extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             intent = Intents.createCreateDocumentIntent(MIME_TYPE_BACKUP, PreferenceActivity.OISAFE_XML);
             requestId = REQUEST_BACKUP_DOCUMENT;
+            try {
+                startActivityForResult(intent, requestId);
+            } catch (android.content.ActivityNotFoundException e) {
+                backupToFile(filename);
+            }
         } else {
             intent = Intents.createPickFileIntent(filename, R.string.import_file_select);
             requestId = REQUEST_BACKUP_FILENAME;
-        }
-        if (intentCallable(intent)) {
-            startActivityForResult(intent, requestId);
-        } else {
-            backupToFile(filename);
+            if (intentCallable(intent)) {
+                startActivityForResult(intent, requestId);
+            } else {
+                backupToFile(filename);
+            }
         }
     }
 
