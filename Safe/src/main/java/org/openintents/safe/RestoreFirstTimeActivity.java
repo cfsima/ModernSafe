@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import java.io.File;
 
 import org.openintents.util.VersionUtils;
 
@@ -30,6 +31,11 @@ public class RestoreFirstTimeActivity extends AppCompatActivity {
         cancel = (Button) findViewById(R.id.cancel);
 
         ((TextView) findViewById(R.id.filename)).setText(path);
+        File file = new File(path);
+        if (!file.exists()) {
+            ((TextView) findViewById(R.id.textView1)).setText(R.string.restore_no_file);
+        }
+
         restore.setOnClickListener(
                 new OnClickListener() {
                     public void onClick(View v) {
@@ -80,6 +86,7 @@ public class RestoreFirstTimeActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK && data != null) {
                     path = data.getData().toString();
                     ((TextView) findViewById(R.id.filename)).setText(path);
+
                 }
                 break;
         }

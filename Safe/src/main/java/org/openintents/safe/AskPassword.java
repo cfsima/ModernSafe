@@ -141,7 +141,24 @@ public class AskPassword extends AppCompatActivity {
         }
         if (dbMasterKey.length() == 0) {
             firstTime = true;
+            introText.setVisibility(View.VISIBLE);
+//			confirmText.setVisibility(View.VISIBLE);
+            confirmPass.setVisibility(View.VISIBLE);
+            Button restoreButton = findViewById(R.id.restore_button);
+            restoreButton.setVisibility(View.VISIBLE);
+            restoreButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        public void onClick(View arg0) {
+                            startActivityForResult(
+                                    new Intent(AskPassword.this, RestoreFirstTimeActivity.class),
+                                    REQUEST_RESTORE_FIRST_TIME
+                            );
+                        }
+                    }
+            );
+            checkForBackup();
         }
+
         if ((viewMode == VIEW_NORMAL) || (firstTime)) {
             normalInit();
         } else {
@@ -182,8 +199,21 @@ public class AskPassword extends AppCompatActivity {
             introText.setVisibility(View.VISIBLE);
 //			confirmText.setVisibility(View.VISIBLE);
             confirmPass.setVisibility(View.VISIBLE);
+            Button restoreButton = findViewById(R.id.restore_button);
+            restoreButton.setVisibility(View.VISIBLE);
+            restoreButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        public void onClick(View arg0) {
+                            startActivityForResult(
+                                    new Intent(AskPassword.this, RestoreFirstTimeActivity.class),
+                                    REQUEST_RESTORE_FIRST_TIME
+                            );
+                        }
+                    }
+            );
             checkForBackup();
         }
+
         if (!isLocal) {
             if (remoteAsk != null) {
                 remoteAsk.setVisibility(View.VISIBLE);
