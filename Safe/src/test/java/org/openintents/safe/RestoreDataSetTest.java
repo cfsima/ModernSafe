@@ -28,4 +28,18 @@ public class RestoreDataSetTest {
 
         assertEquals("MasterKey should be appended", "key1key2", dataSet.getMasterKeyEncrypted());
     }
+
+    @Test
+    public void testSaltWhitespace() {
+        RestoreDataSet dataSet = new RestoreDataSet();
+        dataSet.setSalt("\n  someSalt  \n");
+        assertEquals("Salt should be trimmed", "someSalt", dataSet.getSalt());
+    }
+
+    @Test
+    public void testMasterKeyWhitespace() {
+        RestoreDataSet dataSet = new RestoreDataSet();
+        dataSet.setMasterKeyEncrypted("\n  someKey  \n");
+        assertEquals("MasterKeyEncrypted should be trimmed", "someKey", dataSet.getMasterKeyEncrypted());
+    }
 }

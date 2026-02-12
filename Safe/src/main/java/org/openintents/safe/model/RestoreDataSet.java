@@ -55,7 +55,7 @@ public class RestoreDataSet {
         date = extractedDate;
     }
 
-    public String getSalt() {
+    public String getSalt() { return salt.trim(); } private String getSaltOld() {
         return salt;
     }
 
@@ -68,7 +68,7 @@ public class RestoreDataSet {
         }
     }
 
-    public String getMasterKeyEncrypted() {
+    public String getMasterKeyEncrypted() { return masterKeyEncrypted.trim(); } private String getMasterKeyEncryptedOld() {
         return masterKeyEncrypted;
     }
 
