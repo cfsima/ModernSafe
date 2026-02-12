@@ -13,10 +13,12 @@ import org.openintents.util.VersionUtils;
 
 public class RestoreFirstTimeActivity extends AppCompatActivity {
     private Button restore;
+    private Button chooseFile;
     private Button cancel;
     private String path;
 
     private static final int REQUEST_RESTORE = 0;
+    private static final int REQUEST_CHOOSE_FILE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class RestoreFirstTimeActivity extends AppCompatActivity {
         setContentView(R.layout.restore_first_time);
         path = PreferenceActivity.getBackupPath(this);
         restore = (Button) findViewById(R.id.restore);
+        chooseFile = (Button) findViewById(R.id.choose_file);
         cancel = (Button) findViewById(R.id.cancel);
 
         ((TextView) findViewById(R.id.filename)).setText(path);
@@ -37,6 +40,17 @@ public class RestoreFirstTimeActivity extends AppCompatActivity {
                     }
                 }
         );
+        chooseFile.setOnClickListener(
+                new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("*/*");
+                        startActivityForResult(intent, REQUEST_CHOOSE_FILE);
+                    }
+                }
+        );
         cancel.setOnClickListener(
                 new OnClickListener() {
                     public void onClick(View v) {
@@ -46,7 +60,7 @@ public class RestoreFirstTimeActivity extends AppCompatActivity {
                 }
         );
 
-		/* Copied from AskPassword.java - normalInit() */
+        /* Copied from AskPassword.java - normalInit() */
         TextView header = (TextView) findViewById(R.id.entry_header);
         String version = VersionUtils.getVersionNumber(this);
         String appName = VersionUtils.getApplicationName(this);
@@ -55,12 +69,18 @@ public class RestoreFirstTimeActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent i) {
-        super.onActivityResult(requestCode, resultCode, i);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_RESTORE:
                 setResult(resultCode);
                 finish();
+                break;
+            case REQUEST_CHOOSE_FILE:
+                if (resultCode == RESULT_OK && data != null) {
+                    path = data.getData().toString();
+                    ((TextView) findViewById(R.id.filename)).setText(path);
+                }
                 break;
         }
     }

@@ -4,7 +4,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:9.1.0-alpha08")
+        // Change from 9.0.0 to 8.13.0 to support Gradle 9.0.0
+        classpath("com.android.tools.build:gradle:8.13.2")
         classpath("com.github.triplet.gradle:play-publisher:3.9.1")
     }
 }
@@ -16,16 +17,16 @@ val preDexEnabled: Boolean = "true" == System.getProperty("pre-dex", "true")
 val versionMajor = 2
 val versionMinor = 0
 val versionPatch = 0
-val versionBuild = 1 // bump for dogfood builds, public betas, etc.
+val versionBuild = 1
 
 val versionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
 val versionName = "$versionMajor.$versionMinor.$versionPatch"
 
+// These versions are perfectly fine for AGP 8.13.0
 val compileSdkVersion = 35
-val buildToolsVersion = "34.0.0"
+val buildToolsVersion = "35.0.0"
 val targetSdkVersion = 35
 
-// Add extra properties to root project
 extra["ci"] = ci
 extra["preDexEnabled"] = preDexEnabled
 extra["versionCode"] = versionCode

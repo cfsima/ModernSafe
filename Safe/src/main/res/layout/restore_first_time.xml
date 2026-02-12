@@ -50,6 +50,13 @@
       android:text="@string/restore" />
 
     <Button
+        android:id="@+id/choose_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/choose_file" />
+
+    <Button
       android:id="@+id/cancel"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

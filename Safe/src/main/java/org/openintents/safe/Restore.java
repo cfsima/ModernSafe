@@ -1,5 +1,4 @@
-/* $Id$
- * 
+/*
  * Copyright 2008 Randy McEoin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +15,6 @@
  */
 package org.openintents.safe;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -42,15 +40,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
-
 import org.openintents.intents.CryptoIntents;
-
 import org.openintents.safe.model.CategoryEntry;
 import org.openintents.safe.model.PassEntry;
 import org.openintents.safe.model.Passwords;
@@ -59,6 +49,14 @@ import org.openintents.safe.password.Master;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 
 public class Restore extends AppCompatActivity {
@@ -121,7 +119,10 @@ public class Restore extends AppCompatActivity {
         Passwords.Initialize(this);
 
         setContentView(R.layout.restore);
-        filenameText = findViewById(R.id.restore_filename); restoreInfoText = findViewById(R.id.restore_info); passwordText = findViewById(R.id.restore_password); restoreButton = findViewById(R.id.restore_button);
+        filenameText = findViewById(R.id.restore_filename);
+        restoreInfoText = findViewById(R.id.restore_info);
+        passwordText = findViewById(R.id.restore_password);
+        restoreButton = findViewById(R.id.restore_button);
 
         String title = getResources().getString(R.string.app_name) + " - " +
                 getResources().getString(R.string.restore);
@@ -129,7 +130,11 @@ public class Restore extends AppCompatActivity {
 
         String backupPath = getIntent().getStringExtra(KEY_FILE_PATH);
         if (backupPath != null) {
-            restoreFromFile(backupPath);
+            if (firstTime) {
+                restoreFromUri(Uri.parse(backupPath));
+            } else {
+                restoreFromFile(backupPath);
+            }
         }
     }
 
@@ -163,6 +168,18 @@ public class Restore extends AppCompatActivity {
         }
     }
 
+    private void restoreFromUri(Uri backupUri) {
+        filenameText.setText(backupUri.toString());
+        try {
+            InputStreamData streamData = new InputStreamData(backupUri, this);
+            restore(streamData);
+            PreferenceActivity.setBackupDocumentAndMethod(this, backupUri.toString());
+        } catch (FileNotFoundException e) {
+            updateNoRestoreFileUI();
+        }
+    }
+
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -190,7 +207,10 @@ public class Restore extends AppCompatActivity {
         ContextCompat.registerReceiver(this, mIntentReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         if (startRestore) {
-            selectFileOrRestoreFromFile();
+            String backupPath = getIntent().getStringExtra(KEY_FILE_PATH);
+            if (backupPath == null) {
+                selectFileOrRestoreFromFile();
+            }
         }
     }
 
@@ -406,7 +426,7 @@ public class Restore extends AppCompatActivity {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(PreferenceActivity.PREFERENCE_FIRST_TIME_WARNING, true);
-        editor.commit();
+        editor.apply();
 
         setResult(RESULT_OK);
         finish();
@@ -420,7 +440,7 @@ public class Restore extends AppCompatActivity {
             Log.d(TAG, "onUserInteraction()");
         }
 
-        if (CategoryList.isSignedIn() == false) {
+        if (!CategoryList.isSignedIn()) {
 //			startActivity(frontdoor);
         } else {
             if (restartTimerIntent != null) {
@@ -450,14 +470,7 @@ public class Restore extends AppCompatActivity {
             case REQUEST_RESTORE_DOCUMENT:
                 if (resultCode == RESULT_OK) {
                     Uri documentUri = i.getData();
-                    filenameText.setText(i.getDataString());
-                    try {
-                        InputStreamData streamData = new InputStreamData(documentUri, this);
-                        restore(streamData);
-                        PreferenceActivity.setBackupDocumentAndMethod(this, i.getDataString());
-                    } catch (FileNotFoundException e) {
-                        updateNoRestoreFileUI();
-                    }
+                    restoreFromUri(documentUri);
                 } else {
                     setResult(RESULT_CANCELED);
                     finish();
@@ -486,8 +499,10 @@ public class Restore extends AppCompatActivity {
 
                         String masterPassword = passwordText.getText().toString();
                         boolean success = read(inputStreamData, masterPassword);
-                        if (!success) {
-                            finish();
+                        if (success) {
+                            // all good, we can finish
+                        } else {
+                            // There was an error, let the user try again
                         }
                     }
                 }

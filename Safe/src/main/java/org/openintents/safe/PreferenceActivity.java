@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -23,6 +22,7 @@ import android.widget.Toast;
 
 import org.openintents.intents.CryptoIntents;
 
+import java.io.File;
 import java.util.List;
 
 public class PreferenceActivity extends AppCompatActivity {
@@ -45,14 +45,10 @@ public class PreferenceActivity extends AppCompatActivity {
     public static final String PREFERENCE_BACKUP_DOCUMENT = "backup_document";
     public static final String PREFERENCE_BACKUP_METHOD = "backup_method";
     public static final String OISAFE_XML = "oisafe.xml";
-    public static final String PREFERENCE_BACKUP_PATH_DEFAULT_VALUE =
-            Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + OISAFE_XML;
     public static final String PREFERENCE_EXPORT_PATH = "export_path";
     public static final String PREFERENCE_EXPORT_DOCUMENT = "export_document";
     public static final String PREFERENCE_EXPORT_METHOD = "export_method";
     public static final String OISAFE_CSV = "oisafe.csv";
-    public static final String PREFERENCE_EXPORT_PATH_DEFAULT_VALUE =
-            Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + OISAFE_CSV;
     public static final int DIALOG_DOWNLOAD_OI_FILEMANAGER = 0;
     private static final int REQUEST_BACKUP_FILENAME = 0;
     private static final int REQUEST_BACKUP_DOCUMENT = 1;
@@ -73,8 +69,17 @@ public class PreferenceActivity extends AppCompatActivity {
     private Intent restartTimerIntent = null;
 
     static String getBackupPath(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREFERENCE_BACKUP_PATH, PREFERENCE_BACKUP_PATH_DEFAULT_VALUE);
+        String path = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(PREFERENCE_BACKUP_PATH, null);
+        if (path == null) {
+            File dir = context.getExternalFilesDir(null);
+            if (dir != null) {
+                return new File(dir, OISAFE_XML).getAbsolutePath();
+            } else {
+                return new File(context.getFilesDir(), OISAFE_XML).getAbsolutePath();
+            }
+        }
+        return path;
     }
 
     static void setBackupPathAndMethod(Context context, String path) {
@@ -99,8 +104,17 @@ public class PreferenceActivity extends AppCompatActivity {
     }
 
     static String getExportPath(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREFERENCE_EXPORT_PATH, PREFERENCE_EXPORT_PATH_DEFAULT_VALUE);
+        String path = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(PREFERENCE_EXPORT_PATH, null);
+        if (path == null) {
+            File dir = context.getExternalFilesDir(null);
+            if (dir != null) {
+                return new File(dir, OISAFE_CSV).getAbsolutePath();
+            } else {
+                return new File(context.getFilesDir(), OISAFE_CSV).getAbsolutePath();
+            }
+        }
+        return path;
     }
 
     static void setExportPathAndMethod(Context context, String path) {

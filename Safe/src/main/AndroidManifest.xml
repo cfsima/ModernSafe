@@ -19,7 +19,8 @@
     android:exported="true"
     android:label="@string/oi_safe_permission_service"
     android:process=":remote"
-    android:protectionLevel="signature" />
+    android:protectionLevel="signature"
+    tools:remove="permission" />
 
   <uses-feature
     android:name="android.hardware.touchscreen"
