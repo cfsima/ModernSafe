@@ -240,11 +240,19 @@ public class PreferenceActivity extends AppCompatActivity {
             Preference backupPathPref = findPreference(PREFERENCE_BACKUP_PATH);
             backupPathPref.setOnPreferenceClickListener(
                     pref -> {
-                        Intent intent = Intents.createCreateDocumentIntent(CategoryList.MIME_TYPE_BACKUP, OISAFE_XML);
-                        try {
-                            startActivityForResult(intent, REQUEST_BACKUP_FILENAME);
-                        } catch (android.content.ActivityNotFoundException e) {
-                            Toast.makeText(getActivity(), R.string.restore_error, Toast.LENGTH_LONG).show();
+                        Intent intent;
+                        int requestId;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            intent = Intents.createCreateDocumentIntent(CategoryList.MIME_TYPE_BACKUP, OISAFE_XML);
+                            requestId = REQUEST_BACKUP_FILENAME;
+                        } else {
+                            intent = Intents.createPickFileIntent(PreferenceActivity.getBackupPath(getActivity()), R.string.backup_select_file);
+                            requestId = REQUEST_BACKUP_FILENAME;
+                        }
+                        if (intentCallable(intent)) {
+                            startActivityForResult(intent, requestId);
+                        } else {
+                            askForFileManager();
                         }
                         return false;
                     }
@@ -253,11 +261,16 @@ public class PreferenceActivity extends AppCompatActivity {
             Preference exportPathPref = findPreference(PREFERENCE_EXPORT_PATH);
             exportPathPref.setOnPreferenceClickListener(
                     pref -> {
-                        Intent intent = Intents.createCreateDocumentIntent(CategoryList.MIME_TYPE_EXPORT, OISAFE_CSV);
-                        try {
+                        Intent intent;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            intent = Intents.createCreateDocumentIntent(CategoryList.MIME_TYPE_EXPORT, OISAFE_CSV);
+                        } else {
+                            intent = Intents.createPickFileIntent(getExportPath(getActivity()), R.string.export_file_select);
+                        }
+                        if (intentCallable(intent)) {
                             startActivityForResult(intent, REQUEST_EXPORT_FILENAME);
-                        } catch (android.content.ActivityNotFoundException e) {
-                            Toast.makeText(getActivity(), R.string.restore_error, Toast.LENGTH_LONG).show();
+                        } else {
+                            askForFileManager();
                         }
                         return false;
                     }
@@ -269,7 +282,17 @@ public class PreferenceActivity extends AppCompatActivity {
         }
 
 
+        private boolean intentCallable(Intent intent) {
+            List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities(
+                    intent,
+                    PackageManager.MATCH_DEFAULT_ONLY
+            );
+            return list.size() > 0;
+        }
 
+        private void askForFileManager() {
+            Toast.makeText(getActivity(), R.string.download_oi_filemanager, Toast.LENGTH_LONG).show();
+        }
 
 
         private void changePreferenceSummaryToCurrentValue(Preference pref, String value) {

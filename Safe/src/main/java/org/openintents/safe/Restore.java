@@ -146,24 +146,13 @@ public class Restore extends AppCompatActivity {
     }
 
     private void selectFileOrRestoreFromFile() {
-        String backupPath;
-        backupPath = PreferenceActivity.getBackupPath(this);
-        Intent intent;
-        int requestId;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            intent = Intents.createOpenDocumentIntents("*/*", PreferenceActivity.getBackupDocument(this));
-            requestId = REQUEST_RESTORE_DOCUMENT;
-        } else {
-            intent = Intents.createPickFileIntent(backupPath, R.string.restore_select_file);
-            requestId = REQUEST_RESTORE_FILENAME;
-        }
-        if (intentCallable(intent)) {
-            startActivityForResult(intent, requestId);
-        } else {
-            restoreFromFile(backupPath);
+        Intent intent = Intents.createOpenDocumentIntents("*/*", PreferenceActivity.getBackupDocument(this));
+        try {
+            startActivityForResult(intent, REQUEST_RESTORE_DOCUMENT);
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.restore_error, Toast.LENGTH_LONG).show();
         }
     }
-
     private void restoreFromFile(String backupPath) {
         filenameText.setText(backupPath);
         try {
@@ -518,11 +507,4 @@ public class Restore extends AppCompatActivity {
         );
     }
 
-    private boolean intentCallable(Intent intent) {
-        List<ResolveInfo> list = getPackageManager().queryIntentActivities(
-                intent,
-                PackageManager.MATCH_DEFAULT_ONLY
-        );
-        return list.size() > 0;
-    }
 }
