@@ -38,6 +38,13 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
 
+  <Button
+    android:id="@+id/restore_select_file_button"
+    android:visibility="invisible"
+    android:text="@string/restore_select_file"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+
   <EditText
     android:id="@+id/restore_password"
     android:visibility="invisible"

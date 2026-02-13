@@ -95,6 +95,7 @@ public class Restore extends AppCompatActivity {
     EditText passwordText;
 
     Button restoreButton;
+    Button selectFileButton;
     private boolean startRestore;
 
     @Override
@@ -123,6 +124,12 @@ public class Restore extends AppCompatActivity {
         restoreInfoText = findViewById(R.id.restore_info);
         passwordText = findViewById(R.id.restore_password);
         restoreButton = findViewById(R.id.restore_button);
+        selectFileButton = findViewById(R.id.restore_select_file_button);
+        selectFileButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                selectFileOrRestoreFromFile();
+            }
+        });
 
         String title = getResources().getString(R.string.app_name) + " - " +
                 getResources().getString(R.string.restore);
@@ -482,6 +489,7 @@ public class Restore extends AppCompatActivity {
         passwordText.setVisibility(View.INVISIBLE);
         restoreButton.setVisibility(View.INVISIBLE);
         restoreInfoText.setText(R.string.restore_no_file);
+        selectFileButton.setVisibility(View.VISIBLE);
     }
 
     private void restore(final InputStreamData inputStreamData) {
@@ -489,6 +497,7 @@ public class Restore extends AppCompatActivity {
         restoreInfoText.setText(R.string.restore_set_password);
         passwordText.setVisibility(View.VISIBLE);
         restoreButton.setVisibility(View.VISIBLE);
+        selectFileButton.setVisibility(View.INVISIBLE);
 
         restoreButton.setOnClickListener(
                 new View.OnClickListener() {
