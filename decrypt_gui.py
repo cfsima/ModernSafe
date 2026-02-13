@@ -130,7 +130,8 @@ class OISafeDecryptor:
         # My tests showed success with ASCII encoding of the master key hex string.
         pass_bytes = master_key_hex.encode('ascii')
 
-        key, iv = openssl_kdf(pass_bytes, self.salt, 20, 16, 16)
+        # Bouncy Castle PBEWithMD5And128BitAES-CBC-OpenSSL implementation ignores iteration count and uses 1.
+        key, iv = openssl_kdf(pass_bytes, self.salt, 1, 16, 16)
 
         entries = []
 
