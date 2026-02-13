@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.DocumentsContract;
 
 import static android.content.Intent.*;
 
@@ -28,11 +29,11 @@ public class Intents {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static Intent createOpenDocumentIntents(String mimeType, String backupDocument) {
         Intent intent = new Intent(ACTION_OPEN_DOCUMENT);
-        if (backupDocument != null) {
-            intent.setData(Uri.parse(backupDocument));
-        }
         intent.addCategory(CATEGORY_OPENABLE);
         intent.setType(mimeType);
+        if (backupDocument != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse(backupDocument));
+        }
         return intent;
     }
 }
