@@ -4,8 +4,8 @@
              android:layout_height="match_parent">
 
     <fragment
-        android:name="org.openintents.safe.PreferenceActivity$PreferenceFragment"
+        android:name="io.github.cfsima.modernsafe.PreferenceActivity$PreferenceFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:tag="org.openintents.safe.PreferenceActivity$PreferenceFragment"/>
+        android:tag="io.github.cfsima.modernsafe.PreferenceActivity$PreferenceFragment"/>
 </FrameLayout>
