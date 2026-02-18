@@ -59,7 +59,7 @@ import java.util.ArrayList;
  *
  * @author Randy McEoin
  */
-public class PassView extends AppCompatActivity implements SimpleGestureFilter.SimpleGestureListener {
+public class PassViewJava extends AppCompatActivity implements SimpleGestureFilter.SimpleGestureListener {
 
     public static final int EDIT_PASSWORD_INDEX = Menu.FIRST;
     public static final int DEL_PASSWORD_INDEX = Menu.FIRST + 1;
@@ -574,7 +574,7 @@ public class PassView extends AppCompatActivity implements SimpleGestureFilter.S
      */
     private void clipboard(String fieldName, String value) {
         Toast.makeText(
-                PassView.this, fieldName + " " + getString(R.string.copied_to_clipboard),
+                PassViewJava.this, fieldName + " " + getString(R.string.copied_to_clipboard),
                 Toast.LENGTH_SHORT
         ).show();
 
@@ -732,7 +732,7 @@ public class PassView extends AppCompatActivity implements SimpleGestureFilter.S
 
             String link = websiteText.getText().toString();
             if (link == null || link.equals("") || link.equals("http://")) {
-                Toast.makeText(PassView.this, getString(R.string.invalid_url), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PassViewJava.this, getString(R.string.invalid_url), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -754,7 +754,7 @@ public class PassView extends AppCompatActivity implements SimpleGestureFilter.S
                     startActivity(i);
                 } catch (ActivityNotFoundException e2) {
                     Toast.makeText(
-                            PassView.this, R.string.invalid_website,
+                            PassViewJava.this, R.string.invalid_website,
                             Toast.LENGTH_SHORT
                     ).show();
                 }
