@@ -247,8 +247,7 @@ public class IntentHandlerActivity extends AppCompatActivity {
                 if (debug) {
                     Log.d(TAG, "inputBody=" + inputBody);
                 }
-                String outputBody = "";
-                outputBody = ch.encryptWithSessionKey(inputBody);
+                String outputBody = ch.encryptWithSessionKey(inputBody);
                 // stash the encrypted text in the extra
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT, outputBody);
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_MODERN, outputBody);
