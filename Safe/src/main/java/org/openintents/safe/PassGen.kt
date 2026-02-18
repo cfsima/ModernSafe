@@ -23,11 +23,7 @@ class PassGen : AppCompatActivity() {
     private val logoutReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == CryptoIntents.ACTION_CRYPTO_LOGGED_OUT) {
-                val frontdoor = Intent(this@PassGen, Safe::class.java).apply {
-                    action = CryptoIntents.ACTION_AUTOLOCK
-                }
-                startActivity(frontdoor)
-                finish()
+                startFrontDoor()
             }
         }
     }
@@ -39,11 +35,7 @@ class PassGen : AppCompatActivity() {
 
         // Ensure user is signed in
         if (!CategoryList.isSignedIn()) {
-            val frontdoor = Intent(this, Safe::class.java).apply {
-                action = CryptoIntents.ACTION_AUTOLOCK
-            }
-            startActivity(frontdoor)
-            finish()
+            startFrontDoor()
             return
         }
 
@@ -68,11 +60,7 @@ class PassGen : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (!CategoryList.isSignedIn()) {
-             val frontdoor = Intent(this, Safe::class.java).apply {
-                action = CryptoIntents.ACTION_AUTOLOCK
-            }
-            startActivity(frontdoor)
-            finish()
+            startFrontDoor()
             return
         }
         val filter = IntentFilter(CryptoIntents.ACTION_CRYPTO_LOGGED_OUT)
@@ -86,5 +74,13 @@ class PassGen : AppCompatActivity() {
         } catch (e: IllegalArgumentException) {
             // Ignore if not registered
         }
+    }
+
+    private fun startFrontDoor() {
+        val frontdoor = Intent(this, Safe::class.java).apply {
+            action = CryptoIntents.ACTION_AUTOLOCK
+        }
+        startActivity(frontdoor)
+        finish()
     }
 }
