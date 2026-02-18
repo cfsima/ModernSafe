@@ -311,8 +311,7 @@ public class IntentHandlerActivity extends AppCompatActivity {
         try {
             String inputBody = getExtraString(thisIntent, CryptoIntents.EXTRA_TEXT, CryptoIntents.EXTRA_TEXT_MODERN);
             if (inputBody != null) {
-                String outputBody = "";
-                outputBody = ch.decryptWithSessionKey(inputBody);
+                String outputBody = ch.decryptWithSessionKey(inputBody);
                 // stash the encrypted text in the extra
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT, outputBody);
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_MODERN, outputBody);
