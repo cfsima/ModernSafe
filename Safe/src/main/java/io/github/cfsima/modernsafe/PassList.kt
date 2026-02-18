@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.WindowManager
 import android.widget.Toast
@@ -173,6 +174,7 @@ class PassList : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "onResume()")
         if (!checkSignedIn()) {
             return
         }
@@ -187,6 +189,7 @@ class PassList : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        Log.d(TAG, "onPause()")
         try {
             unregisterReceiver(logoutReceiver)
         } catch (e: IllegalArgumentException) {
