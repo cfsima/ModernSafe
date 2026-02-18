@@ -59,28 +59,34 @@
       android:permission="io.github.cfsima.modernsafe.ACCESS_INTENTS">
       <intent-filter android:label="@string/intent_encrypt">
         <action android:name="org.openintents.action.ENCRYPT" />
+        <action android:name="io.github.cfsima.modernsafe.action.ENCRYPT" />
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
       <intent-filter android:label="@string/intent_encrypt">
         <action android:name="org.openintents.action.ENCRYPT" />
+        <action android:name="io.github.cfsima.modernsafe.action.ENCRYPT" />
         <category android:name="android.intent.category.DEFAULT" />
         <data android:scheme="file" />
       </intent-filter>
       <intent-filter android:label="@string/intent_decrypt">
         <action android:name="org.openintents.action.DECRYPT" />
+        <action android:name="io.github.cfsima.modernsafe.action.DECRYPT" />
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
       <intent-filter android:label="@string/intent_decrypt">
         <action android:name="org.openintents.action.DECRYPT" />
+        <action android:name="io.github.cfsima.modernsafe.action.DECRYPT" />
         <category android:name="android.intent.category.DEFAULT" />
         <data android:scheme="file" />
       </intent-filter>
       <intent-filter android:label="@string/intent_get_password">
         <action android:name="org.openintents.action.GET_PASSWORD" />
+        <action android:name="io.github.cfsima.modernsafe.action.GET_PASSWORD" />
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
       <intent-filter android:label="@string/intent_set_password">
         <action android:name="org.openintents.action.SET_PASSWORD" />
+        <action android:name="io.github.cfsima.modernsafe.action.SET_PASSWORD" />
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </activity>
