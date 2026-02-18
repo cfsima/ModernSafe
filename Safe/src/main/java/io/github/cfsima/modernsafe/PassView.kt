@@ -11,6 +11,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -27,6 +28,7 @@ class PassView : AppCompatActivity() {
 
     companion object {
         @JvmField var entryEdited = false
+        private const val TAG = "PassView"
     }
 
     private val viewModel: PassViewViewModel by viewModels()
@@ -130,8 +132,9 @@ class PassView : AppCompatActivity() {
         super.onPause()
         try {
             unregisterReceiver(logoutReceiver)
-        } catch (e: Exception) {
-            // Ignore
+        } catch (e: IllegalArgumentException) {
+            // Receiver might not be registered if onResume returned early
+             Log.w(TAG, "Failed to unregister logoutReceiver", e)
         }
     }
 
