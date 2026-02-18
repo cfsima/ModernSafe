@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
@@ -29,6 +30,17 @@ class PassView : AppCompatActivity() {
     }
 
     private val viewModel: PassViewViewModel by viewModels()
+
+    private val editPassLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == PassEdit.RESULT_DELETED) {
+            entryEdited = true
+            finish()
+        } else if (result.resultCode == RESULT_OK || PassEditFragment.entryEdited) {
+            entryEdited = true
+            viewModel.reloadCurrent()
+        }
+    }
+
     private val logoutReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == CryptoIntents.ACTION_CRYPTO_LOGGED_OUT) {
@@ -79,7 +91,7 @@ class PassView : AppCompatActivity() {
                            val intent = Intent(this, PassEdit::class.java)
                            intent.putExtra(PassList.KEY_ID, it.id)
                            intent.putExtra(PassList.KEY_CATEGORY_ID, it.category)
-                           startActivityForResult(intent, PassViewJava.REQUEST_EDIT_PASS)
+                           editPassLauncher.launch(intent)
                         }
                     },
                     onDelete = { entry ->
@@ -104,8 +116,7 @@ class PassView : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!CategoryList.isSignedIn()) {
-            startFrontDoor()
+        if (!checkSignedIn()) {
             return
         }
         val filter = IntentFilter(CryptoIntents.ACTION_CRYPTO_LOGGED_OUT)
@@ -131,17 +142,12 @@ class PassView : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PassViewJava.REQUEST_EDIT_PASS) {
-             if (resultCode == PassEdit.RESULT_DELETED) {
-                 entryEdited = true
-                 finish()
-             } else if (resultCode == RESULT_OK || PassEditFragment.entryEdited) {
-                 entryEdited = true
-                 viewModel.reloadCurrent()
-             }
+    private fun checkSignedIn(): Boolean {
+        if (!CategoryList.isSignedIn()) {
+            startFrontDoor()
+            return false
         }
+        return true
     }
 
     private fun startFrontDoor() {
