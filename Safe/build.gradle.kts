@@ -14,7 +14,7 @@ if (localPropertiesFile.exists()) {
 }
 
 android {
-    namespace = "org.openintents.safe"
+    namespace = "io.github.cfsima.modernsafe"
     compileSdk = (rootProject.extra["compileSdkVersion"] as Int)
 
     buildFeatures {
@@ -37,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "org.openintents.safe"
+        applicationId = "io.github.cfsima.modernsafe"
         versionCode = (rootProject.extra["versionCode"] as Int)
         versionName = (rootProject.extra["versionName"] as String)
         minSdk = 23

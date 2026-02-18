@@ -31,7 +31,7 @@
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Safe</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">No Passwords present for this category.</string>
   <string name="empty_category">No categories present.  Please add one via Menu->Add</string>
   <string name="password_lock">Lock</string>
