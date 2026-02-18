@@ -162,12 +162,12 @@ public class IntentHandlerActivity extends AppCompatActivity {
         } else if (externalAccess) {
 
             // which action?
-            if (action.equals(CryptoIntents.ACTION_ENCRYPT)) {
+            if (action.equals(CryptoIntents.ACTION_ENCRYPT) || action.equals(CryptoIntents.ACTION_ENCRYPT_MODERN)) {
                 callbackResult = encryptIntent(thisIntent, callbackIntent);
-            } else if (action.equals(CryptoIntents.ACTION_DECRYPT)) {
+            } else if (action.equals(CryptoIntents.ACTION_DECRYPT) || action.equals(CryptoIntents.ACTION_DECRYPT_MODERN)) {
                 callbackResult = decryptIntent(thisIntent, callbackIntent);
-            } else if (action.equals(CryptoIntents.ACTION_GET_PASSWORD)
-                    || action.equals(CryptoIntents.ACTION_SET_PASSWORD)) {
+            } else if (action.equals(CryptoIntents.ACTION_GET_PASSWORD) || action.equals(CryptoIntents.ACTION_GET_PASSWORD_MODERN)
+                    || action.equals(CryptoIntents.ACTION_SET_PASSWORD) || action.equals(CryptoIntents.ACTION_SET_PASSWORD_MODERN)) {
                 try {
                     callbackIntent = getSetPassword(thisIntent, callbackIntent);
                     callbackResult = RESULT_OK;
@@ -194,6 +194,39 @@ public class IntentHandlerActivity extends AppCompatActivity {
     }
 
     /**
+     * Helper to retrieve string extra from either modern or legacy key
+     */
+    private String getExtraString(Intent intent, String legacyKey, String modernKey) {
+        if (intent.hasExtra(modernKey)) {
+            return intent.getStringExtra(modernKey);
+        } else {
+            return intent.getStringExtra(legacyKey);
+        }
+    }
+
+    /**
+     * Helper to retrieve string array extra from either modern or legacy key
+     */
+    private String[] getExtraStringArray(Intent intent, String legacyKey, String modernKey) {
+        if (intent.hasExtra(modernKey)) {
+            return intent.getStringArrayExtra(modernKey);
+        } else {
+            return intent.getStringArrayExtra(legacyKey);
+        }
+    }
+
+    /**
+     * Helper to retrieve boolean extra from either modern or legacy key
+     */
+    private boolean getExtraBoolean(Intent intent, String legacyKey, String modernKey, boolean defaultValue) {
+        if (intent.hasExtra(modernKey)) {
+            return intent.getBooleanExtra(modernKey, defaultValue);
+        } else {
+            return intent.getBooleanExtra(legacyKey, defaultValue);
+        }
+    }
+
+    /**
      * Encrypt all supported fields in the intent and return the result in callbackIntent.
      * <p/>
      * This is supposed to be called by outside functions, so we encrypt using a random session key.
@@ -209,9 +242,8 @@ public class IntentHandlerActivity extends AppCompatActivity {
 
         int callbackResult = RESULT_CANCELED;
         try {
-            if (thisIntent.hasExtra(CryptoIntents.EXTRA_TEXT)) {
-                // get the body text out of the extras.
-                String inputBody = thisIntent.getStringExtra(CryptoIntents.EXTRA_TEXT);
+            String inputBody = getExtraString(thisIntent, CryptoIntents.EXTRA_TEXT, CryptoIntents.EXTRA_TEXT_MODERN);
+            if (inputBody != null) {
                 if (debug) {
                     Log.d(TAG, "inputBody=" + inputBody);
                 }
@@ -219,10 +251,11 @@ public class IntentHandlerActivity extends AppCompatActivity {
                 outputBody = ch.encryptWithSessionKey(inputBody);
                 // stash the encrypted text in the extra
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT, outputBody);
+                callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_MODERN, outputBody);
             }
 
-            if (thisIntent.hasExtra(CryptoIntents.EXTRA_TEXT_ARRAY)) {
-                String[] in = thisIntent.getStringArrayExtra(CryptoIntents.EXTRA_TEXT_ARRAY);
+            String[] in = getExtraStringArray(thisIntent, CryptoIntents.EXTRA_TEXT_ARRAY, CryptoIntents.EXTRA_TEXT_ARRAY_MODERN);
+            if (in != null) {
                 if (debug) {
                     Log.d(TAG, "in=" + Arrays.toString(in));
                 }
@@ -236,6 +269,7 @@ public class IntentHandlerActivity extends AppCompatActivity {
                     Log.d(TAG, "out=" + Arrays.toString(out));
                 }
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY, out);
+                callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY_MODERN, out);
             }
 
             if (thisIntent.getData() != null) {
@@ -247,12 +281,13 @@ public class IntentHandlerActivity extends AppCompatActivity {
                 callbackIntent.setData(newFileUri);
             }
 
-            if (thisIntent.hasExtra(CryptoIntents.EXTRA_SESSION_KEY)) {
+            if (thisIntent.hasExtra(CryptoIntents.EXTRA_SESSION_KEY) || thisIntent.hasExtra(CryptoIntents.EXTRA_SESSION_KEY_MODERN)) {
                 String sessionkey = ch.getCurrentSessionKey();
                 if (sessionkey == null) {
                     return RESULT_CANCELED;
                 }
                 callbackIntent.putExtra(CryptoIntents.EXTRA_SESSION_KEY, sessionkey);
+                callbackIntent.putExtra(CryptoIntents.EXTRA_SESSION_KEY_MODERN, sessionkey);
 
                 // Warning! This overwrites any data intent set previously.
                 callbackIntent.setData(CryptoContentProvider.CONTENT_URI);
@@ -275,18 +310,17 @@ public class IntentHandlerActivity extends AppCompatActivity {
     private int decryptIntent(final Intent thisIntent, Intent callbackIntent) {
         int callbackResult = RESULT_CANCELED;
         try {
-
-            if (thisIntent.hasExtra(CryptoIntents.EXTRA_TEXT)) {
-                // get the body text out of the extras.
-                String inputBody = thisIntent.getStringExtra(CryptoIntents.EXTRA_TEXT);
+            String inputBody = getExtraString(thisIntent, CryptoIntents.EXTRA_TEXT, CryptoIntents.EXTRA_TEXT_MODERN);
+            if (inputBody != null) {
                 String outputBody = "";
                 outputBody = ch.decryptWithSessionKey(inputBody);
                 // stash the encrypted text in the extra
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT, outputBody);
+                callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_MODERN, outputBody);
             }
 
-            if (thisIntent.hasExtra(CryptoIntents.EXTRA_TEXT_ARRAY)) {
-                String[] in = thisIntent.getStringArrayExtra(CryptoIntents.EXTRA_TEXT_ARRAY);
+            String[] in = getExtraStringArray(thisIntent, CryptoIntents.EXTRA_TEXT_ARRAY, CryptoIntents.EXTRA_TEXT_ARRAY_MODERN);
+            if (in != null) {
                 String[] out = new String[in.length];
                 for (int i = 0; i < in.length; i++) {
                     if (in[i] != null) {
@@ -294,6 +328,7 @@ public class IntentHandlerActivity extends AppCompatActivity {
                     }
                 }
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY, out);
+                callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY_MODERN, out);
             }
 
             if (thisIntent.getData() != null) {
@@ -305,9 +340,10 @@ public class IntentHandlerActivity extends AppCompatActivity {
                 callbackIntent.setData(newFileUri);
             }
 
-            if (thisIntent.hasExtra(CryptoIntents.EXTRA_SESSION_KEY)) {
+            if (thisIntent.hasExtra(CryptoIntents.EXTRA_SESSION_KEY) || thisIntent.hasExtra(CryptoIntents.EXTRA_SESSION_KEY_MODERN)) {
                 String sessionkey = ch.getCurrentSessionKey();
                 callbackIntent.putExtra(CryptoIntents.EXTRA_SESSION_KEY, sessionkey);
+                callbackIntent.putExtra(CryptoIntents.EXTRA_SESSION_KEY_MODERN, sessionkey);
 
                 // Warning! This overwrites any data intent set previously.
                 callbackIntent.setData(CryptoContentProvider.CONTENT_URI);
@@ -330,7 +366,7 @@ public class IntentHandlerActivity extends AppCompatActivity {
         String username = null;
         String password = null;
 
-        String clearUniqueName = thisIntent.getStringExtra(CryptoIntents.EXTRA_UNIQUE_NAME);
+        String clearUniqueName = getExtraString(thisIntent, CryptoIntents.EXTRA_UNIQUE_NAME, CryptoIntents.EXTRA_UNIQUE_NAME_MODERN);
 
         if (clearUniqueName == null) {
             throw new Exception("EXTRA_UNIQUE_NAME not set.");
@@ -358,7 +394,7 @@ public class IntentHandlerActivity extends AppCompatActivity {
             row = new PassEntry();
         }
 
-        if (action.equals(CryptoIntents.ACTION_GET_PASSWORD)) {
+        if (action.equals(CryptoIntents.ACTION_GET_PASSWORD) || action.equals(CryptoIntents.ACTION_GET_PASSWORD_MODERN)) {
             if (passExists) {
                 username = row.plainUsername;
                 password = row.plainPassword;
@@ -368,10 +404,12 @@ public class IntentHandlerActivity extends AppCompatActivity {
 
             // stashing the return values:
             callbackIntent.putExtra(CryptoIntents.EXTRA_USERNAME, username);
+            callbackIntent.putExtra(CryptoIntents.EXTRA_USERNAME_MODERN, username);
             callbackIntent.putExtra(CryptoIntents.EXTRA_PASSWORD, password);
-        } else if (action.equals(CryptoIntents.ACTION_SET_PASSWORD)) {
-            String clearUsername = thisIntent.getStringExtra(CryptoIntents.EXTRA_USERNAME);
-            String clearPassword = thisIntent.getStringExtra(CryptoIntents.EXTRA_PASSWORD);
+            callbackIntent.putExtra(CryptoIntents.EXTRA_PASSWORD_MODERN, password);
+        } else if (action.equals(CryptoIntents.ACTION_SET_PASSWORD) || action.equals(CryptoIntents.ACTION_SET_PASSWORD_MODERN)) {
+            String clearUsername = getExtraString(thisIntent, CryptoIntents.EXTRA_USERNAME, CryptoIntents.EXTRA_USERNAME_MODERN);
+            String clearPassword = getExtraString(thisIntent, CryptoIntents.EXTRA_PASSWORD, CryptoIntents.EXTRA_PASSWORD_MODERN);
             if (clearPassword == null) {
                 throw new Exception("PASSWORD extra must be set.");
             }
@@ -455,7 +493,7 @@ public class IntentHandlerActivity extends AppCompatActivity {
         boolean askPassIsLocal = isIntentLocal();
 
         if (Master.getMasterKey() == null) {
-            boolean promptforpassword = getIntent().getBooleanExtra(CryptoIntents.EXTRA_PROMPT, true);
+            boolean promptforpassword = getExtraBoolean(getIntent(), CryptoIntents.EXTRA_PROMPT, CryptoIntents.EXTRA_PROMPT_MODERN, true);
             if (debug) {
                 Log.d(TAG, "Prompt for password: " + promptforpassword);
             }
@@ -468,9 +506,10 @@ public class IntentHandlerActivity extends AppCompatActivity {
                         AskPassword.class
                 );
 
-                String inputBody = getIntent().getStringExtra(CryptoIntents.EXTRA_TEXT);
+                String inputBody = getExtraString(getIntent(), CryptoIntents.EXTRA_TEXT, CryptoIntents.EXTRA_TEXT_MODERN);
 
                 askPass.putExtra(CryptoIntents.EXTRA_TEXT, inputBody);
+                askPass.putExtra(CryptoIntents.EXTRA_TEXT_MODERN, inputBody); // Also pass modern
                 askPass.putExtra(AskPassword.EXTRA_IS_LOCAL, askPassIsLocal);
                 //TODO: Is there a way to make sure all the extras are set?
                 startActivityForResult(askPass, REQUEST_CODE_ASK_PASSWORD);
