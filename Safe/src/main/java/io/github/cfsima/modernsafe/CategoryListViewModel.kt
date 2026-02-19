@@ -20,7 +20,8 @@ data class CategoryListUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val userMessage: String? = null,
-    val isImporting: Boolean = false
+    val isImporting: Boolean = false,
+    val importDeletedDatabase: Boolean = false
 )
 
 class CategoryListViewModel(application: Application) : AndroidViewModel(application) {
@@ -30,9 +31,6 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
 
     private val context = application.applicationContext
 
-    companion object {
-        var importDeletedDatabase: Boolean = false
-    }
 
     fun loadCategories() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -138,13 +136,10 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
     // --- Import Logic ---
     fun importDatabase(path: String, deleteCurrent: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { it.copy(isImporting = true) }
+            _uiState.update { it.copy(isImporting = true, importDeletedDatabase = deleteCurrent) }
 
             if (deleteCurrent) {
                 Passwords.deleteAll()
-                importDeletedDatabase = true
-            } else {
-                importDeletedDatabase = false
             }
 
             var importMessage = ""
@@ -238,12 +233,9 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
 
     fun importDatabase(uri: Uri, deleteCurrent: Boolean) {
          viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { it.copy(isImporting = true) }
+            _uiState.update { it.copy(isImporting = true, importDeletedDatabase = deleteCurrent) }
              if (deleteCurrent) {
                 Passwords.deleteAll()
-                importDeletedDatabase = true
-            } else {
-                importDeletedDatabase = false
             }
 
             var importMessage = ""
