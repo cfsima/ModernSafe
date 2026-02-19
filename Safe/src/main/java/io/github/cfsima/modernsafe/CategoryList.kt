@@ -177,7 +177,7 @@ class CategoryList : AppCompatActivity() {
         try {
             unregisterReceiver(logoutReceiver)
         } catch (e: IllegalArgumentException) {
-            // ignore
+            Log.w(TAG, "Receiver not registered.", e)
         }
     }
 
