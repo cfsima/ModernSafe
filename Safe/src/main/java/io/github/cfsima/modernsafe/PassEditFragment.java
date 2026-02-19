@@ -285,7 +285,7 @@ public class PassEditFragment extends Fragment {
             Log.d(TAG, "onResume()");
         }
 
-        if (CategoryList.isSignedIn() == false) {
+        if (AuthManager.isSignedIn() == false) {
             // if (Passwords.isCryptoInitialized()) {
             // saveState();
             // }

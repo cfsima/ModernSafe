@@ -121,7 +121,7 @@ public class ChangePass extends AppCompatActivity {
             Log.d(TAG, "onResume()");
         }
 
-        if (CategoryList.isSignedIn() == false) {
+        if (AuthManager.isSignedIn() == false) {
             startActivity(frontdoor);
             return;
         }
@@ -414,7 +414,7 @@ public class ChangePass extends AppCompatActivity {
             Log.d(TAG, "onUserInteraction()");
         }
 
-        if (CategoryList.isSignedIn() == false) {
+        if (AuthManager.isSignedIn() == false) {
 //			startActivity(frontdoor);
         } else {
             if (restartTimerIntent != null) {

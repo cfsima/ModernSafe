@@ -154,7 +154,7 @@ public class PreferenceActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!CategoryList.isSignedIn()) {
+        if (!AuthManager.isSignedIn()) {
             startActivity(frontdoor);
             return;
         }
@@ -181,7 +181,7 @@ public class PreferenceActivity extends AppCompatActivity {
             Log.d(TAG, "onUserInteraction()");
         }
 
-        if (!CategoryList.isSignedIn()) {
+        if (!AuthManager.isSignedIn()) {
 //			startActivity(frontdoor);
         } else {
             if (restartTimerIntent != null) {

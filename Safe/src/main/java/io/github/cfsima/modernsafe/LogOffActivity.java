@@ -74,7 +74,7 @@ public class LogOffActivity extends AppCompatActivity {
                         Intent autoLockIntent = new Intent(getApplicationContext(), AutoLockService.class);
                         stopService(autoLockIntent);
 
-                        CategoryList.setSignedOut();
+                        AuthManager.setSignedOut();
 
 				/*
                 Intent intent = new Intent(LogOffActivity.this, FrontDoor.class);

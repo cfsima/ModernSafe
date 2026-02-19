@@ -34,7 +34,7 @@ class PassGen : AppCompatActivity() {
         supportActionBar?.hide()
 
         // Ensure user is signed in
-        if (!CategoryList.isSignedIn()) {
+        if (!AuthManager.isSignedIn()) {
             startFrontDoor()
             return
         }
@@ -59,7 +59,7 @@ class PassGen : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!CategoryList.isSignedIn()) {
+        if (!AuthManager.isSignedIn()) {
             startFrontDoor()
             return
         }

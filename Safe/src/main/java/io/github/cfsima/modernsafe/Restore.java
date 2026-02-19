@@ -195,7 +195,7 @@ public class Restore extends AppCompatActivity {
             Log.d(TAG, "onResume()");
         }
 
-        if ((!firstTime) && (CategoryList.isSignedIn() == false)) {
+        if ((!firstTime) && (AuthManager.isSignedIn() == false)) {
             startActivity(frontdoor);
             return;
         }
@@ -436,7 +436,7 @@ public class Restore extends AppCompatActivity {
             Log.d(TAG, "onUserInteraction()");
         }
 
-        if (!CategoryList.isSignedIn()) {
+        if (!AuthManager.isSignedIn()) {
 //			startActivity(frontdoor);
         } else {
             if (restartTimerIntent != null) {
