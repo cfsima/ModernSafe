@@ -200,7 +200,7 @@ public class SearchFragment extends ListFragment {
             Log.d(TAG, "onResume()");
         }
 
-        if (CategoryList.isSignedIn() == false) {
+        if (AuthManager.isSignedIn() == false) {
             startActivity(frontdoor);
             return;
         }

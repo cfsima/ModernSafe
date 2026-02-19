@@ -151,7 +151,7 @@ public class CategoryEdit extends AppCompatActivity {
         if (debug) {
             Log.d(TAG, "onResume");
         }
-        if (!CategoryList.isSignedIn()) {
+        if (!AuthManager.isSignedIn()) {
             startActivity(frontdoor);
             return;
         }
@@ -214,7 +214,7 @@ public class CategoryEdit extends AppCompatActivity {
             Log.d(TAG, "onUserInteraction()");
         }
 
-        if (CategoryList.isSignedIn() == false) {
+        if (AuthManager.isSignedIn() == false) {
 //			startActivity(frontdoor);
         } else {
             if (restartTimerIntent != null) {

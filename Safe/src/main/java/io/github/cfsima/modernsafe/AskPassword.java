@@ -386,7 +386,7 @@ public class AskPassword extends AppCompatActivity {
         if (debug) {
             Log.d(TAG, "onResume()");
         }
-        if (CategoryList.isSignedIn()) {
+        if (AuthManager.isSignedIn()) {
             if (debug) {
                 Log.d(TAG, "already signed in");
             }

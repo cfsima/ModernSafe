@@ -204,7 +204,7 @@ class PassList : AppCompatActivity() {
 
     override fun onUserInteraction() {
         super.onUserInteraction()
-        if (CategoryList.isSignedIn()) {
+        if (AuthManager.isSignedIn()) {
             sendBroadcast(Intent(CryptoIntents.ACTION_RESTART_TIMER))
         }
     }
@@ -215,7 +215,7 @@ class PassList : AppCompatActivity() {
     }
 
     private fun checkSignedIn(): Boolean {
-        if (!CategoryList.isSignedIn()) {
+        if (!AuthManager.isSignedIn()) {
             startFrontDoor()
             return false
         }
