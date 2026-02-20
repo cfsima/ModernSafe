@@ -297,4 +297,6 @@
 
   <string name="about">About</string>
   <string name="menu">Menu</string>
+  <string name="delete_success">File deleted: %s</string>
+  <string name="delete_file_error">Could not delete file.</string>
 </resources>

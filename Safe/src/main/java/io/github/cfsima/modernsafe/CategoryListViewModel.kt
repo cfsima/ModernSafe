@@ -21,7 +21,8 @@ data class CategoryListUiState(
     val error: String? = null,
     val userMessage: String? = null,
     val isImporting: Boolean = false,
-    val importDeletedDatabase: Boolean = false
+    val importDeletedDatabase: Boolean = false,
+    val importedFilePath: String? = null
 )
 
 class CategoryListViewModel(application: Application) : AndroidViewModel(application) {
@@ -226,7 +227,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                 importMessage = context.getString(R.string.import_file_error)
             }
 
-            _uiState.update { it.copy(isImporting = false, userMessage = importMessage) }
+            _uiState.update { it.copy(isImporting = false, userMessage = importMessage, importedFilePath = path) }
             loadCategories()
         }
     }
@@ -256,5 +257,25 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
              _uiState.update { it.copy(isImporting = false, userMessage = importMessage) }
              loadCategories()
          }
+    }
+
+    fun onImportedFileConsumed() {
+        _uiState.update { it.copy(importedFilePath = null) }
+    }
+
+    fun deleteImportedFile(path: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val file = File(path)
+                if (file.exists() && file.delete()) {
+                    _uiState.update { it.copy(userMessage = context.getString(R.string.delete_success, path)) }
+                } else {
+                    // Try to delete via ContentResolver if it's a Uri path or just fail silently/message
+                     _uiState.update { it.copy(userMessage = context.getString(R.string.delete_file_error)) }
+                }
+            } catch (e: Exception) {
+                 _uiState.update { it.copy(userMessage = context.getString(R.string.delete_file_error)) }
+            }
+        }
     }
 }

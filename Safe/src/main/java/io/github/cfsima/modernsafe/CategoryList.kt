@@ -18,6 +18,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.intents.CryptoIntents
@@ -131,6 +132,23 @@ class CategoryList : AppCompatActivity() {
         setContent {
             OISafeTheme {
                 val uiState by viewModel.uiState.collectAsState()
+
+                LaunchedEffect(uiState.importedFilePath) {
+                    uiState.importedFilePath?.let { path ->
+                         AlertDialog.Builder(this@CategoryList)
+                            .setIcon(R.drawable.passicon)
+                            .setTitle(R.string.import_delete_csv)
+                            .setMessage(path)
+                            .setPositiveButton(R.string.yes) { _, _ ->
+                                viewModel.deleteImportedFile(path)
+                                viewModel.onImportedFileConsumed()
+                            }
+                            .setNegativeButton(R.string.no) { _, _ ->
+                                viewModel.onImportedFileConsumed()
+                            }
+                            .show()
+                    }
+                }
 
                 CategoryListScreen(
                     uiState = uiState,
