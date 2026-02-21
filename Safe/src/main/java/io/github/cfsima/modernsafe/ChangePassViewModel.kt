@@ -104,8 +104,8 @@ class ChangePassViewModel(application: Application) : AndroidViewModel(applicati
             return true
 
         } catch (e: Exception) {
-            e.printStackTrace()
-            _uiState.update { it.copy(generalError = e.message) }
+            android.util.Log.e("ChangePassViewModel", "Failed to change password", e)
+            _uiState.update { it.copy(generalError = context.getString(R.string.error_changing_password)) }
             return false
         } finally {
             dbHelper.close()
