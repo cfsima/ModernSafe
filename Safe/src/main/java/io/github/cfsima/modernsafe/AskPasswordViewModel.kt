@@ -45,7 +45,14 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
     private var dbHelper: DBHelper? = null
     private val cryptoHelper = CryptoHelper()
     private var dbSalt: String = ""
-    private var dbMasterKey: String = ""
+
+    // Stores the ENCRYPTED master key loaded from the database.
+    // This is the "lock" we are trying to open.
+    private var cachedEncryptedMasterKey: String = ""
+
+    // Stores the DECRYPTED (plaintext) master key after successful unlock.
+    // This is the "key" we hand over to the rest of the app.
+    private var sessionMasterKey: String = ""
 
     init {
         initialize()
@@ -75,7 +82,7 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
 
         dbSalt = dbHelper?.fetchSalt() ?: ""
         // Note: fetchMasterKey returns encrypted key from DB
-        val storedEncryptedMasterKey = dbHelper?.fetchMasterKey() ?: ""
+        cachedEncryptedMasterKey = dbHelper?.fetchMasterKey() ?: ""
 
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         val prefKeypad = sp.getBoolean(PreferenceActivity.PREFERENCE_KEYPAD, false)
@@ -83,15 +90,10 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
 
         _uiState.update {
             it.copy(
-                isFirstTime = storedEncryptedMasterKey.isEmpty(),
+                isFirstTime = cachedEncryptedMasterKey.isEmpty(),
                 isKeypadMode = prefKeypad,
                 isMuted = prefMute
             )
-        }
-
-        // If not first time, we store the encrypted key to verify later
-        if (storedEncryptedMasterKey.isNotEmpty()) {
-            dbMasterKey = storedEncryptedMasterKey
         }
     }
 
@@ -106,10 +108,6 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
 
         if (checkUserPassword(password)) {
              viewModelScope.launch {
-                 // Play success sound? Legacy played it only on Keypad?
-                 // Legacy: 'gotPassword' called. Keypad explicitly played success. Normal mode didn't.
-                 // We'll play it if Keypad mode OR maybe just consistent?
-                 // Let's stick to consistent: success is silent for normal, audible for keypad (if not muted).
                  if (_uiState.value.isKeypadMode && !_uiState.value.isMuted) {
                       _effects.emit(AskPasswordEffect.PlaySuccessSound)
                  }
@@ -154,12 +152,12 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
             dbHelper?.storeSalt(salt)
             dbHelper?.storeMasterKey(encryptedMasterKey)
 
-            // Set session vars (cleartext for session)
-            dbMasterKey = masterKey
+            // Set session vars
+            sessionMasterKey = masterKey // Cleartext
+            cachedEncryptedMasterKey = encryptedMasterKey // Update cache so we don't need re-init
             dbSalt = salt
 
             viewModelScope.launch {
-                // First time always success sound? Legacy didn't specify, but keypad logic used it.
                 _effects.emit(AskPasswordEffect.UnlockSuccess)
             }
         } catch (e: Exception) {
@@ -171,17 +169,19 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun checkUserPassword(password: String): Boolean {
         if (dbHelper == null) return false
-        // Fetch fresh from DB or use cached encrypted key?
-        // Cached 'dbMasterKey' holds the ENCRYPTED key (from initialize)
-        val encryptedMasterKey = if (dbMasterKey.isNotEmpty()) dbMasterKey else dbHelper?.fetchMasterKey() ?: return false
+
+        // Always try to decrypt the cached ENCRYPTED key
+        if (cachedEncryptedMasterKey.isEmpty()) {
+            cachedEncryptedMasterKey = dbHelper?.fetchMasterKey() ?: return false
+        }
 
         try {
             cryptoHelper.init(CryptoHelper.EncryptionStrong, dbSalt)
             cryptoHelper.setPassword(password)
-            val decryptedMasterKey = cryptoHelper.decrypt(encryptedMasterKey)
+            val decryptedMasterKey = cryptoHelper.decrypt(cachedEncryptedMasterKey)
 
             if (cryptoHelper.status) {
-                dbMasterKey = decryptedMasterKey // Swap to CLEARTEXT for session use
+                sessionMasterKey = decryptedMasterKey // Store success result
                 return true
             }
         } catch (e: Exception) {
@@ -191,7 +191,7 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun onUnlockSuccess() {
-        Master.setMasterKey(dbMasterKey)
+        Master.setMasterKey(sessionMasterKey)
         Master.setSalt(dbSalt)
         CryptoContentProvider.ch = cryptoHelper
     }
