@@ -23,101 +23,101 @@ class Backup(private val context: Context) {
             Log.d(TAG, "write($filename,)")
         }
 
+        var totalPasswords = 0
+
         try {
-            val serializer: XmlSerializer = Xml.newSerializer()
-            serializer.setOutput(stream, "utf-8")
-            serializer.startDocument(null, true)
-            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
-            serializer.startTag(null, "OISafe")
+            stream.use { outputStream ->
+                val serializer: XmlSerializer = Xml.newSerializer()
+                serializer.setOutput(outputStream, "utf-8")
+                serializer.startDocument(null, true)
+                serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
+                serializer.startTag(null, "OISafe")
 
-            serializer.attribute(null, "version", CURRENT_VERSION.toString())
+                serializer.attribute(null, "version", CURRENT_VERSION.toString())
 
-            val dateFormatter = DateFormat.getDateTimeInstance(
-                DateFormat.DEFAULT,
-                DateFormat.FULL
-            )
-            val today = Date()
-            val dateOut = dateFormatter.format(today)
+                val dateFormatter = DateFormat.getDateTimeInstance(
+                    DateFormat.DEFAULT,
+                    DateFormat.FULL
+                )
+                val today = Date()
+                val dateOut = dateFormatter.format(today)
 
-            serializer.attribute(null, "date", dateOut)
+                serializer.attribute(null, "date", dateOut)
 
-            val masterKeyEncrypted = Passwords.fetchMasterKeyEncrypted()
-            if (masterKeyEncrypted != null) {
-                serializer.startTag(null, "MasterKey")
-                serializer.text(masterKeyEncrypted)
-                serializer.endTag(null, "MasterKey")
-            }
-
-            val salt = Passwords.fetchSalt()
-            if (salt != null) {
-                serializer.startTag(null, "Salt")
-                serializer.text(salt)
-                serializer.endTag(null, "Salt")
-            }
-
-            val crows = Passwords.getCategoryEntries()
-
-            var totalPasswords = 0
-
-            for (crow in crows) {
-
-                serializer.startTag(null, "Category")
-                serializer.attribute(null, "name", crow.name)
-
-                val rows = Passwords.getPassEntries(crow.id, false, false)
-
-                for (row in rows) {
-                    totalPasswords++
-
-                    serializer.startTag(null, "Entry")
-
-                    serializer.startTag(null, "RowID")
-                    serializer.text(row.id.toString())
-                    serializer.endTag(null, "RowID")
-
-                    serializer.startTag(null, "Description")
-                    serializer.text(row.description)
-                    serializer.endTag(null, "Description")
-
-                    serializer.startTag(null, "Website")
-                    serializer.text(row.website)
-                    serializer.endTag(null, "Website")
-
-                    serializer.startTag(null, "Username")
-                    serializer.text(row.username)
-                    serializer.endTag(null, "Username")
-
-                    serializer.startTag(null, "Password")
-                    serializer.text(row.password)
-                    serializer.endTag(null, "Password")
-
-                    serializer.startTag(null, "Note")
-                    serializer.text(row.note)
-                    serializer.endTag(null, "Note")
-
-                    if (row.uniqueName != null) {
-                        serializer.startTag(null, "UniqueName")
-                        serializer.text(row.uniqueName)
-                        serializer.endTag(null, "UniqueName")
-                    }
-
-                    val packageAccess = Passwords.getPackageAccessEntries(row.id)
-                    if (packageAccess != null) {
-                        serializer.startTag(null, "PackageAccess")
-                        val entry = packageAccess.joinToString(",") { it.packageAccess }
-                        serializer.text("[$entry]")
-                        serializer.endTag(null, "PackageAccess")
-                    }
-
-                    serializer.endTag(null, "Entry")
+                val masterKeyEncrypted = Passwords.fetchMasterKeyEncrypted()
+                if (masterKeyEncrypted != null) {
+                    serializer.startTag(null, "MasterKey")
+                    serializer.text(masterKeyEncrypted)
+                    serializer.endTag(null, "MasterKey")
                 }
-                serializer.endTag(null, "Category")
+
+                val salt = Passwords.fetchSalt()
+                if (salt != null) {
+                    serializer.startTag(null, "Salt")
+                    serializer.text(salt)
+                    serializer.endTag(null, "Salt")
+                }
+
+                val crows = Passwords.getCategoryEntries()
+
+                for (crow in crows) {
+
+                    serializer.startTag(null, "Category")
+                    serializer.attribute(null, "name", crow.name)
+
+                    val rows = Passwords.getPassEntries(crow.id, false, false)
+
+                    for (row in rows) {
+                        totalPasswords++
+
+                        serializer.startTag(null, "Entry")
+
+                        serializer.startTag(null, "RowID")
+                        serializer.text(row.id.toString())
+                        serializer.endTag(null, "RowID")
+
+                        serializer.startTag(null, "Description")
+                        serializer.text(row.description)
+                        serializer.endTag(null, "Description")
+
+                        serializer.startTag(null, "Website")
+                        serializer.text(row.website)
+                        serializer.endTag(null, "Website")
+
+                        serializer.startTag(null, "Username")
+                        serializer.text(row.username)
+                        serializer.endTag(null, "Username")
+
+                        serializer.startTag(null, "Password")
+                        serializer.text(row.password)
+                        serializer.endTag(null, "Password")
+
+                        serializer.startTag(null, "Note")
+                        serializer.text(row.note)
+                        serializer.endTag(null, "Note")
+
+                        if (row.uniqueName != null) {
+                            serializer.startTag(null, "UniqueName")
+                            serializer.text(row.uniqueName)
+                            serializer.endTag(null, "UniqueName")
+                        }
+
+                        val packageAccess = Passwords.getPackageAccessEntries(row.id)
+                        if (packageAccess != null && packageAccess.isNotEmpty()) {
+                            serializer.startTag(null, "PackageAccess")
+                            val entry = packageAccess.joinToString(",") { it.packageAccess }
+                            serializer.text("[$entry]")
+                            serializer.endTag(null, "PackageAccess")
+                        }
+
+                        serializer.endTag(null, "Entry")
+                    }
+                    serializer.endTag(null, "Category")
+                }
+
+                serializer.endTag(null, "OISafe")
+                serializer.endDocument()
             }
-
-            serializer.endTag(null, "OISafe")
-            serializer.endDocument()
-
-            stream.close()
 
             val tz = TimeZone.getDefault()
             @Suppress("DEPRECATION")
