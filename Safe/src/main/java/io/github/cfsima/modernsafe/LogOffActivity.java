@@ -66,7 +66,7 @@ public class LogOffActivity extends AppCompatActivity {
 
                         if (cb.hasText()) {
                             String clipboardText = cb.getText().toString();
-                            if (clipboardText.equals(Safe.last_used_password)) {
+                            if (clipboardText.equals(AuthManager.lastUsedPassword)) {
                                 cb.setText("");
                             }
                         }
@@ -91,7 +91,7 @@ public class LogOffActivity extends AppCompatActivity {
         gotoPWS.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View arg0) {
-                        Intent intent = new Intent(LogOffActivity.this, Safe.class);
+                        Intent intent = new Intent(LogOffActivity.this, FrontDoor.class);
                         //intent.setClass (LogOffActivity.this, FrontDoor.class );
                         intent.addCategory(Intent.CATEGORY_LAUNCHER);
                         intent.setAction(Intent.ACTION_MAIN);

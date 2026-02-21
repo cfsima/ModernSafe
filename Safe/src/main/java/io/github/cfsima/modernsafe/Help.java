@@ -65,7 +65,7 @@ public class Help extends AppCompatActivity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        frontdoor = new Intent(this, Safe.class);
+        frontdoor = new Intent(this, FrontDoor.class);
         frontdoor.setAction(CryptoIntents.ACTION_AUTOLOCK);
         restartTimerIntent = new Intent(CryptoIntents.ACTION_RESTART_TIMER);
 

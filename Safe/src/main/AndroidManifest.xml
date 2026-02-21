@@ -37,12 +37,6 @@
     tools:replace="android:label">
 
     <activity
-      android:name=".Safe"
-      android:label="@string/app_name"
-      android:exported="false"
-      android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-    <activity
       android:name=".FrontDoor"
       android:exported="true"
       android:label="@string/app_name">
