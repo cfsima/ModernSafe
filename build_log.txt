@@ -1,0 +1,82 @@
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+Daemon JVM discovery is an incubating feature.
+Calculating task graph as no cached configuration is available for tasks: assembleDebug
+> Task :Safe:preBuild UP-TO-DATE
+> Task :Safe:preDebugBuild UP-TO-DATE
+> Task :Safe:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :Safe:checkKotlinGradlePluginConfigurationErrors
+> Task :Safe:generateDebugBuildConfig UP-TO-DATE
+> Task :Safe:checkDebugAarMetadata UP-TO-DATE
+> Task :Safe:processDebugNavigationResources UP-TO-DATE
+> Task :Safe:compileDebugNavigationResources UP-TO-DATE
+> Task :Safe:generateDebugResValues UP-TO-DATE
+> Task :Safe:mapDebugSourceSetPaths UP-TO-DATE
+> Task :Safe:generateDebugResources UP-TO-DATE
+> Task :Safe:mergeDebugResources UP-TO-DATE
+> Task :Safe:packageDebugResources UP-TO-DATE
+> Task :Safe:parseDebugLocalResources UP-TO-DATE
+> Task :Safe:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :Safe:extractDeepLinksDebug UP-TO-DATE
+> Task :Safe:processDebugMainManifest UP-TO-DATE
+> Task :Safe:processDebugManifest UP-TO-DATE
+> Task :Safe:processDebugManifestForPackage UP-TO-DATE
+> Task :Safe:processDebugResources UP-TO-DATE
+> Task :Safe:compileDebugKotlin UP-TO-DATE
+> Task :Safe:javaPreCompileDebug UP-TO-DATE
+
+> Task :Safe:compileDebugJavaWithJavac
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :Safe:mergeDebugShaders UP-TO-DATE
+> Task :Safe:compileDebugShaders NO-SOURCE
+> Task :Safe:generateDebugAssets UP-TO-DATE
+> Task :Safe:mergeDebugAssets UP-TO-DATE
+> Task :Safe:compressDebugAssets UP-TO-DATE
+> Task :Safe:desugarDebugFileDependencies UP-TO-DATE
+> Task :Safe:dexBuilderDebug
+> Task :Safe:mergeDebugGlobalSynthetics
+> Task :Safe:processDebugJavaRes
+> Task :Safe:checkDebugDuplicateClasses UP-TO-DATE
+> Task :Safe:mergeLibDexDebug
+> Task :Safe:mergeDebugJniLibFolders UP-TO-DATE
+> Task :Safe:mergeDebugNativeLibs NO-SOURCE
+> Task :Safe:stripDebugDebugSymbols NO-SOURCE
+> Task :Safe:mergeProjectDexDebug
+> Task :Safe:mergeDebugJavaResource
+> Task :Safe:validateSigningDebug
+> Task :Safe:writeDebugAppMetadata
+> Task :Safe:writeDebugSigningConfigVersions
+> Task :Safe:mergeExtDexDebug
+> Task :Safe:packageDebug
+> Task :Safe:createDebugApkListingFileRedirect
+> Task :Safe:assembleDebug
+
+[Incubating] Problems report is available at: file:///app/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Configuration cache problems found in this build.
+
+1 problem was found storing the configuration cache.
+- Plugin 'org.jetbrains.kotlin.android': Unsupported provider is registered as a task completion listener in 'org.gradle.build.event.BuildEventsListenerRegistry'. Configuration Cache only supports providers returned from 'org.gradle.api.services.BuildServiceRegistry' as task completion listeners.
+  See https://docs.gradle.org/9.1.0/userguide/configuration_cache_status.html#config_cache:not_yet_implemented:more_build_event_listeners
+
+See the complete report at file:///app/build/reports/configuration-cache/434zq34he5rmpkfgh94pbec5a/a6gwrpit6ycnuzapebgf8rc75/configuration-cache-report.html
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2m 17s
+38 actionable tasks: 14 executed, 24 up-to-date
+Configuration cache entry discarded with 1 problem.

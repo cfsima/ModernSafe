@@ -1,0 +1,57 @@
+> Task :Safe:preBuild UP-TO-DATE
+> Task :Safe:preDebugBuild UP-TO-DATE
+> Task :Safe:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :Safe:checkKotlinGradlePluginConfigurationErrors
+> Task :Safe:generateDebugBuildConfig UP-TO-DATE
+> Task :Safe:checkDebugAarMetadata UP-TO-DATE
+> Task :Safe:processDebugNavigationResources UP-TO-DATE
+> Task :Safe:compileDebugNavigationResources UP-TO-DATE
+> Task :Safe:generateDebugResValues UP-TO-DATE
+> Task :Safe:mapDebugSourceSetPaths UP-TO-DATE
+> Task :Safe:generateDebugResources UP-TO-DATE
+> Task :Safe:mergeDebugResources UP-TO-DATE
+> Task :Safe:packageDebugResources UP-TO-DATE
+> Task :Safe:parseDebugLocalResources UP-TO-DATE
+> Task :Safe:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :Safe:extractDeepLinksDebug UP-TO-DATE
+> Task :Safe:processDebugMainManifest UP-TO-DATE
+> Task :Safe:processDebugManifest UP-TO-DATE
+> Task :Safe:processDebugManifestForPackage UP-TO-DATE
+> Task :Safe:processDebugResources UP-TO-DATE
+> Task :Safe:compileDebugKotlin UP-TO-DATE
+> Task :Safe:javaPreCompileDebug UP-TO-DATE
+> Task :Safe:compileDebugJavaWithJavac UP-TO-DATE
+> Task :Safe:mergeDebugShaders UP-TO-DATE
+> Task :Safe:compileDebugShaders NO-SOURCE
+> Task :Safe:generateDebugAssets UP-TO-DATE
+> Task :Safe:mergeDebugAssets UP-TO-DATE
+> Task :Safe:compressDebugAssets UP-TO-DATE
+> Task :Safe:desugarDebugFileDependencies UP-TO-DATE
+> Task :Safe:dexBuilderDebug UP-TO-DATE
+> Task :Safe:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :Safe:processDebugJavaRes UP-TO-DATE
+> Task :Safe:mergeDebugJavaResource UP-TO-DATE
+> Task :Safe:checkDebugDuplicateClasses UP-TO-DATE
+> Task :Safe:mergeExtDexDebug UP-TO-DATE
+> Task :Safe:mergeLibDexDebug UP-TO-DATE
+> Task :Safe:mergeProjectDexDebug UP-TO-DATE
+> Task :Safe:mergeDebugJniLibFolders UP-TO-DATE
+> Task :Safe:mergeDebugNativeLibs NO-SOURCE
+> Task :Safe:stripDebugDebugSymbols NO-SOURCE
+> Task :Safe:validateSigningDebug UP-TO-DATE
+> Task :Safe:writeDebugAppMetadata UP-TO-DATE
+> Task :Safe:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :Safe:packageDebug UP-TO-DATE
+> Task :Safe:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :Safe:assembleDebug UP-TO-DATE
+
+[Incubating] Problems report is available at: file:///app/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2s
+38 actionable tasks: 1 executed, 37 up-to-date
