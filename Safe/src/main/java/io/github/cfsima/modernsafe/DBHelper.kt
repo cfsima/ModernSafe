@@ -1,4 +1,4 @@
-/* $
+/* $Id$
  *
  * Copyright 2007-2008 Steven Osborn
  *
@@ -60,11 +60,11 @@ class DBHelper(private val context: Context) {
         private const val DATABASE_VERSION = 4
 
         private const val DBVERSION_CREATE =
-            "create table  (" +
+            "create table $TABLE_DBVERSION (" +
                     "version integer not null);"
 
         private const val PASSWORDS_CREATE =
-            "create table  (" +
+            "create table $TABLE_PASSWORDS (" +
                     "id integer primary key autoincrement, " +
                     "category integer not null, " +
                     "password text not null, " +
@@ -76,41 +76,41 @@ class DBHelper(private val context: Context) {
                     "lastdatetimeedit text);"
 
         private const val PASSWORDS_DROP =
-            "drop table ;"
+            "drop table $TABLE_PASSWORDS;"
 
         private const val PACKAGE_ACCESS_CREATE =
-            "create table  (" +
+            "create table $TABLE_PACKAGE_ACCESS (" +
                     "id integer not null, " +
                     "package text not null);"
 
         private const val PACKAGE_ACCESS_DROP =
-            "drop table ;"
+            "drop table $TABLE_PACKAGE_ACCESS;"
 
         private const val CATEGORIES_CREATE =
-            "create table  (" +
+            "create table $TABLE_CATEGORIES (" +
                     "id integer primary key autoincrement, " +
                     "name text not null, " +
                     "lastdatetimeedit text);"
 
         private const val CATEGORIES_DROP =
-            "drop table ;"
+            "drop table $TABLE_CATEGORIES;"
 
         private const val MASTER_KEY_CREATE =
-            "create table  (" +
+            "create table $TABLE_MASTER_KEY (" +
                     "encryptedkey text not null);"
 
         private const val SALT_CREATE =
-            "create table  (" +
+            "create table $TABLE_SALT (" +
                     "salt text not null);"
 
         private const val CIPHER_ACCESS_CREATE =
-            "create table  (" +
+            "create table $TABLE_CIPHER_ACCESS (" +
                     "id integer primary key autoincrement, " +
                     "packagename text not null, " +
                     "expires integer not null, " +
                     "dateadded text not null);"
 
-        // private const val CIPHER_ACCESS_DROP = "drop table ;"
+        // private const val CIPHER_ACCESS_DROP = "drop table $TABLE_CIPHER_ACCESS;"
 
         var needsPrePopulation = false
             private set
@@ -126,12 +126,12 @@ class DBHelper(private val context: Context) {
 
             // avoid journals in the file system as it gives access to the passwords.
             // FIXME: if you can get hold of a memory dump you could still get access to the passwords.
-            db?.rawQuery("PRAGMA journal_mode=MEMORY", null)?.close() // Should close rawQuery cursor? No, rawQuery returns Cursor. Yes.
+            db?.rawQuery("PRAGMA journal_mode=MEMORY", null)?.close()
 
             // Check for the existence of the DBVERSION table
             val c = db?.query(
                 "sqlite_master", arrayOf("name"),
-                "type='table' and name=''", null, null, null, null
+                "type='table' and name='$TABLE_DBVERSION'", null, null, null, null
             )
 
             val numRows = c?.count ?: 0
@@ -160,7 +160,7 @@ class DBHelper(private val context: Context) {
         } catch (e: SQLiteDiskIOException) {
             Log.d(TAG, "SQLite DiskIO exception: " + e.localizedMessage)
             if (DEBUG) {
-                Log.d(TAG, "SQLite DiskIO exception: db=")
+                Log.d(TAG, "SQLite DiskIO exception: db=$db")
             }
         } catch (e: SQLException) {
             Log.d(TAG, "SQLite exception: " + e.localizedMessage)
@@ -170,7 +170,7 @@ class DBHelper(private val context: Context) {
     fun isDatabaseOpen(): Boolean {
         val isOpen = (db != null)
         if (DEBUG) {
-            Log.d(TAG, "isDatabaseOpen==")
+            Log.d(TAG, "isDatabaseOpen==$isOpen")
         }
         return isOpen
     }
@@ -341,7 +341,7 @@ class DBHelper(private val context: Context) {
             db?.query(
                 true, TABLE_CATEGORIES, arrayOf("id", "name"),
                 "name=?", arrayOf(entry.name), null, null, null, null
-            ).use { c -> // Used prepared statement argument for safety, though original was string concat
+            ).use { c ->
                 if (c != null && c.count > 0) {
                     c.moveToFirst()
                     rowID = c.getLong(0)
@@ -361,7 +361,7 @@ class DBHelper(private val context: Context) {
      */
     fun deleteCategory(id: Long) {
         try {
-            db?.delete(TABLE_CATEGORIES, "id=", null)
+            db?.delete(TABLE_CATEGORIES, "id=$id", null)
         } catch (e: SQLException) {
             Log.d(TAG, "SQLite exception: " + e.localizedMessage)
         }
@@ -405,7 +405,7 @@ class DBHelper(private val context: Context) {
         try {
             db?.query(
                 true, TABLE_CATEGORIES, arrayOf("id", "name"),
-                "id=", null, null, null, null, null
+                "id=$id", null, null, null, null, null
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -413,7 +413,7 @@ class DBHelper(private val context: Context) {
                     row.name = c.getString(1)
                 } else {
                     row.id = -1
-                    row.name = "" // Assuming empty string as default, was null in Java logic but name is NotNull
+                    row.name = ""
                 }
             }
         } catch (e: SQLException) {
@@ -425,7 +425,7 @@ class DBHelper(private val context: Context) {
     fun getCategoryCount(id: Long): Int {
         var count = 0
         try {
-            db?.rawQuery("SELECT count(*) FROM  WHERE category=", null)?.use { c ->
+            db?.rawQuery("SELECT count(*) FROM $TABLE_PASSWORDS WHERE category=$id", null)?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
                     count = c.getInt(0)
@@ -446,7 +446,7 @@ class DBHelper(private val context: Context) {
         args.put("name", entry.name)
 
         try {
-            db?.update(TABLE_CATEGORIES, args, "id=", null)
+            db?.update(TABLE_CATEGORIES, args, "id=$id", null)
         } catch (e: SQLException) {
             Log.d(TAG, "SQLite exception: " + e.localizedMessage)
         }
@@ -462,10 +462,11 @@ class DBHelper(private val context: Context) {
     fun countPasswords(categoryId: Long): Int {
         var count = 0
         try {
-            val selection = if (categoryId > 0) "category=" else null
+            val selection = if (categoryId > 0) "category=?" else null
+            val selectionArgs = if (categoryId > 0) arrayOf(categoryId.toString()) else null
             db?.query(
                 TABLE_PASSWORDS, arrayOf("count(*)"),
-                selection, null, null, null, null
+                selection, selectionArgs, null, null, null
             )?.use { c ->
                 if (c.moveToFirst()) {
                     count = c.getInt(0)
@@ -488,13 +489,14 @@ class DBHelper(private val context: Context) {
             return ret
         }
         try {
-            val selection = if (categoryId == 0L) null else "category="
+            val selection = if (categoryId == 0L) null else "category=?"
+            val selectionArgs = if (categoryId == 0L) null else arrayOf(categoryId.toString())
             db?.query(
                 TABLE_PASSWORDS, arrayOf(
                     "id", "password", "description", "username", "website",
                     "note", "category", "unique_name", "lastdatetimeedit"
                 ),
-                selection, null, null, null, null
+                selection, selectionArgs, null, null, null
             )?.use { c ->
                 val numRows = c.count
                 c.moveToFirst()
@@ -532,7 +534,7 @@ class DBHelper(private val context: Context) {
                     "id", "password", "description", "username", "website",
                     "note", "category", "unique_name", "lastdatetimeedit"
                 ),
-                "id=", null, null, null, null, null
+                "id=$id", null, null, null, null, null
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -547,7 +549,6 @@ class DBHelper(private val context: Context) {
                     row.lastEdited = c.getString(8)
                 } else {
                     row.id = -1
-                    // row.description = null // In kotlin these are initialized to empty or null
                 }
             }
         } catch (e: SQLException) {
@@ -592,7 +593,7 @@ class DBHelper(private val context: Context) {
         try {
             db?.query(
                 true, TABLE_PACKAGE_ACCESS, arrayOf("package"),
-                "id=", null, null, null, null, null
+                "id=$passwordID", null, null, null, null, null
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -674,7 +675,7 @@ class DBHelper(private val context: Context) {
         val dateOut = dateFormatter.format(today)
         args.put("lastdatetimeedit", dateOut)
         try {
-            db?.update(TABLE_PASSWORDS, args, "id=", null)
+            db?.update(TABLE_PASSWORDS, args, "id=$id", null)
         } catch (e: SQLException) {
             Log.d(TAG, "updatePassword: SQLite exception: " + e.localizedMessage)
             return -1
@@ -698,7 +699,7 @@ class DBHelper(private val context: Context) {
         args.put("category", newCategoryId)
 
         try {
-            db?.update(TABLE_PASSWORDS, args, "id=", null)
+            db?.update(TABLE_PASSWORDS, args, "id=$id", null)
         } catch (e: SQLException) {
             Log.d(TAG, "SQLite exception: " + e.localizedMessage)
         }
@@ -747,8 +748,8 @@ class DBHelper(private val context: Context) {
      */
     fun deletePassword(id: Long) {
         try {
-            db?.delete(TABLE_PASSWORDS, "id=", null)
-            db?.delete(TABLE_PACKAGE_ACCESS, "id=", null)
+            db?.delete(TABLE_PASSWORDS, "id=$id", null)
+            db?.delete(TABLE_PACKAGE_ACCESS, "id=$id", null)
         } catch (e: SQLException) {
             Log.d(TAG, "SQLite exception: " + e.localizedMessage)
         }
