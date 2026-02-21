@@ -57,8 +57,12 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
 
     fun deleteCategory(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            Passwords.deleteCategoryEntry(id)
-            loadCategories()
+            if (Passwords.countPasswords(id) > 0) {
+                 _uiState.update { it.copy(userMessage = context.getString(R.string.category_not_empty)) }
+            } else {
+                Passwords.deleteCategoryEntry(id)
+                loadCategories()
+            }
         }
     }
 

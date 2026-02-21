@@ -1,7 +1,6 @@
 package io.github.cfsima.modernsafe
 
-import android.content.Intent
-import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,8 +24,8 @@ fun CategoryListScreen(
     uiState: CategoryListUiState,
     onCategoryClick: (Long) -> Unit,
     onAddCategory: (String) -> Unit,
-    onEditCategory: (CategoryEntry) -> Unit,
-    onDeleteCategory: (CategoryEntry) -> Unit,
+    onEditCategory: (Long, String) -> Unit,
+    onDeleteCategory: (Long) -> Unit,
     onSearch: () -> Unit,
     onBackup: () -> Unit,
     onRestore: () -> Unit,
@@ -40,6 +39,14 @@ fun CategoryListScreen(
     var showMenu by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
     var newCategoryName by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    // Edit Dialog State
+    var categoryToEdit by remember { mutableStateOf<CategoryEntry?>(null) }
+    var editCategoryName by remember { mutableStateOf("") }
+
+    // Delete Dialog State
+    var categoryToDelete by remember { mutableStateOf<CategoryEntry?>(null) }
 
     if (uiState.userMessage != null) {
         AlertDialog(
@@ -49,6 +56,7 @@ fun CategoryListScreen(
         )
     }
 
+    // Add Dialog
     if (showAddDialog) {
         AlertDialog(
             onDismissRequest = { showAddDialog = false },
@@ -73,6 +81,69 @@ fun CategoryListScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showAddDialog = false }) {
+                    Text(stringResource(R.string.no))
+                }
+            }
+        )
+    }
+
+    // Edit Dialog
+    if (categoryToEdit != null) {
+        AlertDialog(
+            onDismissRequest = { categoryToEdit = null },
+            title = { Text(stringResource(R.string.edit_entry)) },
+            text = {
+                OutlinedTextField(
+                    value = editCategoryName,
+                    onValueChange = { editCategoryName = it },
+                    label = { Text(stringResource(R.string.category)) }
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        if (editCategoryName.trim().isEmpty()) {
+                            Toast.makeText(context, R.string.notify_blank_name, Toast.LENGTH_SHORT).show()
+                        } else {
+                            categoryToEdit?.let {
+                                 onEditCategory(it.id, editCategoryName)
+                            }
+                            categoryToEdit = null
+                            editCategoryName = ""
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.save))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { categoryToEdit = null }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    // Delete Dialog
+    if (categoryToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { categoryToDelete = null },
+            title = { Text(stringResource(R.string.password_delete)) },
+            text = { Text(stringResource(R.string.confirm_delete_category, categoryToDelete?.plainName ?: "")) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        categoryToDelete?.let {
+                            onDeleteCategory(it.id)
+                        }
+                        categoryToDelete = null
+                    }
+                ) {
+                    Text(stringResource(R.string.yes))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { categoryToDelete = null }) {
                     Text(stringResource(R.string.no))
                 }
             }
@@ -145,7 +216,14 @@ fun CategoryListScreen(
                 items(uiState.categories) { category ->
                     CategoryItem(
                         category = category,
-                        onClick = { onCategoryClick(category.id) }
+                        onClick = { onCategoryClick(category.id) },
+                        onEdit = {
+                            editCategoryName = category.plainName ?: ""
+                            categoryToEdit = category
+                        },
+                        onDelete = {
+                            categoryToDelete = category
+                        }
                     )
                 }
             }
@@ -153,14 +231,40 @@ fun CategoryListScreen(
     }
 }
 
-@Composable @Suppress("UNUSED_PARAMETER")
+@Composable
 fun CategoryItem(
     category: CategoryEntry,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
 ) {
+    var showItemMenu by remember { mutableStateOf(false) }
+
     ListItem(
         headlineContent = { Text(category.plainName ?: "") },
-        trailingContent = { Text(category.count.toString()) },
+        trailingContent = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(category.count.toString(), modifier = Modifier.padding(end = 8.dp))
+                Box {
+                    IconButton(onClick = { showItemMenu = true }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.menu))
+                    }
+                    DropdownMenu(
+                        expanded = showItemMenu,
+                        onDismissRequest = { showItemMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.edit_entry)) },
+                            onClick = { showItemMenu = false; onEdit() }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.password_delete)) },
+                            onClick = { showItemMenu = false; onDelete() }
+                        )
+                    }
+                }
+            }
+        },
         modifier = Modifier.clickable(onClick = onClick)
     )
     HorizontalDivider()
