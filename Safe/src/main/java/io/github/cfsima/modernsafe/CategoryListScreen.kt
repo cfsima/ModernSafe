@@ -1,5 +1,6 @@
 package io.github.cfsima.modernsafe
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.cfsima.modernsafe.model.CategoryEntry
@@ -37,6 +39,7 @@ fun CategoryListScreen(
     var showMenu by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
     var newCategoryName by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     // Edit Dialog State
     var categoryToEdit by remember { mutableStateOf<CategoryEntry?>(null) }
@@ -99,19 +102,23 @@ fun CategoryListScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        categoryToEdit?.let {
-                             onEditCategory(it.id, editCategoryName)
+                        if (editCategoryName.trim().isEmpty()) {
+                            Toast.makeText(context, R.string.notify_blank_name, Toast.LENGTH_SHORT).show()
+                        } else {
+                            categoryToEdit?.let {
+                                 onEditCategory(it.id, editCategoryName)
+                            }
+                            categoryToEdit = null
+                            editCategoryName = ""
                         }
-                        categoryToEdit = null
-                        editCategoryName = ""
                     }
                 ) {
-                    Text(stringResource(R.string.yes))
+                    Text(stringResource(R.string.save))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { categoryToEdit = null }) {
-                    Text(stringResource(R.string.no))
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
