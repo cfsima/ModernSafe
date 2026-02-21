@@ -113,7 +113,7 @@ public class Restore extends AppCompatActivity {
             firstTime = extras != null ? extras.getBoolean(Restore.KEY_FIRST_TIME) : false;
         }
 
-        frontdoor = new Intent(this, Safe.class);
+        frontdoor = new Intent(this, FrontDoor.class);
         frontdoor.setAction(CryptoIntents.ACTION_AUTOLOCK);
         restartTimerIntent = new Intent(CryptoIntents.ACTION_RESTART_TIMER);
 

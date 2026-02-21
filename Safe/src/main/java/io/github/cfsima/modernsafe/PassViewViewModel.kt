@@ -84,7 +84,7 @@ class PassViewViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun updateLastUsedPassword(password: String) {
-        Safe.last_used_password = password
+        AuthManager.lastUsedPassword = password
     }
 
     fun reloadCurrent() {

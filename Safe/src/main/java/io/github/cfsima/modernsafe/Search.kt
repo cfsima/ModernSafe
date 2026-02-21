@@ -103,7 +103,7 @@ class Search : AppCompatActivity() {
     }
 
     private fun startFrontDoor() {
-        val intent = Intent(this, Safe::class.java)
+        val intent = Intent(this, FrontDoor::class.java)
         intent.action = CryptoIntents.ACTION_AUTOLOCK
         startActivity(intent)
         finish()

@@ -6,6 +6,9 @@ import io.github.cfsima.modernsafe.password.Master
 object AuthManager {
     private const val TAG = "AuthManager"
 
+    @JvmField
+    var lastUsedPassword: String? = null
+
     @JvmStatic
     fun isSignedIn(): Boolean {
         if ((Master.getSalt() != null) && (Master.getMasterKey() != null)) {

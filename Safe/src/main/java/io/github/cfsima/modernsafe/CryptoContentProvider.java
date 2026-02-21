@@ -163,7 +163,7 @@ public class CryptoContentProvider extends ContentProvider {
                         Log.d(TAG, "Original file path: " + originalFile);
                     }
                     if (AuthManager.isSignedIn() == false) {
-                        Intent frontdoor = new Intent(getContext(), Safe.class);
+                        Intent frontdoor = new Intent(getContext(), FrontDoor.class);
                         frontdoor.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getContext().startActivity(frontdoor);
                         throw new CryptoHelperException("Not logged in.");
