@@ -130,9 +130,9 @@ class RestoreHandler : DefaultHandler() {
     override fun characters(ch: CharArray, start: Int, length: Int) {
         val str = String(ch, start, length)
         if (in_salt) {
-            parsedData.setSalt(str)
+            parsedData.salt = str
         } else if (in_masterkey) {
-            parsedData.setMasterKeyEncrypted(str)
+            parsedData.masterKeyEncrypted = str
         } else if (in_rowid) {
             parsedData.setRowID(str)
         } else if (in_description) {

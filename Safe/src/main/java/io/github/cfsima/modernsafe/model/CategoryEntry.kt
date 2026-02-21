@@ -1,6 +1,6 @@
-/* $Id$
- * 
- * Copyright (C) 2009 OpenIntents.org
+/* $
+ *
+ * Copyright 2008 Randy McEoin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.cfsima.modernsafe.model;
+package io.github.cfsima.modernsafe.model
 
-public class PackageAccessEntry {
-    public boolean needsDecrypt;
-    public boolean needsEncrypt = true;
-    public String packageAccess;
-    public String plainPackageAccess;
+/**
+ * @author Randy McEoin
+ */
+class CategoryEntry(
+    var name: String = "",
+    var count: Int = 0
+) {
+    var id: Long = -1
+    var nameNeedsDecrypt: Boolean = false
+    var plainName: String? = null
+    var plainNameNeedsEncrypt: Boolean = true
+
+    override fun toString(): String {
+        return " "
+    }
 }

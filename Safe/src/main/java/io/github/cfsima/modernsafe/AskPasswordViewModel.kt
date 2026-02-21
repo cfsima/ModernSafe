@@ -68,12 +68,12 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
         val context = getApplication<Application>()
         dbHelper = DBHelper(context)
 
-        if (dbHelper?.isDatabaseOpen == false) {
+        if (dbHelper?.isDatabaseOpen() == false) {
             _uiState.update { it.copy(showDatabaseError = true) }
             return
         }
 
-        if (dbHelper?.needsUpgrade() == true) {
+        if (dbHelper?.needsUpgrade == true) {
             if (dbHelper?.fetchVersion() == 2) {
                  _uiState.update { it.copy(showVersionError = true) }
                  return

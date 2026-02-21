@@ -332,11 +332,11 @@ class IntentHandlerActivity : AppCompatActivity() {
         var row: PassEntry? = Passwords.findPassWithUniqueName(clearUniqueName)
         val passExists = (row != null)
 
-        val callingPackage = callingPackage // Activity method
+        val callingPackage = callingPackage ?: throw Exception("Unknown calling package")
 
         if (passExists) {
-            val packageAccess = Passwords.getPackageAccess(row?.id)
-            if (packageAccess == null || !PassEntry.checkPackageAccess(packageAccess, callingPackage)) {
+            val packageAccess = Passwords.getPackageAccess(row!!.id)
+            if (packageAccess == null || !PassEntry.checkPackageAccess(packageAccess!!, callingPackage)) {
                 throw Exception("It is currently not permissible for this application to request this password.")
             }
         } else {
@@ -386,9 +386,9 @@ class IntentHandlerActivity : AppCompatActivity() {
                 row.id = 0
                 row.id = Passwords.putPassEntry(row)
             }
-            val packageAccess = Passwords.getPackageAccess(row.id)
-            if (packageAccess == null || !PassEntry.checkPackageAccess(packageAccess, callingPackage)) {
-                Passwords.addPackageAccess(row.id, callingPackage)
+            val packageAccess = Passwords.getPackageAccess(row!!.id)
+            if (packageAccess == null || !PassEntry.checkPackageAccess(packageAccess!!, callingPackage)) {
+                Passwords.addPackageAccess(row!!.id, callingPackage)
             }
         }
         return callbackIntent
