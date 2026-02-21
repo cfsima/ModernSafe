@@ -20,7 +20,9 @@ data class CategoryListUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val userMessage: String? = null,
-    val isImporting: Boolean = false
+    val isImporting: Boolean = false,
+    val importDeletedDatabase: Boolean = false,
+    val importedFilePath: String? = null
 )
 
 class CategoryListViewModel(application: Application) : AndroidViewModel(application) {
@@ -30,9 +32,6 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
 
     private val context = application.applicationContext
 
-    companion object {
-        var importDeletedDatabase: Boolean = false
-    }
 
     fun loadCategories() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -138,13 +137,10 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
     // --- Import Logic ---
     fun importDatabase(path: String, deleteCurrent: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { it.copy(isImporting = true) }
+            _uiState.update { it.copy(isImporting = true, importDeletedDatabase = deleteCurrent) }
 
             if (deleteCurrent) {
                 Passwords.deleteAll()
-                importDeletedDatabase = true
-            } else {
-                importDeletedDatabase = false
             }
 
             var importMessage = ""
@@ -231,19 +227,16 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                 importMessage = context.getString(R.string.import_file_error)
             }
 
-            _uiState.update { it.copy(isImporting = false, userMessage = importMessage) }
+            _uiState.update { it.copy(isImporting = false, userMessage = importMessage, importedFilePath = path) }
             loadCategories()
         }
     }
 
     fun importDatabase(uri: Uri, deleteCurrent: Boolean) {
          viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { it.copy(isImporting = true) }
+            _uiState.update { it.copy(isImporting = true, importDeletedDatabase = deleteCurrent) }
              if (deleteCurrent) {
                 Passwords.deleteAll()
-                importDeletedDatabase = true
-            } else {
-                importDeletedDatabase = false
             }
 
             var importMessage = ""
@@ -264,5 +257,25 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
              _uiState.update { it.copy(isImporting = false, userMessage = importMessage) }
              loadCategories()
          }
+    }
+
+    fun onImportedFileConsumed() {
+        _uiState.update { it.copy(importedFilePath = null) }
+    }
+
+    fun deleteImportedFile(path: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val file = File(path)
+                if (file.exists() && file.delete()) {
+                    _uiState.update { it.copy(userMessage = context.getString(R.string.delete_success, path)) }
+                } else {
+                    // Try to delete via ContentResolver if it's a Uri path or just fail silently/message
+                     _uiState.update { it.copy(userMessage = context.getString(R.string.delete_file_error)) }
+                }
+            } catch (e: Exception) {
+                 _uiState.update { it.copy(userMessage = context.getString(R.string.delete_file_error)) }
+            }
+        }
     }
 }
