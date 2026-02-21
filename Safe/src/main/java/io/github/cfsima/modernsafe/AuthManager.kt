@@ -22,7 +22,7 @@ object AuthManager {
 
     @JvmStatic
     fun isSignedIn(): Boolean {
-        if ((Master.getSalt() != null) && (Master.getMasterKey() != null)) {
+        if ((Master.salt != null) && (Master.masterKey != null)) {
             if (BuildConfig.DEBUG) {
                 Log.d(TAG, "isSignedIn: true")
             }
@@ -36,7 +36,7 @@ object AuthManager {
 
     @JvmStatic
     fun setSignedOut() {
-        Master.setMasterKey(null)
+        Master.masterKey = null
         lastUsedPassword = null
     }
 }

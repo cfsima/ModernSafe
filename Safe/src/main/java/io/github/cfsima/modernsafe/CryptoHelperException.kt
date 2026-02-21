@@ -1,5 +1,4 @@
-/* $Id$
- * 
+/*
  * Copyright 2007-2008 Steven Osborn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.cfsima.modernsafe;
+package io.github.cfsima.modernsafe
 
 /**
  * @author Steven Osborn - http://steven.bitsetters.com
  */
-public class CryptoHelperException extends Exception {
-
-    private static final long serialVersionUID = 9198874648607918125L;
-
-    public CryptoHelperException(String message) {
-        super(message);
+class CryptoHelperException(message: String?) : Exception(message) {
+    companion object {
+        private const val serialVersionUID = 9198874648607918125L
     }
-
 }
