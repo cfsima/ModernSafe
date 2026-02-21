@@ -37,7 +37,7 @@ class PassView : AppCompatActivity() {
         if (result.resultCode == PassEdit.RESULT_DELETED) {
             entryEdited = true
             finish()
-        } else if (result.resultCode == RESULT_OK || PassEditFragment.entryEdited) {
+        } else if (result.resultCode == RESULT_OK) {
             entryEdited = true
             viewModel.reloadCurrent()
         }

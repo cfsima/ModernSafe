@@ -56,13 +56,13 @@ class PassList : AppCompatActivity() {
     }
 
     private val addPasswordLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK || PassEditFragment.entryEdited) {
+        if (result.resultCode == Activity.RESULT_OK) {
              viewModel.reload()
         }
     }
 
     private val editPasswordLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-         if (result.resultCode == Activity.RESULT_OK || PassEditFragment.entryEdited) {
+         if (result.resultCode == Activity.RESULT_OK) {
              viewModel.reload()
          }
     }
