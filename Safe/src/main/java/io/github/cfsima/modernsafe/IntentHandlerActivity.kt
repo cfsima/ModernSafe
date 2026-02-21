@@ -145,7 +145,8 @@ class IntentHandlerActivity : AppCompatActivity() {
     private fun actionDispatch() {
         val thisIntent = intent
         val action = thisIntent.action
-        var callbackIntent = intent // Start with the original intent structure/extras
+        // Create a copy of the intent to return as callback, ensuring immutability of the original
+        var callbackIntent = Intent(intent)
         var callbackResult = RESULT_CANCELED
 
         if (debug) Log.d(TAG, "actionDispatch()")
