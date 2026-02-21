@@ -18,7 +18,6 @@ package io.github.cfsima.modernsafe
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.os.Environment
 import android.util.Log
 import estreamj.ciphers.trivium.Trivium
 import estreamj.framework.ESJException
@@ -141,9 +140,16 @@ class CryptoHelper {
         password = pass
         pbeKeySpec = PBEKeySpec(password!!.toCharArray())
         try {
-            pbeKey = keyFac!!.generateSecret(pbeKeySpec)
+            val factory = keyFac ?: throw IllegalStateException("SecretKeyFactory not initialized")
+            pbeKey = factory.generateSecret(pbeKeySpec)
             pbeCipher = Cipher.getInstance(algorithm, "BC")
-        } catch (e: Exception) {
+        } catch (e: InvalidKeySpecException) {
+            Log.e(TAG, "setPassword(): $e")
+        } catch (e: NoSuchAlgorithmException) {
+            Log.e(TAG, "setPassword(): $e")
+        } catch (e: NoSuchPaddingException) {
+            Log.e(TAG, "setPassword(): $e")
+        } catch (e: NoSuchProviderException) {
             Log.e(TAG, "setPassword(): $e")
         }
 
@@ -205,10 +211,17 @@ class CryptoHelper {
             return ""
         }
         try {
-            pbeCipher!!.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec)
-            ciphertext = pbeCipher!!.doFinal(plaintext.toByteArray())
+            val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
+            cipher.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec)
+            ciphertext = cipher.doFinal(plaintext.toByteArray())
             status = true
-        } catch (e: Exception) {
+        } catch (e: IllegalBlockSizeException) {
+            Log.e(TAG, "encrypt(): $e")
+        } catch (e: BadPaddingException) {
+            Log.e(TAG, "encrypt(): $e")
+        } catch (e: InvalidAlgorithmParameterException) {
+            Log.e(TAG, "encrypt(): $e")
+        } catch (e: InvalidKeyException) {
             Log.e(TAG, "encrypt(): $e")
         }
         return toHexString(ciphertext)
@@ -238,10 +251,17 @@ class CryptoHelper {
         val byteCiphertext = hexStringToBytes(ciphertext!!)
         var plaintext = ByteArray(0)
         try {
-            pbeCipher!!.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec)
-            plaintext = pbeCipher!!.doFinal(byteCiphertext)
+            val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
+            cipher.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec)
+            plaintext = cipher.doFinal(byteCiphertext)
             status = true
-        } catch (e: Exception) {
+        } catch (e: IllegalBlockSizeException) {
+            Log.e(TAG, "decrypt(): $e")
+        } catch (e: BadPaddingException) {
+            Log.e(TAG, "decrypt(): $e")
+        } catch (e: InvalidAlgorithmParameterException) {
+            Log.e(TAG, "decrypt(): $e")
+        } catch (e: InvalidKeyException) {
             Log.e(TAG, "decrypt(): $e")
         }
         return String(plaintext)
@@ -287,27 +307,43 @@ class CryptoHelper {
         val sessionPbeKeySpec = PBEKeySpec(sessionKeyString!!.toCharArray())
         var sessionPbeKey: SecretKey? = null
         try {
-            sessionPbeKey = keyFac!!.generateSecret(sessionPbeKeySpec)
+            val factory = keyFac ?: throw IllegalStateException("SecretKeyFactory not initialized")
+            sessionPbeKey = factory.generateSecret(sessionPbeKeySpec)
         } catch (e: InvalidKeySpecException) {
             Log.e(TAG, "setPassword(): $e")
         }
 
         // Encrypt the session key using the master key
         try {
-            pbeCipher!!.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec)
-            cipherSessionKey = pbeCipher!!.doFinal(sessionKeyEncoded)
-        } catch (e: Exception) {
+            val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
+            cipher.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec)
+            cipherSessionKey = cipher.doFinal(sessionKeyEncoded)
+        } catch (e: IllegalBlockSizeException) {
+            Log.e(TAG, "encryptWithSessionKey(): $e")
+        } catch (e: BadPaddingException) {
+            Log.e(TAG, "encryptWithSessionKey(): $e")
+        } catch (e: InvalidAlgorithmParameterException) {
+            Log.e(TAG, "encryptWithSessionKey(): $e")
+        } catch (e: InvalidKeyException) {
             Log.e(TAG, "encryptWithSessionKey(): $e")
         }
 
         // Now encrypt the text using the session key
         try {
-            pbeCipher!!.init(Cipher.ENCRYPT_MODE, sessionPbeKey, pbeParamSpec)
-            ciphertext = pbeCipher!!.doFinal(plaintext.toByteArray())
+            val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
+            cipher.init(Cipher.ENCRYPT_MODE, sessionPbeKey, pbeParamSpec)
+            ciphertext = cipher.doFinal(plaintext.toByteArray())
             status = true
-        } catch (e: Exception) {
+        } catch (e: IllegalBlockSizeException) {
+            Log.e(TAG, "encryptWithSessionKey2(): $e")
+        } catch (e: BadPaddingException) {
+            Log.e(TAG, "encryptWithSessionKey2(): $e")
+        } catch (e: InvalidAlgorithmParameterException) {
+            Log.e(TAG, "encryptWithSessionKey2(): $e")
+        } catch (e: InvalidKeyException) {
             Log.e(TAG, "encryptWithSessionKey2(): $e")
         }
+
         val stringCipherVersion = "A"
         val stringCipherSessionKey = toHexString(cipherSessionKey)
         val stringCiphertext = toHexString(ciphertext)
@@ -359,10 +395,17 @@ class CryptoHelper {
         val byteCipherSessionKey = hexStringToBytes(cipherSessionKey!!)
         var byteSessionKey = ByteArray(0)
         try {
-            pbeCipher!!.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec)
-            byteSessionKey = pbeCipher!!.doFinal(byteCipherSessionKey)
+            val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
+            cipher.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec)
+            byteSessionKey = cipher.doFinal(byteCipherSessionKey)
             status = true
-        } catch (e: Exception) {
+        } catch (e: IllegalBlockSizeException) {
+            Log.e(TAG, "decrypt(): $e")
+        } catch (e: BadPaddingException) {
+            Log.e(TAG, "decrypt(): $e")
+        } catch (e: InvalidAlgorithmParameterException) {
+            Log.e(TAG, "decrypt(): $e")
+        } catch (e: InvalidKeyException) {
             Log.e(TAG, "decrypt(): $e")
         }
 
@@ -371,7 +414,8 @@ class CryptoHelper {
         val sessionPbeKeySpec = PBEKeySpec(stringSessionKey.toCharArray())
         var sessionPbeKey: SecretKey? = null
         try {
-            sessionPbeKey = keyFac!!.generateSecret(sessionPbeKeySpec)
+            val factory = keyFac ?: throw IllegalStateException("SecretKeyFactory not initialized")
+            sessionPbeKey = factory.generateSecret(sessionPbeKeySpec)
         } catch (e: InvalidKeySpecException) {
             Log.e(TAG, "setPassword(): $e")
         }
@@ -380,10 +424,17 @@ class CryptoHelper {
         val byteCiphertext = hexStringToBytes(ciphertext!!)
         var plaintext = ByteArray(0)
         try {
-            pbeCipher!!.init(Cipher.DECRYPT_MODE, sessionPbeKey, pbeParamSpec)
-            plaintext = pbeCipher!!.doFinal(byteCiphertext)
+            val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
+            cipher.init(Cipher.DECRYPT_MODE, sessionPbeKey, pbeParamSpec)
+            plaintext = cipher.doFinal(byteCiphertext)
             status = true
-        } catch (e: Exception) {
+        } catch (e: IllegalBlockSizeException) {
+            Log.e(TAG, "decrypt(): $e")
+        } catch (e: BadPaddingException) {
+            Log.e(TAG, "decrypt(): $e")
+        } catch (e: InvalidAlgorithmParameterException) {
+            Log.e(TAG, "decrypt(): $e")
+        } catch (e: InvalidKeyException) {
             Log.e(TAG, "decrypt(): $e")
         }
         return String(plaintext)
@@ -392,14 +443,15 @@ class CryptoHelper {
     /**
      * encrypt a file using a random session key
      *
-     * @param contentResolver is used to be able to read the stream
+     * @param context is used to be able to read the stream and get temporary file dir
      * @param fileUri         is the stream or file to read from
      * @return Uri to the created plaintext file
      * @throws Exception
      * @author Peli
      */
     @Throws(CryptoHelperException::class)
-    fun encryptFileWithSessionKey(contentResolver: ContentResolver, fileUri: Uri): Uri? {
+    fun encryptFileWithSessionKey(context: Context, fileUri: Uri): Uri? {
+        val contentResolver = context.contentResolver
         if (debug) {
             Log.d(TAG, "Encrypt with session key")
         }
@@ -416,7 +468,7 @@ class CryptoHelper {
                 outputPath = fileUri.path + OISAFE_EXTENSION
             } else {
                 `is` = contentResolver.openInputStream(fileUri)!!
-                outputPath = getTemporaryFileName()
+                outputPath = getTemporaryFileName(context)
             }
             val os = FileOutputStream(outputPath)
             var cipherSessionKey = ByteArray(0)
@@ -437,10 +489,17 @@ class CryptoHelper {
 
             // Encrypt the session key using the master key
             try {
-                pbeCipher!!.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec)
-                cipherSessionKey = pbeCipher!!.doFinal(sessionKeyEncoded)
+                val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
+                cipher.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec)
+                cipherSessionKey = cipher.doFinal(sessionKeyEncoded)
                 status = true
-            } catch (e: Exception) {
+            } catch (e: IllegalBlockSizeException) {
+                Log.e(TAG, "encryptWithSessionKey(): $e")
+            } catch (e: BadPaddingException) {
+                Log.e(TAG, "encryptWithSessionKey(): $e")
+            } catch (e: InvalidAlgorithmParameterException) {
+                Log.e(TAG, "encryptWithSessionKey(): $e")
+            } catch (e: InvalidKeyException) {
                 Log.e(TAG, "encryptWithSessionKey(): $e")
             }
             if (!status) {
@@ -472,8 +531,6 @@ class CryptoHelper {
                     os.write(bytesOut, 0, numRead)
                 }
 
-                // Ensure all the bytes have been read in
-
                 // Close the input stream and return bytes
                 `is`.close()
                 os.close()
@@ -500,7 +557,7 @@ class CryptoHelper {
      * @return
      */
     @Throws(CryptoHelperException::class)
-    private fun getTemporaryFileName(): String {
+    private fun getTemporaryFileName(context: Context): String {
         val randomPart: String
         try {
             // create a random session name
@@ -510,7 +567,12 @@ class CryptoHelper {
             val msg = "Decrypt error: " + e1.localizedMessage
             throw CryptoHelperException(msg)
         }
-        return Environment.getExternalStorageDirectory().toString() + "/tmp-" + randomPart
+        // Use external files dir for temporary files
+        val dir = context.getExternalFilesDir(null)
+        if (dir == null) {
+             throw CryptoHelperException("Could not access external files directory")
+        }
+        return dir.absolutePath + "/tmp-" + randomPart
     }
 
     /**
@@ -555,7 +617,7 @@ class CryptoHelper {
                 }
             }
             if (outputPath == null) {
-                outputPath = getTemporaryFileName()
+                outputPath = getTemporaryFileName(ctx)
             }
             val os = FileOutputStream(outputPath)
 
@@ -732,10 +794,17 @@ class CryptoHelper {
             // Decrypt the session key
             var byteSessionKey = ByteArray(0)
             try {
-                pbeCipher!!.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec)
-                byteSessionKey = pbeCipher!!.doFinal(byteCipherSessionKey)
+                val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
+                cipher.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec)
+                byteSessionKey = cipher.doFinal(byteCipherSessionKey)
                 status = true
-            } catch (e: Exception) {
+            } catch (e: IllegalBlockSizeException) {
+                Log.e(TAG, "decrypt(): $e")
+            } catch (e: BadPaddingException) {
+                Log.e(TAG, "decrypt(): $e")
+            } catch (e: InvalidAlgorithmParameterException) {
+                Log.e(TAG, "decrypt(): $e")
+            } catch (e: InvalidKeyException) {
                 Log.e(TAG, "decrypt(): $e")
             }
 
@@ -757,10 +826,6 @@ class CryptoHelper {
                     offset += numRead
                 }
 
-                // Ensure all the bytes have been read in
-                if (offset < `is`.available()) {
-                    throw IOException("Could not completely read file ")
-                }
                 status = true
             } catch (e: ESJException) {
                 Log.e(TAG, "Error decrypting file", e)
@@ -776,23 +841,30 @@ class CryptoHelper {
         private const val TAG = "CryptoHelper"
         const val OISAFE_EXTENSION = ".oisafe"
 
-
+        @Volatile
         private var pbeKeySpec: PBEKeySpec? = null
 
+        @Volatile
         private var pbeParamSpec: PBEParameterSpec? = null
 
+        @Volatile
         private var keyFac: SecretKeyFactory? = null
         const val EncryptionMedium = 1
         const val EncryptionStrong = 2
 
+        @Volatile
         private var desAlgorithm = "DES"
 
+        @Volatile
         private var password: String? = null
 
+        @Volatile
         private var pbeKey: SecretKey? = null
 
+        @Volatile
         private var pbeCipher: Cipher? = null
 
+        @Volatile
         private var salt: ByteArray? = null
         private const val count = 20
 

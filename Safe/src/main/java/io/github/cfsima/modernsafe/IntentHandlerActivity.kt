@@ -258,9 +258,8 @@ class IntentHandlerActivity : AppCompatActivity() {
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY_MODERN, outputArr)
             }
 
-            if (thisIntent.data != null) {
-                val fileUri = thisIntent.data!!
-                val newFileUri = ch?.encryptFileWithSessionKey(contentResolver, fileUri)
+            thisIntent.data?.let { fileUri ->
+                val newFileUri = ch?.encryptFileWithSessionKey(this, fileUri)
                 callbackIntent.data = newFileUri
             }
 
@@ -300,8 +299,7 @@ class IntentHandlerActivity : AppCompatActivity() {
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY_MODERN, outputArr)
             }
 
-            if (thisIntent.data != null) {
-                val fileUri = thisIntent.data!!
+            thisIntent.data?.let { fileUri ->
                 val newFileUri = ch?.decryptFileWithSessionKey(this, fileUri)
                 callbackIntent.data = newFileUri
             }
