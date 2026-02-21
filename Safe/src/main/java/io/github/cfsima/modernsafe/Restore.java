@@ -146,7 +146,7 @@ public class Restore extends AppCompatActivity {
     }
 
     private void selectFileOrRestoreFromFile() {
-        Intent intent = Intents.createOpenDocumentIntents("*/*", PreferenceActivity.getBackupDocument(this));
+        Intent intent = Intents.createOpenDocumentIntents("*/*", Settings.getBackupDocument(this));
         try {
             startActivityForResult(intent, REQUEST_RESTORE_DOCUMENT);
         } catch (android.content.ActivityNotFoundException e) {
@@ -158,7 +158,7 @@ public class Restore extends AppCompatActivity {
         try {
             InputStreamData streamData = new InputStreamData(backupPath);
             restore(streamData);
-            PreferenceActivity.setBackupPathAndMethod(this, backupPath);
+            Settings.setBackupPathAndMethod(this, backupPath);
         } catch (FileNotFoundException e) {
             updateNoRestoreFileUI();
         }
@@ -169,7 +169,7 @@ public class Restore extends AppCompatActivity {
         try {
             InputStreamData streamData = new InputStreamData(backupUri, this);
             restore(streamData);
-            PreferenceActivity.setBackupDocumentAndMethod(this, backupUri.toString());
+            Settings.setBackupDocumentAndMethod(this, backupUri.toString());
         } catch (FileNotFoundException e) {
             updateNoRestoreFileUI();
         }
@@ -421,7 +421,7 @@ public class Restore extends AppCompatActivity {
         // restore already.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(PreferenceActivity.PREFERENCE_FIRST_TIME_WARNING, true);
+        editor.putBoolean(Settings.PREFERENCE_FIRST_TIME_WARNING, true);
         editor.apply();
 
         setResult(RESULT_OK);

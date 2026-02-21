@@ -85,8 +85,8 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
         cachedEncryptedMasterKey = dbHelper?.fetchMasterKey() ?: ""
 
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefKeypad = sp.getBoolean(PreferenceActivity.PREFERENCE_KEYPAD, false)
-        val prefMute = sp.getBoolean(PreferenceActivity.PREFERENCE_KEYPAD_MUTE, false)
+        val prefKeypad = sp.getBoolean(Settings.PREFERENCE_KEYPAD, false)
+        val prefMute = sp.getBoolean(Settings.PREFERENCE_KEYPAD_MUTE, false)
 
         _uiState.update {
             it.copy(
@@ -201,7 +201,7 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
         _uiState.update { it.copy(isKeypadMode = newMode) }
 
         val sp = PreferenceManager.getDefaultSharedPreferences(getApplication())
-        sp.edit().putBoolean(PreferenceActivity.PREFERENCE_KEYPAD, newMode).apply()
+        sp.edit().putBoolean(Settings.PREFERENCE_KEYPAD, newMode).apply()
     }
 
     fun toggleMute() {
@@ -209,7 +209,7 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
         _uiState.update { it.copy(isMuted = newMute) }
 
         val sp = PreferenceManager.getDefaultSharedPreferences(getApplication())
-        sp.edit().putBoolean(PreferenceActivity.PREFERENCE_KEYPAD_MUTE, newMute).apply()
+        sp.edit().putBoolean(Settings.PREFERENCE_KEYPAD_MUTE, newMute).apply()
     }
 
     fun onKeypadInput(digit: Char) {

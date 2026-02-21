@@ -28,7 +28,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import io.github.cfsima.modernsafe.intents.CryptoIntents;
-import io.github.cfsima.modernsafe.PreferenceActivity;
+import io.github.cfsima.modernsafe.Settings;
 import io.github.cfsima.modernsafe.password.Master;
 
 public class AutoLockService extends Service {
@@ -55,7 +55,7 @@ public class AutoLockService extends Service {
                         Log.d(TAG, "caught ACTION_SCREEN_OFF");
                     }
                     boolean lockOnScreenLock = mPreferences.getBoolean(
-                            PreferenceActivity.PREFERENCE_LOCK_ON_SCREEN_LOCK, true
+                            Settings.PREFERENCE_LOCK_ON_SCREEN_LOCK, true
                     );
                     if (lockOnScreenLock) {
                         lockOut();
@@ -149,8 +149,8 @@ public class AutoLockService extends Service {
         }
         serviceNotification.setNotification(AutoLockService.this);
         String timeout = mPreferences.getString(
-                PreferenceActivity.PREFERENCE_LOCK_TIMEOUT,
-                PreferenceActivity.PREFERENCE_LOCK_TIMEOUT_DEFAULT_VALUE
+                Settings.PREFERENCE_LOCK_TIMEOUT,
+                Settings.PREFERENCE_LOCK_TIMEOUT_DEFAULT_VALUE
         );
         int timeoutMinutes = 5; // default to 5
         try {
