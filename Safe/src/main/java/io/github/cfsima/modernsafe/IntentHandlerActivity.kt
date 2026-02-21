@@ -100,7 +100,7 @@ class IntentHandlerActivity : AppCompatActivity() {
     private fun startUp() {
         val askPassIsLocal = isIntentLocal()
 
-        if (Master.getMasterKey() == null) {
+        if (Master.masterKey == null) {
             val promptForPassword = getExtraBoolean(intent, CryptoIntents.EXTRA_PROMPT, CryptoIntents.EXTRA_PROMPT_MODERN, true)
             if (debug) Log.d(TAG, "Prompt for password: $promptForPassword")
 
@@ -151,7 +151,7 @@ class IntentHandlerActivity : AppCompatActivity() {
 
         if (debug) Log.d(TAG, "actionDispatch()")
 
-        if (Master.getSalt().isNullOrEmpty()) {
+        if (Master.salt.isNullOrEmpty()) {
             return
         }
 
@@ -160,8 +160,8 @@ class IntentHandlerActivity : AppCompatActivity() {
         }
 
         try {
-            ch?.init(CryptoHelper.EncryptionMedium, Master.getSalt())
-            ch?.setPassword(Master.getMasterKey())
+            ch?.init(CryptoHelper.EncryptionMedium, Master.salt)
+            ch?.setPassword(Master.masterKey)
         } catch (e1: CryptoHelperException) {
             e1.printStackTrace()
             Toast.makeText(this, getString(R.string.crypto_error) + e1.message, Toast.LENGTH_SHORT).show()
@@ -258,9 +258,8 @@ class IntentHandlerActivity : AppCompatActivity() {
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY_MODERN, outputArr)
             }
 
-            if (thisIntent.data != null) {
-                val fileUri = thisIntent.data
-                val newFileUri = ch?.encryptFileWithSessionKey(contentResolver, fileUri)
+            thisIntent.data?.let { fileUri ->
+                val newFileUri = ch?.encryptFileWithSessionKey(this, fileUri)
                 callbackIntent.data = newFileUri
             }
 
@@ -300,8 +299,7 @@ class IntentHandlerActivity : AppCompatActivity() {
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY_MODERN, outputArr)
             }
 
-            if (thisIntent.data != null) {
-                val fileUri = thisIntent.data
+            thisIntent.data?.let { fileUri ->
                 val newFileUri = ch?.decryptFileWithSessionKey(this, fileUri)
                 callbackIntent.data = newFileUri
             }

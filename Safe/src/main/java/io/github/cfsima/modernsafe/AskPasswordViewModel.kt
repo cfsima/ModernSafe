@@ -191,8 +191,8 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun onUnlockSuccess() {
-        Master.setMasterKey(sessionMasterKey)
-        Master.setSalt(dbSalt)
+        Master.masterKey = sessionMasterKey
+        Master.salt = dbSalt
         CryptoContentProvider.ch = cryptoHelper
     }
 

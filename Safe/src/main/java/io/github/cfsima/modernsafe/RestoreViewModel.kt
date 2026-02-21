@@ -158,8 +158,8 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
 
                 dbHelper.storeSalt(data.salt)
                 dbHelper.storeMasterKey(data.masterKeyEncrypted)
-                Master.setSalt(data.salt)
-                Master.setMasterKey(masterKey)
+                Master.salt = data.salt
+                Master.masterKey = masterKey
 
                 for (category in data.categories) {
                     dbHelper.addCategory(category)
