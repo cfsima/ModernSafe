@@ -56,9 +56,7 @@ class Help : AppCompatActivity() {
         var helpText = ""
         try {
             assets.open("help.html").use { stream ->
-                val buffer = ByteArray(stream.available())
-                stream.read(buffer)
-                helpText = String(buffer)
+                helpText = stream.bufferedReader().use { it.readText() }
             }
         } catch (e: IOException) {
             throw RuntimeException(e)

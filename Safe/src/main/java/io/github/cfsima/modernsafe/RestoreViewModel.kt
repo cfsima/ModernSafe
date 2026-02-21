@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.xml.sax.InputSource
-import java.io.FileReader
+import java.io.FileInputStream
 import javax.xml.parsers.SAXParserFactory
 
 data class RestoreUiState(
@@ -46,8 +46,9 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = RestoreUiState(status = RestoreStatus.Parsing)
             try {
-                val reader = FileReader(path)
-                parse(InputSource(reader))
+                FileInputStream(path).use { inputStream ->
+                    parse(InputSource(inputStream))
+                }
             } catch (e: Exception) {
                 _uiState.value = RestoreUiState(status = RestoreStatus.Error, error = e.localizedMessage)
             }
@@ -148,7 +149,11 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
 
             val dbHelper = DBHelper(context)
             try {
-                dbHelper.beginTransaction()
+                if (!dbHelper.beginTransaction()) {
+                     _uiState.value = RestoreUiState(status = RestoreStatus.Error, error = "Database transaction failed")
+                     return@launch
+                }
+
                 dbHelper.deleteDatabase()
 
                 dbHelper.storeSalt(data.salt)
@@ -170,8 +175,9 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
                 dbHelper.commit()
                 Passwords.Reset()
 
-                _uiState.value = RestoreUiState(status = RestoreStatus.Success)
+                _uiState.value = _uiState.value.copy(status = RestoreStatus.Success)
             } catch (e: Exception) {
+                dbHelper.rollback()
                 _uiState.value = RestoreUiState(status = RestoreStatus.Error, error = "Database error: ${e.localizedMessage}")
             } finally {
                 dbHelper.close()
