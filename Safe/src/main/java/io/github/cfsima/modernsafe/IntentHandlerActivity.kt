@@ -118,7 +118,7 @@ class IntentHandlerActivity : AppCompatActivity() {
                 finish()
             }
         } else {
-            val externalAccess = mPreferences.getBoolean(PreferenceActivity.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
+            val externalAccess = mPreferences.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
             if (askPassIsLocal || externalAccess) {
                 if (debug) Log.d(TAG, "starting actionDispatch")
                 actionDispatch()
@@ -168,7 +168,7 @@ class IntentHandlerActivity : AppCompatActivity() {
             return
         }
 
-        val externalAccess = mPreferences.getBoolean(PreferenceActivity.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
+        val externalAccess = mPreferences.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
 
         if (action == null || action == Intent.ACTION_MAIN) {
             val i = Intent(applicationContext, CategoryList::class.java)

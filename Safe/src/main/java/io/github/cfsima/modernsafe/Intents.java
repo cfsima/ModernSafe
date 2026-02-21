@@ -31,7 +31,7 @@ public class Intents {
         Intent intent = new Intent(ACTION_OPEN_DOCUMENT);
         intent.addCategory(CATEGORY_OPENABLE);
         intent.setType(mimeType);
-        if (backupDocument != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (backupDocument != null && !backupDocument.isEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse(backupDocument));
         }
         return intent;

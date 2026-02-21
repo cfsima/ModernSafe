@@ -25,7 +25,7 @@ public class RestoreFirstTimeActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restore_first_time);
-        path = PreferenceActivity.getBackupPath(this);
+        path = Settings.getBackupPath(this);
         restore = (Button) findViewById(R.id.restore);
         chooseFile = (Button) findViewById(R.id.choose_file);
         cancel = (Button) findViewById(R.id.cancel);

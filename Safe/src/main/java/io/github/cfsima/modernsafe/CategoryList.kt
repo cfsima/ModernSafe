@@ -166,7 +166,7 @@ class CategoryList : AppCompatActivity() {
                     onExport = { startExport() },
                     onImport = { startImport() },
                     onChangePassword = { startActivity(Intent(this, ChangePass::class.java)) },
-                    onPreferences = { startActivity(Intent(this, PreferenceActivity::class.java)) },
+                    onPreferences = { startActivity(Intent(this, SettingsActivity::class.java)) },
                     onAbout = { showAboutDialog() },
                     onUserMessageDismiss = { viewModel.userMessageShown() }
                 )
@@ -221,10 +221,10 @@ class CategoryList : AppCompatActivity() {
 
     private fun startBackup() {
         maybRestartTimer()
-        val filename = PreferenceActivity.getBackupPath(this)
+        val filename = Settings.getBackupPath(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val intent = Intents.createCreateDocumentIntent(MIME_TYPE_BACKUP, PreferenceActivity.OISAFE_XML)
+            val intent = Intents.createCreateDocumentIntent(MIME_TYPE_BACKUP, Settings.OISAFE_XML)
             try {
                 backupFileLauncher.launch(intent)
             } catch (e: ActivityNotFoundException) {
@@ -256,9 +256,9 @@ class CategoryList : AppCompatActivity() {
 
     private fun performExport() {
         maybRestartTimer()
-        val filename = PreferenceActivity.getExportPath(this)
+        val filename = Settings.getExportPath(this)
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            val intent = Intents.createCreateDocumentIntent(MIME_TYPE_EXPORT, PreferenceActivity.OISAFE_CSV)
+            val intent = Intents.createCreateDocumentIntent(MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
             exportFileLauncher.launch(intent)
         } else {
             viewModel.exportDatabase(filename)
@@ -267,10 +267,10 @@ class CategoryList : AppCompatActivity() {
 
     private fun startImport() {
         // Logic to determine default filename or use picker
-        val filename = PreferenceActivity.getExportPath(this) // Default suggestion
+        val filename = Settings.getExportPath(this) // Default suggestion
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val intent = Intents.createOpenDocumentIntents(MIME_TYPE_ANY_TEXT, PreferenceActivity.getExportDocument(this))
+            val intent = Intents.createOpenDocumentIntents(MIME_TYPE_ANY_TEXT, Settings.getExportDocument(this) ?: "")
             importFileLauncher.launch(intent)
         } else {
             // Simple file import for legacy
