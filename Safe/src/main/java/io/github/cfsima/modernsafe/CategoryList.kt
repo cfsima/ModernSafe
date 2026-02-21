@@ -158,8 +158,8 @@ class CategoryList : AppCompatActivity() {
                         openCategoryLauncher.launch(intent)
                     },
                     onAddCategory = { name -> viewModel.addCategory(name) },
-                    onEditCategory = { /* Implemented via context menu or future UI */ },
-                    onDeleteCategory = { /* Implemented via context menu or future UI */ },
+                    onEditCategory = { id, name -> viewModel.updateCategory(id, name) },
+                    onDeleteCategory = { id -> viewModel.deleteCategory(id) },
                     onSearch = { onSearchRequested() },
                     onBackup = { startBackup() },
                     onRestore = { startRestore() },
