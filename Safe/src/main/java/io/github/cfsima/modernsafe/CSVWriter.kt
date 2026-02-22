@@ -45,7 +45,7 @@ class CSVWriter(
             return
         }
 
-        val sb = StringBuffer()
+        val sb = StringBuilder()
         for (i in nextLine.indices) {
             if (i != 0) {
                 sb.append(separator)
