@@ -1,0 +1,8 @@
+74,76c74,75
+<     val currentSessionKey: String?
+<         get() = if (AuthManager.cryptoHelper != null) {
+<             AuthManager.cryptoHelper.sessionKey
+<         } else null
+---
+>     val currentSessionKey: String?
+>         get() = AuthManager.cryptoHelper?.sessionKey
