@@ -361,7 +361,8 @@ class DBHelper(private val context: Context) {
      */
     fun deleteCategory(id: Long) {
         try {
-            db?.delete(TABLE_CATEGORIES, "id=$id", null)
+            db?.delete(TABLE_CATEGORIES, "id=?", arrayOf(id.toString()))
+
         } catch (e: SQLException) {
             Log.d(TAG, "SQLite exception: " + e.localizedMessage)
         }
