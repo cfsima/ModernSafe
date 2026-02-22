@@ -426,7 +426,7 @@ class DBHelper(private val context: Context) {
     fun getCategoryCount(id: Long): Int {
         var count = 0
         try {
-            db?.rawQuery("SELECT count(*) FROM $TABLE_PASSWORDS WHERE category=$id", null)?.use { c ->
+            db?.rawQuery("SELECT count(*) FROM $TABLE_PASSWORDS WHERE category=?", arrayOf(id.toString()))?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
                     count = c.getInt(0)
