@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2008 Steven Osborn
+ * Copyright (C) 2011 OpenIntents.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,20 @@
  */
 package io.github.cfsima.modernsafe
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.CheckBox
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import io.github.cfsima.modernsafe.dialog.DialogHostingActivity
+import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.intents.CryptoIntents
 import io.github.cfsima.modernsafe.model.CategoryEntry
 import io.github.cfsima.modernsafe.model.PassEntry
@@ -33,179 +36,175 @@ import io.github.cfsima.modernsafe.model.Passwords
 import io.github.cfsima.modernsafe.password.Master
 import java.util.Arrays
 
-/**
- * FrontDoor Activity
- * <p/>
- * This activity just acts as a splash screen and gets the password from the
- * user that will be used to decrypt/encrypt password entries.
- *
- * @author Steven Osborn - http://steven.bitsetters.com
- */
 class IntentHandlerActivity : AppCompatActivity() {
 
-    private val debug = true
-    private val TAG = "IntentHandlerActivity"
+    private val logoutReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == CryptoIntents.ACTION_CRYPTO_LOGGED_OUT) {
+                if (debug) Log.d(TAG, "caught ACTION_CRYPTO_LOGGED_OUT")
+                finish()
+            }
+        }
+    }
 
-    private var ch: CryptoHelper? = null
-    private lateinit var mPreferences: SharedPreferences
+    private val ch: CryptoHelper?
+        get() = CryptoContentProvider.ch
 
-    // Activity Result Launchers
-    private lateinit var askPasswordLauncher: ActivityResultLauncher<Intent>
-    private lateinit var allowExternalAccessLauncher: ActivityResultLauncher<Intent>
+    private var dialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (debug) Log.d(TAG, "onCreate($savedInstanceState)")
+        if (debug) Log.d(TAG, "onCreate()")
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
-        // Initialize Passwords (database helper etc.)
-        if (!Passwords.Initialize(this)) {
-            finish()
-            return
-        }
-
-        // Initialize ActivityResultLaunchers
-        askPasswordLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                if (debug) Log.d(TAG, "RESULT_OK")
-                actionDispatch()
-            } else {
-                if (debug) Log.d(TAG, "RESULT_CANCELED")
-                moveTaskToBack(true)
-                setResult(RESULT_CANCELED)
-                finish()
-            }
-        }
-
-        allowExternalAccessLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            // Check again, regardless whether user pressed "OK" or "Cancel".
-            // DialogHostingActivity never returns a resultCode different than RESULT_CANCELED.
-            if (debug) Log.i(TAG, "actionDispatch called right now")
-            actionDispatch()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (debug) Log.d(TAG, "onResume()")
-        startUp()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (debug) Log.d(TAG, "onPause()")
-    }
-
-    private fun startUp() {
-        val askPassIsLocal = isIntentLocal()
-
-        if (Master.masterKey == null) {
-            val promptForPassword = getExtraBoolean(intent, CryptoIntents.EXTRA_PROMPT, CryptoIntents.EXTRA_PROMPT_MODERN, true)
-            if (debug) Log.d(TAG, "Prompt for password: $promptForPassword")
-
-            if (promptForPassword) {
-                if (debug) Log.d(TAG, "ask for password")
-                val askPass = Intent(applicationContext, AskPassword::class.java)
-                val inputBody = getExtraString(intent, CryptoIntents.EXTRA_TEXT, CryptoIntents.EXTRA_TEXT_MODERN)
-                askPass.putExtra(CryptoIntents.EXTRA_TEXT, inputBody)
-                askPass.putExtra(CryptoIntents.EXTRA_TEXT_MODERN, inputBody)
-                askPass.putExtra(AskPassword.EXTRA_IS_LOCAL, askPassIsLocal)
-                askPasswordLauncher.launch(askPass)
-            } else {
-                if (debug) Log.d(TAG, "ask for password (cancelled)")
-                setResult(RESULT_CANCELED)
-                finish()
-            }
-        } else {
-            val externalAccess = mPreferences.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
-            if (askPassIsLocal || externalAccess) {
-                if (debug) Log.d(TAG, "starting actionDispatch")
-                actionDispatch()
-            } else {
-                if (debug) Log.d(TAG, "start showDialogAllowExternalAccess()")
-                showDialogAllowExternalAccess()
-            }
-        }
-    }
-
-    private fun isIntentLocal(): Boolean {
-        val action = intent.action
-        val isLocal = action == null || action == Intent.ACTION_MAIN || action == CryptoIntents.ACTION_AUTOLOCK
-        if (debug) Log.d(TAG, "isLocal=$isLocal, action=$action")
-        return isLocal
-    }
-
-    private fun showDialogAllowExternalAccess() {
-        val i = Intent(this, DialogHostingActivity::class.java)
-        i.putExtra(DialogHostingActivity.EXTRA_DIALOG_ID, DialogHostingActivity.DIALOG_ID_ALLOW_EXTERNAL_ACCESS)
-        allowExternalAccessLauncher.launch(i)
+        actionDispatch()
     }
 
     private fun actionDispatch() {
         val thisIntent = intent
         val action = thisIntent.action
-        // Create a copy of the intent to return as callback, ensuring immutability of the original
-        var callbackIntent = Intent(intent)
+
+        // If not logged in, show FrontDoor to log in
+        if (!AuthManager.isSignedIn()) {
+            val frontDoor = Intent(this, FrontDoor::class.java)
+            frontDoor.action = action
+            if (thisIntent.extras != null) {
+                frontDoor.putExtras(thisIntent.extras!!)
+            }
+            frontDoor.data = thisIntent.data
+            startActivity(frontDoor)
+            finish()
+            return
+        }
+
+        // Initialize Passwords DB (required for GET_PASSWORD/SET_PASSWORD)
+        Passwords.Initialize(this)
+
+        if (!checkExternalAccess(action)) {
+            showDialogAllowExternalAccess()
+            return
+        }
+
+        var callbackIntent = Intent()
         var callbackResult = RESULT_CANCELED
 
-        if (debug) Log.d(TAG, "actionDispatch()")
-
-        if (Master.salt.isNullOrEmpty()) {
-            return
-        }
-
-        if (ch == null) {
-            ch = CryptoHelper()
-        }
-
-        try {
-            ch?.init(CryptoHelper.EncryptionMedium, Master.salt)
-            ch?.setPassword(Master.masterKey)
-        } catch (e1: CryptoHelperException) {
-            e1.printStackTrace()
-            Toast.makeText(this, getString(R.string.crypto_error) + e1.message, Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val externalAccess = mPreferences.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
-
-        if (action == null || action == Intent.ACTION_MAIN) {
-            val i = Intent(applicationContext, CategoryList::class.java)
-            startActivity(i)
-        } else if (action == CryptoIntents.ACTION_AUTOLOCK) {
-            if (debug) Log.d(TAG, "autolock")
-            finish()
-        } else if (externalAccess) {
-            if (action == CryptoIntents.ACTION_ENCRYPT || action == CryptoIntents.ACTION_ENCRYPT_MODERN) {
-                callbackResult = encryptIntent(thisIntent, callbackIntent)
-            } else if (action == CryptoIntents.ACTION_DECRYPT || action == CryptoIntents.ACTION_DECRYPT_MODERN) {
-                callbackResult = decryptIntent(thisIntent, callbackIntent)
-            } else if (action == CryptoIntents.ACTION_GET_PASSWORD || action == CryptoIntents.ACTION_GET_PASSWORD_MODERN ||
-                action == CryptoIntents.ACTION_SET_PASSWORD || action == CryptoIntents.ACTION_SET_PASSWORD_MODERN
-            ) {
-                try {
-                    callbackIntent = getSetPassword(thisIntent, callbackIntent)
-                    callbackResult = RESULT_OK
-                } catch (e: CryptoHelperException) {
-                    Log.e(TAG, e.toString(), e)
-                    Toast.makeText(
-                        this@IntentHandlerActivity,
-                        "There was a crypto error while retrieving the requested password: " + e.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } catch (e: Exception) {
-                    Log.e(TAG, e.toString(), e)
-                    Toast.makeText(
-                        this@IntentHandlerActivity,
-                        "There was an error in retrieving the requested password: " + e.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+        if (action == CryptoIntents.ACTION_ENCRYPT || action == CryptoIntents.ACTION_ENCRYPT_MODERN) {
+            callbackResult = encryptIntent(thisIntent, callbackIntent)
+        } else if (action == CryptoIntents.ACTION_DECRYPT || action == CryptoIntents.ACTION_DECRYPT_MODERN) {
+            callbackResult = decryptIntent(thisIntent, callbackIntent)
+        } else if (action == CryptoIntents.ACTION_GET_PASSWORD || action == CryptoIntents.ACTION_GET_PASSWORD_MODERN ||
+            action == CryptoIntents.ACTION_SET_PASSWORD || action == CryptoIntents.ACTION_SET_PASSWORD_MODERN
+        ) {
+            try {
+                callbackIntent = getSetPassword(thisIntent, callbackIntent)
+                callbackResult = RESULT_OK
+            } catch (e: CryptoHelperException) {
+                Log.e(TAG, e.toString(), e)
+                Toast.makeText(
+                    this@IntentHandlerActivity,
+                    "There was a crypto error while retrieving the requested password: " + e.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            } catch (e: Exception) {
+                Log.e(TAG, e.toString(), e)
+                Toast.makeText(
+                    this@IntentHandlerActivity,
+                    "There was an error in retrieving the requested password: " + e.message,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            setResult(callbackResult, callbackIntent)
         }
+        setResult(callbackResult, callbackIntent)
         finish()
+    }
+
+    private fun checkExternalAccess(action: String?): Boolean {
+        var isLocal = false
+        if (callingPackage == null) {
+             // If callingPackage is null, we might be started by the system or via adb.
+             // Assume local/internal if matches our package, but getPackageName() is our package.
+             // Usually callingPackage is set if startActivityForResult is used.
+             // If launched via simple startActivity, callingPackage is null.
+             // But for security, we check preferences if it's an external action.
+             // If the action is known to be internal-only, we might skip.
+             // But here we handle ENCRYPT/DECRYPT which are intended for external use too.
+        } else if (callingPackage == packageName) {
+            isLocal = true
+        }
+
+        if (debug) Log.d(TAG, "checkExternalAccess: callingPackage=$callingPackage, packageName=$packageName, isLocal=$isLocal")
+
+        if (isLocal) {
+            return true
+        }
+
+        // If external, check preference
+        val sp = PreferenceManager.getDefaultSharedPreferences(this)
+        val allowExternal = sp.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
+        if (allowExternal) {
+            return true
+        }
+
+        return false
+    }
+
+    private fun showDialogAllowExternalAccess() {
+        if (dialog != null && dialog!!.isShowing) {
+             return
+        }
+
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_allow_access, null)
+        val checkbox = view.findViewById<CheckBox>(R.id.checkbox)
+        val sp = PreferenceManager.getDefaultSharedPreferences(this)
+        val externalAccess = sp.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
+        checkbox.isChecked = externalAccess
+
+        dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.dialog_title_external_access)
+            .setView(view)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                val newAccess = checkbox.isChecked
+                sp.edit().putBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, newAccess).apply()
+                // Retry dispatch
+                actionDispatch()
+            }
+            .setNegativeButton(android.R.string.cancel) { _, _ ->
+                setResult(RESULT_CANCELED)
+                finish()
+            }
+            .setOnCancelListener {
+                setResult(RESULT_CANCELED)
+                finish()
+            }
+            .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (debug) Log.d(TAG, "onResume")
+
+        if (!AuthManager.isSignedIn()) {
+            if (debug) Log.d(TAG, "not signed in")
+            // onCreate already handles redirection to FrontDoor
+            return
+        }
+
+        val filter = IntentFilter(CryptoIntents.ACTION_CRYPTO_LOGGED_OUT)
+        ContextCompat.registerReceiver(this, logoutReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (debug) Log.d(TAG, "onPause")
+        try {
+            unregisterReceiver(logoutReceiver)
+        } catch (e: IllegalArgumentException) {
+            // ignore
+        }
+        if (isFinishing && dialog != null) {
+            dialog?.dismiss()
+            dialog = null
+        }
     }
 
     // Helper functions
@@ -222,14 +221,6 @@ class IntentHandlerActivity : AppCompatActivity() {
             intent.getStringArrayExtra(modernKey)
         } else {
             intent.getStringArrayExtra(legacyKey)
-        }
-    }
-
-    private fun getExtraBoolean(intent: Intent, legacyKey: String, modernKey: String, defaultValue: Boolean): Boolean {
-        return if (intent.hasExtra(modernKey)) {
-            intent.getBooleanExtra(modernKey, defaultValue)
-        } else {
-            intent.getBooleanExtra(legacyKey, defaultValue)
         }
     }
 
@@ -392,5 +383,10 @@ class IntentHandlerActivity : AppCompatActivity() {
             }
         }
         return callbackIntent
+    }
+
+    companion object {
+        private const val TAG = "IntentHandlerActivity"
+        private const val debug = false
     }
 }
