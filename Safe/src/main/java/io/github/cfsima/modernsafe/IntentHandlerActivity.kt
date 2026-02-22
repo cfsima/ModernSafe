@@ -84,7 +84,7 @@ class IntentHandlerActivity : AppCompatActivity() {
             return
         }
 
-        var callbackIntent = Intent()
+        var callbackIntent = Intent(thisIntent)
         var callbackResult = RESULT_CANCELED
 
         if (action == CryptoIntents.ACTION_ENCRYPT || action == CryptoIntents.ACTION_ENCRYPT_MODERN) {

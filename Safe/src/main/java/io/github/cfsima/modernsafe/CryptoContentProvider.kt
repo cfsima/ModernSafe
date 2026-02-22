@@ -98,8 +98,8 @@ class CryptoContentProvider : ContentProvider() {
                     modeBits = ParcelFileDescriptor.MODE_WRITE_ONLY or
                             ParcelFileDescriptor.MODE_CREATE
                     cryptSession = uri.pathSegments[1]
-                    sessionFile = "."
-                    path += "/"
+                    sessionFile = "$SESSION_FILE.$cryptSession"
+                    path += "/$sessionFile"
                 }
                 DECRYPT_ID -> {
                     if (debug) {
@@ -107,8 +107,8 @@ class CryptoContentProvider : ContentProvider() {
                     }
                     modeBits = ParcelFileDescriptor.MODE_READ_ONLY
                     cryptSession = uri.pathSegments[1]
-                    sessionFile = "."
-                    path += "/"
+                    sessionFile = "$SESSION_FILE.$cryptSession"
+                    path += "/$sessionFile"
                 }
                 DECRYPT_FILE_ID -> {
                     if (debug) {
@@ -156,8 +156,8 @@ class CryptoContentProvider : ContentProvider() {
                     }
 
                     cryptSession = newUri.pathSegments[1]
-                    sessionFile = "."
-                    path += "/"
+                    sessionFile = "$SESSION_FILE.$cryptSession"
+                    path += "/$sessionFile"
                     if (debug) {
                         Log.d(TAG, "New path: ")
                     }
@@ -200,7 +200,7 @@ class CryptoContentProvider : ContentProvider() {
 
         const val AUTHORITY = "io.github.cfsima.modernsafe"
         @JvmField
-        val CONTENT_URI: Uri = Uri.parse("content://")
+        val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY")
 
         const val SESSION_FILE = "session"
 
