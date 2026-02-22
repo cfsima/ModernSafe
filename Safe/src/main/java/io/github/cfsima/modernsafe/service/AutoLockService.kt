@@ -26,6 +26,7 @@ import android.os.IBinder
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.core.content.ContextCompat
+import io.github.cfsima.modernsafe.AuthManager
 import io.github.cfsima.modernsafe.Settings
 import io.github.cfsima.modernsafe.intents.CryptoIntents
 import io.github.cfsima.modernsafe.password.Master
@@ -112,7 +113,7 @@ class AutoLockService : Service() {
      * CryptoIntents.ACTION_CRYPTO_LOGGED_OUT
      */
     private fun lockOut() {
-        Master.masterKey = null
+        AuthManager.setSignedOut() // This handles Master.masterKey = null and clearing CryptoHelper
         serviceNotification.clearNotification()
         t?.cancel()
 
@@ -157,7 +158,7 @@ class AutoLockService : Service() {
                 if (debug) {
                     Log.d(TAG, "tick:  this=")
                 }
-                timeRemaining = millisUntilFinished
+                AuthManager.timeRemaining = millisUntilFinished
                 if (Master.masterKey == null) {
                     if (debug) {
                         Log.d(TAG, "detected masterKey=null")
@@ -166,7 +167,7 @@ class AutoLockService : Service() {
                 } else {
                     serviceNotification.updateProgress(
                         timeoutUntilStop.toInt(),
-                        timeRemaining.toInt()
+                        AuthManager.timeRemaining.toInt()
                     )
                 }
             }
@@ -176,11 +177,11 @@ class AutoLockService : Service() {
                     Log.d(TAG, "onFinish()")
                 }
                 lockOut()
-                timeRemaining = 0
+                AuthManager.timeRemaining = 0
             }
         }.start()
 
-        timeRemaining = timeoutUntilStop
+        AuthManager.timeRemaining = timeoutUntilStop
         if (debug) {
             Log.d(TAG, "Timer started with: ")
         }
@@ -203,9 +204,5 @@ class AutoLockService : Service() {
     companion object {
         private const val debug = false
         private const val TAG = "AutoLockService"
-
-        @Volatile
-        var timeRemaining: Long = 0
-            private set
     }
 }

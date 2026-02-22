@@ -72,11 +72,9 @@ class CryptoHelper {
      */
     // This should be the same session key as is used in CryptoContentProvider.
     val currentSessionKey: String?
-        get() = if (CryptoContentProvider.ch != null) {
-            CryptoContentProvider.ch.sessionKey
-        } else null
+        get() = AuthManager.cryptoHelper?.sessionKey
 
-    private var sessionKey: String? = null
+    internal var sessionKey: String? = null
 
     /**
      * Constructor which defaults to a medium encryption level.

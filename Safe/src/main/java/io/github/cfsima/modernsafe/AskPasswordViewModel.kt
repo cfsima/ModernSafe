@@ -193,7 +193,7 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
     fun onUnlockSuccess() {
         Master.masterKey = sessionMasterKey
         Master.salt = dbSalt
-        CryptoContentProvider.ch = cryptoHelper
+        AuthManager.cryptoHelper = cryptoHelper
     }
 
     fun toggleKeypadMode() {

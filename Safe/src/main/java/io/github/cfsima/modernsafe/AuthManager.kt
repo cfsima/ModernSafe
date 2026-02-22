@@ -20,6 +20,17 @@ object AuthManager {
     @JvmField
     var lastUsedPassword: String? = null
 
+    /**
+     * The currently active CryptoHelper instance holding the session key.
+     */
+    var cryptoHelper: CryptoHelper? = null
+
+    /**
+     * Time remaining for auto-lock, managed by AutoLockService.
+     */
+    @Volatile
+    var timeRemaining: Long = 0
+
     @JvmStatic
     fun isSignedIn(): Boolean {
         if ((Master.salt != null) && (Master.masterKey != null)) {
@@ -38,5 +49,7 @@ object AuthManager {
     fun setSignedOut() {
         Master.masterKey = null
         lastUsedPassword = null
+        cryptoHelper = null
+        timeRemaining = 0
     }
 }

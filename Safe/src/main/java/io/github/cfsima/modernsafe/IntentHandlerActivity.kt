@@ -48,7 +48,7 @@ class IntentHandlerActivity : AppCompatActivity() {
     }
 
     private val ch: CryptoHelper?
-        get() = CryptoContentProvider.ch
+        get() = AuthManager.cryptoHelper
 
     private var dialog: AlertDialog? = null
 
@@ -118,33 +118,21 @@ class IntentHandlerActivity : AppCompatActivity() {
     }
 
     private fun checkExternalAccess(action: String?): Boolean {
-        var isLocal = false
-        if (callingPackage == null) {
-             // If callingPackage is null, we might be started by the system or via adb.
-             // Assume local/internal if matches our package, but getPackageName() is our package.
-             // Usually callingPackage is set if startActivityForResult is used.
-             // If launched via simple startActivity, callingPackage is null.
-             // But for security, we check preferences if it's an external action.
-             // If the action is known to be internal-only, we might skip.
-             // But here we handle ENCRYPT/DECRYPT which are intended for external use too.
-        } else if (callingPackage == packageName) {
-            isLocal = true
+        val isLocalAction = action == null || action == Intent.ACTION_MAIN || action == CryptoIntents.ACTION_AUTOLOCK
+        var isLocalPackage = false
+        if (callingPackage == packageName) {
+            isLocalPackage = true
         }
 
-        if (debug) Log.d(TAG, "checkExternalAccess: callingPackage=$callingPackage, packageName=$packageName, isLocal=$isLocal")
+        if (debug) Log.d(TAG, "checkExternalAccess: callingPackage=$callingPackage, isLocalAction=$isLocalAction, isLocalPackage=$isLocalPackage")
 
-        if (isLocal) {
+        if (isLocalAction || isLocalPackage) {
             return true
         }
 
         // If external, check preference
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val allowExternal = sp.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
-        if (allowExternal) {
-            return true
-        }
-
-        return false
+        return sp.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
     }
 
     private fun showDialogAllowExternalAccess() {

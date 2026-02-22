@@ -68,6 +68,11 @@ class CryptoContentProvider : ContentProvider() {
         return null
     }
 
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
+        // not supported
+        return 0
+    }
+
     @Throws(FileNotFoundException::class)
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {
         if (debug) {
@@ -115,7 +120,7 @@ class CryptoContentProvider : ContentProvider() {
                     // TODO: Check that sessionKey is valid.
 
                     // Decrypt file
-                    val crypto = ch
+                    val crypto = AuthManager.cryptoHelper
                     if (crypto == null) {
                         if (debug) {
                             Log.d(TAG, "OI Safe currently logged out.")
@@ -146,16 +151,7 @@ class CryptoContentProvider : ContentProvider() {
 
                     val newUri = crypto.decryptFileWithSessionKeyThroughContentProvider(context, Uri.parse(originalFile))
 
-                    // The returned URI from decryptFileWithSessionKeyThroughContentProvider might be null if decryption failed?
-                    // CryptoHelper source shows it handles errors but returns a Uri constructed from CONTENT_URI.
-                    // Wait, check CryptoHelper.kt decryptFileWithSessionKeyThroughContentProvider implementation.
-                    // It returns a Uri?
-
                     if (newUri == null) {
-                         // Should not happen if successful, but if failed inside CryptoHelper?
-                         // CryptoHelper returns null on failure?
-                         // Checked source: yes, it returns resultUri which is initialized to null, set if successful.
-                         // So newUri can be null.
                          throw FileNotFoundException("Decryption failed")
                     }
 
@@ -201,9 +197,6 @@ class CryptoContentProvider : ContentProvider() {
     companion object {
         private const val debug = false
         private const val TAG = "CryptoContentProvider"
-
-        @JvmField
-        var ch: CryptoHelper? = null
 
         const val AUTHORITY = "io.github.cfsima.modernsafe"
         @JvmField
