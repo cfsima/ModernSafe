@@ -29,6 +29,6 @@ class CategoryEntry(
     var plainNameNeedsEncrypt: Boolean = true
 
     override fun toString(): String {
-        return " "
+        return "$name $count"
     }
 }
