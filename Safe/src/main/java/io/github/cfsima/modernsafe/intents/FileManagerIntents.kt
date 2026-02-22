@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.cfsima.modernsafe.intents;
+package io.github.cfsima.modernsafe.intents
 
 // Version Dec 9, 2008
 
@@ -22,7 +22,7 @@ package io.github.cfsima.modernsafe.intents;
  * Provides OpenIntents actions, extras, and categories used by providers.
  * <p>These specifiers extend the standard Android specifiers.</p>
  */
-public final class FileManagerIntents {
+object FileManagerIntents {
 
     /**
      * Activity Action: Pick a file through the file manager, or let user
@@ -32,7 +32,7 @@ public final class FileManagerIntents {
      * <p/>
      * <p>Constant Value: "org.openintents.action.PICK_FILE"</p>
      */
-    public static final String ACTION_PICK_FILE = "org.openintents.action.PICK_FILE";
+    const val ACTION_PICK_FILE = "org.openintents.action.PICK_FILE"
 
     /**
      * Activity Action: Pick a directory through the file manager, or let user
@@ -42,7 +42,7 @@ public final class FileManagerIntents {
      * <p/>
      * <p>Constant Value: "org.openintents.action.PICK_DIRECTORY"</p>
      */
-    public static final String ACTION_PICK_DIRECTORY = "org.openintents.action.PICK_DIRECTORY";
+    const val ACTION_PICK_DIRECTORY = "org.openintents.action.PICK_DIRECTORY"
 
     /**
      * The title to display.
@@ -51,7 +51,7 @@ public final class FileManagerIntents {
      * <p/>
      * <p>Constant Value: "org.openintents.extra.TITLE"</p>
      */
-    public static final String EXTRA_TITLE = "org.openintents.extra.TITLE";
+    const val EXTRA_TITLE = "org.openintents.extra.TITLE"
 
     /**
      * The text on the button to display.
@@ -60,6 +60,6 @@ public final class FileManagerIntents {
      * <p/>
      * <p>Constant Value: "org.openintents.extra.BUTTON_TEXT"</p>
      */
-    public static final String EXTRA_BUTTON_TEXT = "org.openintents.extra.BUTTON_TEXT";
+    const val EXTRA_BUTTON_TEXT = "org.openintents.extra.BUTTON_TEXT"
 
 }
