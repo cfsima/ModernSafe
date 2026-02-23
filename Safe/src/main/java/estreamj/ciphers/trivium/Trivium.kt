@@ -79,7 +79,10 @@ class Trivium : ICipher {
         s[3] = s21
         s[4] = s22
         s[5] = s23
-        s[6] = s31; s[7] = s32; s[8] = s33; s[9] = s34
+        s[6] = s31; 
+        s[7] = s32; 
+        s[8] = s33; 
+        s[9] = s34
     }
 
     @Throws(ESJException::class)
