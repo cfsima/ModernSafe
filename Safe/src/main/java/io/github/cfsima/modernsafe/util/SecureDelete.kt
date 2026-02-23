@@ -2,6 +2,7 @@ package io.github.cfsima.modernsafe.util
 
 import android.util.Log
 import estreamj.ciphers.trivium.Trivium
+import estreamj.framework.ICipher
 import estreamj.framework.ESJException
 import java.io.File
 import java.io.FileNotFoundException
@@ -45,7 +46,7 @@ object SecureDelete {
                     random.nextBytes(nonce)
 
                     tri.setupKey(
-                        Trivium.MODE_DECRYPT,
+                        ICipher.MODE_DECRYPT,
                         key, 0
                     )
                     tri.setupNonce(nonce, 0)
