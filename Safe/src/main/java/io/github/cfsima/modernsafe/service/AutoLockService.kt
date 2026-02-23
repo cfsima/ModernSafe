@@ -23,7 +23,7 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.CountDownTimer
 import android.os.IBinder
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.AuthManager
@@ -94,7 +94,7 @@ class AutoLockService : Service() {
         try {
             unregisterReceiver(mIntentReceiver)
         } catch (e: IllegalArgumentException) {
-            // ignore if not registered
+            Log.w(TAG, "Receiver not registered", e)
         }
 
         if (Master.masterKey != null) {
@@ -141,7 +141,7 @@ class AutoLockService : Service() {
         try {
             timeoutMinutes = timeout?.toInt() ?: 5
         } catch (e: NumberFormatException) {
-            Log.d(TAG, "why is lock_timeout busted?")
+            Log.w(TAG, "why is lock_timeout busted?", e)
         }
         val timeoutUntilStop = (timeoutMinutes * 60000).toLong()
 

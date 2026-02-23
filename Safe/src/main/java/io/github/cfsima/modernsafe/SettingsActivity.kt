@@ -54,12 +54,10 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Secure flag
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
-        }
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
 
         setContent {
             OISafeTheme {
@@ -131,7 +129,7 @@ class SettingsActivity : AppCompatActivity() {
         try {
             unregisterReceiver(logoutReceiver)
         } catch (e: IllegalArgumentException) {
-            // Receiver might not be registered if onResume returned early
+            Log.w(TAG, "Receiver not registered", e)
         }
     }
 
@@ -155,5 +153,9 @@ class SettingsActivity : AppCompatActivity() {
         intent.action = CryptoIntents.ACTION_AUTOLOCK
         startActivity(intent)
         finish()
+    }
+
+    companion object {
+        private const val TAG = "SettingsActivity"
     }
 }

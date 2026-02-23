@@ -55,12 +55,10 @@ class PassView : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Secure flag
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
-        }
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
 
         entryEdited = false
         supportActionBar?.hide()

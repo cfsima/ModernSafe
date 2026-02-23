@@ -300,4 +300,13 @@
   <string name="delete_success">File deleted: %s</string>
   <string name="delete_file_error">Could not delete file.</string>
   <string name="confirm_delete_category">Are you sure you want to delete category %s?</string>
+  <string name="external_request_password">External Application Requesting Password</string>
+  <string name="crypto_error_retrieving_password">There was a crypto error while retrieving the requested password: %s</string>
+  <string name="error_retrieving_password">There was an error in retrieving the requested password: %s</string>
+  <string name="request_password_not_permissible">It is currently not permissible for this application to request this password.</string>
+  <string name="unknown_calling_package">Unknown calling package</string>
+  <string name="extra_unique_name_not_set">EXTRA_UNIQUE_NAME not set.</string>
+  <string name="extra_password_not_set">PASSWORD extra must be set.</string>
+  <string name="password_not_found_unique_name">Could not find password with the unique name: %s</string>
+  <string name="version_label">Version: </string>
 </resources>

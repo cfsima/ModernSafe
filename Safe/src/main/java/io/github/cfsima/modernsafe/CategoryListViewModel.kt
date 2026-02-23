@@ -2,6 +2,7 @@ package io.github.cfsima.modernsafe
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.cfsima.modernsafe.model.CategoryEntry
@@ -26,6 +27,8 @@ data class CategoryListUiState(
 )
 
 class CategoryListViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val TAG = "CategoryListVM"
 
     private val _uiState = MutableStateFlow(CategoryListUiState())
     val uiState: StateFlow<CategoryListUiState> = _uiState.asStateFlow()
@@ -227,7 +230,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                 }
 
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(TAG, "Import failed", e)
                 importMessage = context.getString(R.string.import_file_error)
             }
 

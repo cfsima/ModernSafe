@@ -123,9 +123,7 @@ class CategoryList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-        }
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         restartTimerIntent = Intent(CryptoIntents.ACTION_RESTART_TIMER)
 
@@ -223,18 +221,13 @@ class CategoryList : AppCompatActivity() {
         maybRestartTimer()
         val filename = Settings.getBackupPath(this)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val intent = Intents.createCreateDocumentIntent(MIME_TYPE_BACKUP, Settings.OISAFE_XML)
+        val intent = Intents.createCreateDocumentIntent(MIME_TYPE_BACKUP, Settings.OISAFE_XML)
             try {
                 backupFileLauncher.launch(intent)
             } catch (e: ActivityNotFoundException) {
                 // Fallback or error
                 viewModel.backupDatabase(filename)
             }
-        } else {
-            // Legacy file picker logic could go here, or just default to file path
-            viewModel.backupDatabase(filename)
-        }
     }
 
     private fun startRestore() {
@@ -257,30 +250,16 @@ class CategoryList : AppCompatActivity() {
     private fun performExport() {
         maybRestartTimer()
         val filename = Settings.getExportPath(this)
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            val intent = Intents.createCreateDocumentIntent(MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
+        val intent = Intents.createCreateDocumentIntent(MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
             exportFileLauncher.launch(intent)
-        } else {
-            viewModel.exportDatabase(filename)
-        }
     }
 
     private fun startImport() {
         // Logic to determine default filename or use picker
         val filename = Settings.getExportPath(this) // Default suggestion
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val intent = Intents.createOpenDocumentIntents(MIME_TYPE_ANY_TEXT, Settings.getExportDocument(this) ?: "")
+        val intent = Intents.createOpenDocumentIntents(MIME_TYPE_ANY_TEXT, Settings.getExportDocument(this) ?: "")
             importFileLauncher.launch(intent)
-        } else {
-            // Simple file import for legacy
-            val file = File(filename)
-            if (!file.exists()) {
-                 Toast.makeText(this, getString(R.string.import_file_missing) + " " + filename, Toast.LENGTH_SHORT).show()
-                 return
-            }
-            showImportDeleteConfirmDialog(filename)
-        }
     }
 
     private fun showImportDeleteConfirmDialog(uri: Uri) {
@@ -328,7 +307,7 @@ class CategoryList : AppCompatActivity() {
     private fun showAboutDialog() {
         AlertDialog.Builder(this)
             .setTitle(R.string.app_name)
-            .setMessage("Version: " + VersionUtils.getVersionNumber(this))
+            .setMessage(getString(R.string.version_label) + VersionUtils.getVersionNumber(this))
             .setPositiveButton(android.R.string.ok, null)
             .show()
     }

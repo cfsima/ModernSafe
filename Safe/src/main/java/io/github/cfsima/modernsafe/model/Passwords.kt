@@ -76,7 +76,7 @@ object Passwords {
                 )
                 isCryptoInitialized = true
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(TAG, "Initialization failed", e)
                 Toast.makeText(
                     ctx, "CategoryList: " + ctx.getString(R.string.crypto_error),
                     Toast.LENGTH_SHORT
@@ -127,7 +127,7 @@ object Passwords {
             ch?.init(strength, salt)
             ch?.setPassword(masterKey)
         } catch (e1: CryptoHelperException) {
-            e1.printStackTrace()
+            Log.e(TAG, "InitCrypto failed", e1)
             throw Exception(
                 "Error with Passwords.InitCrypto: " +
                         e1.localizedMessage
