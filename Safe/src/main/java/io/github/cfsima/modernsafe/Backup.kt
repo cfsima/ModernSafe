@@ -132,7 +132,7 @@ class Backup(private val context: Context) {
             result = context.getString(R.string.backup_complete) + " " +
                     totalPasswords + "\n" + filename
         } catch (e: IOException) {
-            e.printStackTrace()
+            Log.e(TAG, "Backup failed", e)
             result = context.getString(R.string.backup_failed) + " " +
                     e.localizedMessage
             return false

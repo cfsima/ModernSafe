@@ -1,6 +1,7 @@
 package io.github.cfsima.modernsafe
 
 import android.content.Intent
+import android.util.Log
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.WindowManager
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 class AskPassword : AppCompatActivity() {
 
     companion object {
+        private const val TAG = "AskPassword"
         const val EXTRA_IS_LOCAL = "io.github.cfsima.modernsafe.bundle.EXTRA_IS_REMOTE"
     }
 
@@ -43,21 +45,19 @@ class AskPassword : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-        }
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         try {
             mpDigitBeep = MediaPlayer.create(this, R.raw.dtmf2a)
             mpErrorBeep = MediaPlayer.create(this, R.raw.click6a)
             mpSuccessBeep = MediaPlayer.create(this, R.raw.dooropening1)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "MediaPlayer create failed", e)
         }
 
         val isLocal = intent.getBooleanExtra(EXTRA_IS_LOCAL, false)
         if (!isLocal) {
-            Toast.makeText(this, "External Application Requesting Password", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.external_request_password), Toast.LENGTH_LONG).show()
         }
 
         setContent {
@@ -70,7 +70,7 @@ class AskPassword : AppCompatActivity() {
                          title = { Text(stringResource(R.string.database_error_title)) },
                          text = { Text(stringResource(R.string.database_error_msg)) },
                          confirmButton = {
-                             TextButton(onClick = { finish() }) { Text("OK") }
+                             TextButton(onClick = { finish() }) { Text(stringResource(android.R.string.ok)) }
                          }
                      )
                 }
@@ -87,7 +87,7 @@ class AskPassword : AppCompatActivity() {
                              TextButton(onClick = {
                                  setResult(RESULT_CANCELED)
                                  finish()
-                             }) { Text("OK") }
+                             }) { Text(stringResource(android.R.string.ok)) }
                          }
                      )
                 }
@@ -141,7 +141,7 @@ class AskPassword : AppCompatActivity() {
             }
             mp?.start()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "MediaPlayer play failed", e)
         }
     }
 

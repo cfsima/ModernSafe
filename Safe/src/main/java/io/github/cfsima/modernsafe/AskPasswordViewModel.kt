@@ -1,7 +1,8 @@
 package io.github.cfsima.modernsafe
 
 import android.app.Application
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.cfsima.modernsafe.password.Master
@@ -35,6 +36,8 @@ sealed class AskPasswordEffect {
 }
 
 class AskPasswordViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val TAG = "AskPasswordViewModel"
 
     private val _uiState = MutableStateFlow(AskPasswordUiState())
     val uiState: StateFlow<AskPasswordUiState> = _uiState.asStateFlow()
@@ -185,7 +188,7 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
                 return true
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "checkUserPassword failed", e)
         }
         return false
     }

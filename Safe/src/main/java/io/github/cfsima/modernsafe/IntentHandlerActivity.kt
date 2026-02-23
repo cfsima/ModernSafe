@@ -21,7 +21,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.CheckBox
@@ -101,14 +101,14 @@ class IntentHandlerActivity : AppCompatActivity() {
                 Log.e(TAG, e.toString(), e)
                 Toast.makeText(
                     this@IntentHandlerActivity,
-                    "There was a crypto error while retrieving the requested password: " + e.message,
+                    getString(R.string.crypto_error_retrieving_password, e.message),
                     Toast.LENGTH_SHORT
                 ).show()
             } catch (e: Exception) {
                 Log.e(TAG, e.toString(), e)
                 Toast.makeText(
                     this@IntentHandlerActivity,
-                    "There was an error in retrieving the requested password: " + e.message,
+                    getString(R.string.error_retrieving_password, e.message),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -306,17 +306,17 @@ class IntentHandlerActivity : AppCompatActivity() {
         var password: String? = null
 
         val clearUniqueName = getExtraString(thisIntent, CryptoIntents.EXTRA_UNIQUE_NAME, CryptoIntents.EXTRA_UNIQUE_NAME_MODERN)
-            ?: throw Exception("EXTRA_UNIQUE_NAME not set.")
+            ?: throw IllegalArgumentException(getString(R.string.extra_unique_name_not_set))
 
         var row: PassEntry? = Passwords.findPassWithUniqueName(clearUniqueName)
         val passExists = (row != null)
 
-        val callingPackage = callingPackage ?: throw Exception("Unknown calling package")
+        val callingPackage = callingPackage ?: throw SecurityException(getString(R.string.unknown_calling_package))
 
         if (passExists) {
             val packageAccess = Passwords.getPackageAccess(row!!.id)
             if (packageAccess == null || !PassEntry.checkPackageAccess(packageAccess!!, callingPackage)) {
-                throw Exception("It is currently not permissible for this application to request this password.")
+                throw SecurityException(getString(R.string.request_password_not_permissible))
             }
         } else {
             row = PassEntry()
@@ -327,7 +327,7 @@ class IntentHandlerActivity : AppCompatActivity() {
                 username = row?.plainUsername
                 password = row?.plainPassword
             } else {
-                throw Exception("Could not find password with the unique name: $clearUniqueName")
+                throw IllegalArgumentException(getString(R.string.password_not_found_unique_name, clearUniqueName))
             }
             callbackIntent.putExtra(CryptoIntents.EXTRA_USERNAME, username)
             callbackIntent.putExtra(CryptoIntents.EXTRA_USERNAME_MODERN, username)
@@ -337,7 +337,7 @@ class IntentHandlerActivity : AppCompatActivity() {
         } else if (action == CryptoIntents.ACTION_SET_PASSWORD || action == CryptoIntents.ACTION_SET_PASSWORD_MODERN) {
             val clearUsername = getExtraString(thisIntent, CryptoIntents.EXTRA_USERNAME, CryptoIntents.EXTRA_USERNAME_MODERN)
             val clearPassword = getExtraString(thisIntent, CryptoIntents.EXTRA_PASSWORD, CryptoIntents.EXTRA_PASSWORD_MODERN)
-                ?: throw Exception("PASSWORD extra must be set.")
+                ?: throw IllegalArgumentException(getString(R.string.extra_password_not_set))
 
             row!!.plainUsername = clearUsername ?: ""
             row.plainPassword = clearPassword

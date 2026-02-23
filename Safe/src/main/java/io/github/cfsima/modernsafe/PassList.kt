@@ -76,12 +76,10 @@ class PassList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= 11) { // HONEYCOMB
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
-        }
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
 
         categoryId = savedInstanceState?.getLong(CategoryList.KEY_ID) ?: intent.getLongExtra(CategoryList.KEY_ID, -1L)
 
@@ -193,7 +191,7 @@ class PassList : AppCompatActivity() {
         try {
             unregisterReceiver(logoutReceiver)
         } catch (e: IllegalArgumentException) {
-            // ignore
+            Log.w(TAG, "Receiver not registered", e)
         }
     }
 

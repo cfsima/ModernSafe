@@ -1,6 +1,5 @@
 package io.github.cfsima.modernsafe
 
-import android.annotation.TargetApi
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -15,7 +14,6 @@ object Intents {
         return intent
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     @JvmStatic
     fun createCreateDocumentIntent(mimeType: String, filename: String): Intent {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
@@ -25,7 +23,6 @@ object Intents {
         return intent
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     @JvmStatic
     fun createOpenDocumentIntents(mimeType: String, backupDocument: String?): Intent {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)

@@ -51,7 +51,7 @@ class RestoreHandler : DefaultHandler() {
                 try {
                     version = attrValue.toInt()
                 } catch (e: NumberFormatException) {
-                    e.printStackTrace()
+                    Log.e(TAG, "version parse error", e)
                 }
             }
 

@@ -95,7 +95,7 @@ class CryptoHelper {
             setSalt(salt)
             initialize(strength)
         } catch (e: CryptoHelperException) {
-            e.printStackTrace()
+            Log.e(TAG, "init failed", e)
             throw e
         }
     }
@@ -561,7 +561,7 @@ class CryptoHelper {
             // create a random session name
             randomPart = generateSalt()
         } catch (e1: NoSuchAlgorithmException) {
-            e1.printStackTrace()
+            Log.e(TAG, "Decrypt error", e1)
             val msg = "Decrypt error: " + e1.localizedMessage
             throw CryptoHelperException(msg)
         }
@@ -689,7 +689,7 @@ class CryptoHelper {
                 // create a random session name
                 decryptSession = generateSalt()
             } catch (e1: NoSuchAlgorithmException) {
-                e1.printStackTrace()
+                Log.e(TAG, "Decrypt error", e1)
                 val msg = "Decrypt error: " + e1.localizedMessage
                 throw CryptoHelperException(msg)
             }
@@ -884,7 +884,7 @@ class CryptoHelper {
                     Log.d(TAG, "generateSalt: salt=$salt")
                 }
             } catch (e: NoSuchAlgorithmException) {
-                e.printStackTrace()
+                Log.e(TAG, "generateSalt failed", e)
                 throw e
             }
             return toHexString(salt)

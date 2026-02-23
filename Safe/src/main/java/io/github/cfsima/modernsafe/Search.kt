@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -42,12 +43,10 @@ class Search : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
-        }
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
 
         supportActionBar?.hide()
 
@@ -91,7 +90,7 @@ class Search : AppCompatActivity() {
         try {
             unregisterReceiver(logoutReceiver)
         } catch (e: IllegalArgumentException) {
-            // Receiver might not be registered
+            Log.w(TAG, "Receiver not registered", e)
         }
     }
 
@@ -107,5 +106,9 @@ class Search : AppCompatActivity() {
         intent.action = CryptoIntents.ACTION_AUTOLOCK
         startActivity(intent)
         finish()
+    }
+
+    companion object {
+        private const val TAG = "Search"
     }
 }
