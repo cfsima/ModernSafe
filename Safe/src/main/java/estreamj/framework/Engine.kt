@@ -23,9 +23,7 @@ object Engine {
     @JvmStatic
     fun getCipherNames(): Array<String> {
         synchronized(_cphMks) {
-            val lst = Vector<String>(_cphMks.keys)
-            Collections.sort(lst)
-            return lst.toTypedArray()
+            return _cphMks.keys.toTypedArray().apply { sort() }
         }
     }
 
@@ -44,7 +42,7 @@ object Engine {
             maker = _cphMks[name]
         }
         if (maker == null) {
-            throw ESJException("no maker registered for cipher \"\"")
+            throw ESJException("no maker registered for cipher \"$name\"")
         }
         return maker.create()
     }
@@ -60,7 +58,7 @@ object Engine {
         val name = cphMk.name
         synchronized(_cphMks) {
             if (_cphMks.containsKey(name)) {
-                System.err.println("cipher \"\" has been registered already")
+                System.err.println("cipher \"$name\" has been registered already")
                 return
             }
             _cphMks[name] = cphMk

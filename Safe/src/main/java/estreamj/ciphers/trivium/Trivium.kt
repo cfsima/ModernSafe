@@ -90,9 +90,16 @@ class Trivium : ICipher {
         outOfs: Int,
         len: Int
     ) {
-        var s11 = s[0]; var s12 = s[1]; var s13 = s[2]
-        var s21 = s[3]; var s22 = s[4]; var s23 = s[5]
-        var s31 = s[6]; var s32 = s[7]; var s33 = s[8]; var s34 = s[9]
+        var s11 = s[0]
+        var s12 = s[1]
+        var s13 = s[2]
+        var s21 = s[3]
+        var s22 = s[4]
+        var s23 = s[5]
+        var s31 = s[6]
+        var s32 = s[7]
+        var s33 = s[8]
+        var s34 = s[9]
 
         var currentOutOfs = outOfs
         var currentInOfs = inOfs

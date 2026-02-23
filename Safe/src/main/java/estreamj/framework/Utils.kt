@@ -118,16 +118,16 @@ object Utils {
         var i: Int
         var result: Int
         var pad: CharArray
-        val left: StringBuffer
-        val right: StringBuffer
+        val left: StringBuilder
+        val right: StringBuilder
 
         var bPerLine = bytesPerLine
         if (1 > bPerLine) {
             bPerLine = 1
         }
 
-        left = StringBuffer()
-        right = StringBuffer()
+        left = StringBuilder()
+        right = StringBuilder()
 
         result = 0
 
