@@ -251,7 +251,12 @@ class CategoryList : AppCompatActivity() {
         maybRestartTimer()
         val filename = Settings.getExportPath(this)
         val intent = Intents.createCreateDocumentIntent(MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
+        try {
             exportFileLauncher.launch(intent)
+        } catch (e: ActivityNotFoundException) {
+            // Fallback for when Storage Access Framework is not available
+            viewModel.exportDatabase(filename)
+        }
     }
 
     private fun startImport() {
@@ -259,7 +264,11 @@ class CategoryList : AppCompatActivity() {
         val filename = Settings.getExportPath(this) // Default suggestion
 
         val intent = Intents.createOpenDocumentIntents(MIME_TYPE_ANY_TEXT, Settings.getExportDocument(this) ?: "")
+        try {
             importFileLauncher.launch(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, R.string.restore_error, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun showImportDeleteConfirmDialog(uri: Uri) {
