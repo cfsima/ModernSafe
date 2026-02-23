@@ -20,6 +20,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import estreamj.ciphers.trivium.Trivium
+import estreamj.framework.ICipher
 import estreamj.framework.ESJException
 import io.github.cfsima.modernsafe.util.SecureDelete
 import java.io.ByteArrayInputStream
@@ -516,7 +517,7 @@ class CryptoHelper {
             }
             val tri = Trivium()
             try {
-                tri.setupKey(Trivium.MODE_ENCRYPT, sessionKeyEncoded, 0)
+                tri.setupKey(ICipher.MODE_ENCRYPT, sessionKeyEncoded, 0)
                 tri.setupNonce(sessionKeyEncoded, 10)
 
                 // Create the byte array to hold the data
@@ -809,7 +810,7 @@ class CryptoHelper {
             // Now decrypt the message
             val tri = Trivium()
             try {
-                tri.setupKey(Trivium.MODE_DECRYPT, byteSessionKey, 0)
+                tri.setupKey(ICipher.MODE_DECRYPT, byteSessionKey, 0)
                 tri.setupNonce(byteSessionKey, 10)
 
                 // Create the byte array to hold the data

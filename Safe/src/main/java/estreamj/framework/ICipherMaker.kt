@@ -1,14 +1,14 @@
-package estreamj.framework;
+package estreamj.framework
 
 /**
  * Simple cipher factory.
  */
-public interface ICipherMaker {
+interface ICipherMaker {
     /**
      * @return the name of cipher, which is used for queries - so it must be
      * unique
      */
-    public String getName();
+    val name: String
 
     /**
      * Create a new cipher instance.
@@ -17,5 +17,6 @@ public interface ICipherMaker {
      * "instanceof" keyword to find out what you are dealing with
      * @throws ESJException if any error occured
      */
-    public ICipher create() throws ESJException;
+    @Throws(ESJException::class)
+    fun create(): ICipher
 }
