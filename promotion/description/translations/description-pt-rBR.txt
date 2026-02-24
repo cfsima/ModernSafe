@@ -1,7 +1,0 @@
-# Application:
-OI Safe
-
-# Promo text:
-Guarde os dados privados com o OI Safe.
-
-# Description:
