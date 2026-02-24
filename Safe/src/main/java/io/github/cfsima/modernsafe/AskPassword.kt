@@ -47,8 +47,13 @@ class AskPassword : AppCompatActivity() {
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) {
-        // Permission result handling
+    ) { isGranted ->
+        if (isGranted) {
+            Log.i(TAG, "Notification permission granted.")
+        } else {
+            Log.w(TAG, "Notification permission denied. Auto-lock notification will not be shown.")
+            Toast.makeText(this, "Auto-lock notification requires permission.", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
