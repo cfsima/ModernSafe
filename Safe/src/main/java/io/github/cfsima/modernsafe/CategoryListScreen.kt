@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.testTag
 import io.github.cfsima.modernsafe.model.CategoryEntry
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -246,7 +247,7 @@ fun CategoryItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(category.count.toString(), modifier = Modifier.padding(end = 8.dp))
                 Box {
-                    IconButton(onClick = { showItemMenu = true }) {
+                    IconButton(onClick = { showItemMenu = true }, modifier = Modifier.testTag("menu_" + (category.plainName ?: ""))) {
                         Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.menu))
                     }
                     DropdownMenu(
