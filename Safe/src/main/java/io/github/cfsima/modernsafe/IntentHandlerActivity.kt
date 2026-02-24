@@ -63,15 +63,20 @@ class IntentHandlerActivity : AppCompatActivity() {
         val thisIntent = intent
         val action = thisIntent.action
 
-        // If not logged in, show FrontDoor to log in
+        // If not logged in, show AskPassword to log in
         if (!AuthManager.isSignedIn()) {
-            val frontDoor = Intent(this, FrontDoor::class.java)
-            frontDoor.action = action
+            val askPassword = Intent(this, AskPassword::class.java)
+            askPassword.action = action
             if (thisIntent.extras != null) {
-                frontDoor.putExtras(thisIntent.extras!!)
+                askPassword.putExtras(thisIntent.extras!!)
             }
-            frontDoor.data = thisIntent.data
-            startActivity(frontDoor)
+            askPassword.data = thisIntent.data
+
+            if (checkExternalAccess(action)) {
+                askPassword.putExtra(AskPassword.EXTRA_IS_LOCAL, true)
+            }
+
+            startActivity(askPassword)
             finish()
             return
         }

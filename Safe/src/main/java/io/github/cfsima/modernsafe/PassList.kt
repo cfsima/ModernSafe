@@ -221,8 +221,9 @@ class PassList : AppCompatActivity() {
     }
 
     private fun startFrontDoor() {
-        val intent = Intent(this, FrontDoor::class.java)
+        val intent = Intent(this, AskPassword::class.java)
         intent.action = CryptoIntents.ACTION_AUTOLOCK
+        intent.putExtra(AskPassword.EXTRA_IS_LOCAL, true)
         startActivity(intent)
         finish()
     }

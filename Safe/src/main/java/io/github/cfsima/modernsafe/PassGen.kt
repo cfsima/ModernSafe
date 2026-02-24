@@ -77,7 +77,7 @@ class PassGen : AppCompatActivity() {
     }
 
     private fun startFrontDoor() {
-        val frontdoor = Intent(this, FrontDoor::class.java).apply {
+        val frontdoor = Intent(this, AskPassword::class.java).apply {
             action = CryptoIntents.ACTION_AUTOLOCK
         }
         startActivity(frontdoor)
