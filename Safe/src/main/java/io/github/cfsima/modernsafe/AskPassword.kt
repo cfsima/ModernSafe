@@ -1,6 +1,8 @@
 package io.github.cfsima.modernsafe
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Log
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -13,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.core.content.ContextCompat
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -42,10 +45,25 @@ class AskPassword : AppCompatActivity() {
         }
     }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Log.i(TAG, "Notification permission granted.")
+        } else {
+            Log.w(TAG, "Notification permission denied. Auto-lock notification will not be shown.")
+            Toast.makeText(this, "Auto-lock notification requires permission.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
 
         try {
             mpDigitBeep = MediaPlayer.create(this, R.raw.dtmf2a)

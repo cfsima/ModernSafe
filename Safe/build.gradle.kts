@@ -40,7 +40,7 @@ android {
         applicationId = "io.github.cfsima.modernsafe"
         versionCode = (rootProject.extra["versionCode"] as Int)
         versionName = (rootProject.extra["versionName"] as String)
-        minSdk = 23
+        minSdk = 33
         targetSdk = (rootProject.extra["targetSdkVersion"] as Int)
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
