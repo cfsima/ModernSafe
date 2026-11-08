@@ -6,13 +6,6 @@ import android.os.Build
 import android.provider.DocumentsContract
 
 object Intents {
-    @JvmStatic
-    fun createPickFileIntent(filename: String, titleResource: Int): Intent {
-        val intent = Intent("org.openintents.action.PICK_FILE")
-        intent.data = Uri.parse("file://$filename")
-        intent.putExtra("org.openintents.extra.TITLE", titleResource)
-        return intent
-    }
 
     @JvmStatic
     fun createCreateDocumentIntent(mimeType: String, filename: String): Intent {

@@ -28,7 +28,6 @@ object Settings {
     const val PREFERENCE_EXPORT_DOCUMENT = "export_document"
     const val PREFERENCE_EXPORT_METHOD = "export_method"
     const val OISAFE_CSV = "oisafe.csv"
-    const val DIALOG_DOWNLOAD_OI_FILEMANAGER = 0 // Keeping for compatibility or if referenced
 
     // Request Codes
     const val REQUEST_BACKUP_FILENAME = 0
