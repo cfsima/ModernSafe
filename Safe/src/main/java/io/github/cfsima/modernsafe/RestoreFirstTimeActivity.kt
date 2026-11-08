@@ -1,77 +1,43 @@
 package io.github.cfsima.modernsafe
 
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
-import java.io.File
-import io.github.cfsima.modernsafe.util.VersionUtils
 
+/**
+ * Legacy activity replaced by RestoreFirstTimeRoute in ModernSafeNavHost.
+ */
+@Deprecated("Migrated to Compose Navigation within MainActivity. ModernSafeNavHost now manages this destination.")
 class RestoreFirstTimeActivity : AppCompatActivity() {
 
-    private val restoreLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        setResult(result.resultCode)
-        finish()
-    }
-
-    private val chooseFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
-        uri?.let {
-            val intent = Intent(this, Restore::class.java)
-            intent.data = it
-            intent.putExtra(Restore.KEY_FIRST_TIME, true)
-            restoreLauncher.launch(intent)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        val defaultPath = Settings.getBackupPath(this)
-        val fileExists = File(defaultPath).exists()
-
-        val appName = VersionUtils.getApplicationName(this)
-        val version = VersionUtils.getVersionNumber(this)
-        val headerText = "$appName $version"
-
-        setContent {
-            ModernSafeTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    RestoreFirstTimeScreen(
-                        headerText = headerText,
-                        filePath = defaultPath,
-                        fileExists = fileExists,
-                        onRestore = {
-                            val intent = Intent(this, Restore::class.java)
-                            intent.putExtra(Restore.KEY_FILE_PATH, defaultPath)
-                            intent.putExtra(Restore.KEY_FIRST_TIME, true)
-                            restoreLauncher.launch(intent)
-                        },
-                        onChooseFile = {
-                             chooseFileLauncher.launch(arrayOf("*/*"))
-                        },
-                        onCancel = {
-                            setResult(Activity.RESULT_CANCELED)
-                            finish()
-                        }
-                    )
-                }
-            }
+        val forwardIntent = Intent(this, MainActivity::class.java).apply {
+            action = intent.action
+            data = intent.data
+            intent.extras?.let { putExtras(it) }
+            addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
         }
+        startActivity(forwardIntent)
+        finish()
     }
 }
 

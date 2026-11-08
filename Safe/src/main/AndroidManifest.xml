@@ -76,64 +76,10 @@
     </activity>
 
     <activity
-      android:name=".PassGen"
+      android:name=".MainActivity"
       android:exported="false"
       android:label="@string/app_name"
       android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".PassView"
-      android:exported="false"
-      android:label="@string/app_name" />
-    <activity
-      android:name=".PassList"
-      android:exported="false"
-      android:label="@string/app_name" />
-    <activity
-      android:name=".PassEdit"
-      android:exported="false"
-      android:label="@string/app_name"
-      android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".CategoryList"
-      android:exported="false"
-      android:label="@string/app_name"
-      android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".Search"
-      android:exported="false"
-      android:label="@string/app_name"
-      android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".AskPassword"
-      android:exported="false"
-      android:label="@string/app_name"
-      android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".Help"
-      android:exported="false"
-      android:label="@string/app_name" />
-    <activity
-      android:name=".ChangePass"
-      android:exported="false"
-      android:label="@string/app_name"
-      android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".Restore"
-      android:exported="false"
-      android:label="@string/app_name"
-      android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".SettingsActivity"
-      android:exported="false"
-      android:label="@string/app_name" />
-    <activity
-      android:name=".LogOffActivity"
-      android:exported="false"
-      android:label="@string/app_name" />
-    <activity
-      android:name=".RestoreFirstTimeActivity"
-      android:exported="false"
-      android:label="@string/backup_file_found_label" />
 
     <service
       android:name=".service.AutoLockService"

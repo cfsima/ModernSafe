@@ -1,17 +1,13 @@
 package io.github.cfsima.modernsafe
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import io.github.cfsima.modernsafe.intents.CryptoIntents
-import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 
+/**
+ * Legacy activity replaced by PassGenRoute in ModernSafeNavHost.
+ */
+@Deprecated("Migrated to Compose Navigation within MainActivity. ModernSafeNavHost now manages this destination.")
 class PassGen : AppCompatActivity() {
 
     companion object {
@@ -21,68 +17,15 @@ class PassGen : AppCompatActivity() {
         val NEW_PASS_KEY = "new_pass"
     }
 
-    private val logoutReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == CryptoIntents.ACTION_CRYPTO_LOGGED_OUT) {
-                startFrontDoor()
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        supportActionBar?.hide()
-
-        // Ensure user is signed in
-        if (!AuthManager.isSignedIn()) {
-            startFrontDoor()
-            return
+        val forwardIntent = Intent(this, MainActivity::class.java).apply {
+            action = intent.action
+            data = intent.data
+            intent.extras?.let { putExtras(it) }
+            addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
         }
-
-        setContent {
-            ModernSafeTheme {
-                PassGenScreen(
-                    onUsePassword = { password ->
-                        val resultIntent = Intent().apply {
-                            putExtra(NEW_PASS_KEY, password)
-                        }
-                        setResult(CHANGE_ENTRY_RESULT, resultIntent)
-                        finish()
-                    },
-                    onCancel = {
-                        finish()
-                    }
-                )
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!AuthManager.isSignedIn()) {
-            startFrontDoor()
-            return
-        }
-        val filter = IntentFilter(CryptoIntents.ACTION_CRYPTO_LOGGED_OUT)
-        ContextCompat.registerReceiver(this, logoutReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        try {
-            unregisterReceiver(logoutReceiver)
-        } catch (e: IllegalArgumentException) {
-            // Ignore if not registered
-        }
-    }
-
-    private fun startFrontDoor() {
-        val frontdoor = Intent(this, AskPassword::class.java).apply {
-            action = CryptoIntents.ACTION_AUTOLOCK
-        }
-        startActivity(frontdoor)
+        startActivity(forwardIntent)
         finish()
     }
 }

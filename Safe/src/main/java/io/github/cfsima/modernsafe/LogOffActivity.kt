@@ -1,12 +1,7 @@
 package io.github.cfsima.modernsafe
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -22,10 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -33,79 +26,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.cfsima.modernsafe.service.AutoLockService
-import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
-import io.github.cfsima.modernsafe.util.VersionUtils
-import kotlinx.coroutines.delay
 
+/**
+ * Legacy activity replaced by LogOffRoute in ModernSafeNavHost.
+ */
+@Deprecated("Migrated to Compose Navigation within MainActivity. ModernSafeNavHost now manages this destination.")
 class LogOffActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        val appName = "Modern Safe" // VersionUtils.getApplicationName(this) requires resource lookup which might fail if context issue, using hardcoded for now or fix VersionUtils?
-        // Wait, VersionUtils is there.
-        // Let's assume VersionUtils works.
-
-        // Actually, let's stick to the previous code structure but fix the timeRemaining call.
-
-        val version = try {
-             packageManager.getPackageInfo(packageName, 0).versionName
-        } catch (e: Exception) {
-             "?"
+        val forwardIntent = Intent(this, MainActivity::class.java).apply {
+            action = intent.action
+            data = intent.data
+            intent.extras?.let { putExtras(it) }
+            addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
         }
-        val headerText = "Modern Safe "
-
-        setContent {
-            ModernSafeTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    var timeRemaining by remember { mutableLongStateOf(0L) }
-
-                    LaunchedEffect(Unit) {
-                        while (true) {
-                            timeRemaining = AuthManager.timeRemaining
-                            delay(1000)
-                        }
-                    }
-
-                    LogOffScreenContent(
-                        headerText = headerText,
-                        timeRemaining = timeRemaining,
-                        onLogOff = {
-                            // Stop service
-                            val intent = Intent(applicationContext, AutoLockService::class.java)
-                            stopService(intent)
-
-                            // Clear clipboard if needed
-                            val cb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            if (cb.hasPrimaryClip()) {
-                                val clip = cb.primaryClip
-                                if (clip != null && clip.itemCount > 0) {
-                                    val text = clip.getItemAt(0).text.toString()
-                                    if (text == AuthManager.lastUsedPassword) {
-                                         cb.setPrimaryClip(ClipData.newPlainText("", ""))
-                                    }
-                                }
-                            }
-
-                            AuthManager.setSignedOut()
-                            finish()
-                        },
-                        onGoToPWS = {
-                            val intent = Intent(this@LogOffActivity, FrontDoor::class.java)
-                            intent.addCategory(Intent.CATEGORY_LAUNCHER)
-                            intent.action = Intent.ACTION_MAIN
-                            startActivity(intent)
-                            finish()
-                        }
-                    )
-                }
-            }
-        }
+        startActivity(forwardIntent)
+        finish()
     }
 }
 

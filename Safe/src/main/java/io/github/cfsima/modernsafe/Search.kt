@@ -1,117 +1,24 @@
 package io.github.cfsima.modernsafe
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.util.Log
-import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.core.content.ContextCompat
-import io.github.cfsima.modernsafe.intents.CryptoIntents
-import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 
+/**
+ * Legacy activity replaced by SearchRoute in ModernSafeNavHost.
+ */
+@Deprecated("Migrated to Compose Navigation within MainActivity. ModernSafeNavHost now manages this destination.")
 class Search : AppCompatActivity() {
 
-    private val viewModel: SearchViewModel by viewModels()
-
-    private val passViewLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        // If PassView edited an entry or deleted one, refresh the search.
-        if (PassView.entryEdited || result.resultCode == RESULT_OK) {
-             val currentQuery = viewModel.uiState.value.query
-             if (currentQuery.isNotEmpty()) {
-                 viewModel.onQueryChange(currentQuery)
-             }
-        }
-    }
-
-    private val logoutReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == CryptoIntents.ACTION_CRYPTO_LOGGED_OUT) {
-                startFrontDoor()
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
-
-        supportActionBar?.hide()
-
-        setContent {
-            ModernSafeTheme {
-                val uiState by viewModel.uiState.collectAsState()
-
-                SearchScreen(
-                    uiState = uiState,
-                    onQueryChange = { viewModel.onQueryChange(it) },
-                    onResultClick = { index, item ->
-                        val intent = Intent(this, PassView::class.java)
-                        intent.putExtra(PassList.KEY_ID, item.id)
-                        intent.putExtra(PassList.KEY_CATEGORY_ID, item.categoryId)
-                        // Pass global row IDs for prev/next navigation
-                        intent.putExtra(PassList.KEY_ROWIDS, uiState.resultIds)
-                        intent.putExtra(PassList.KEY_LIST_POSITION, index)
-                        passViewLauncher.launch(intent)
-                    },
-                    onBack = { finish() }
-                )
-            }
+        val forwardIntent = Intent(this, MainActivity::class.java).apply {
+            action = intent.action
+            data = intent.data
+            intent.extras?.let { putExtras(it) }
+            addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!AuthManager.isSignedIn()) {
-            startFrontDoor()
-            return
-        }
-
-        val filter = IntentFilter(CryptoIntents.ACTION_CRYPTO_LOGGED_OUT)
-        ContextCompat.registerReceiver(this, logoutReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
-
-        sendBroadcast(Intent(CryptoIntents.ACTION_RESTART_TIMER))
-    }
-
-    override fun onPause() {
-        super.onPause()
-        try {
-            unregisterReceiver(logoutReceiver)
-        } catch (e: IllegalArgumentException) {
-            Log.w(TAG, "Receiver not registered", e)
-        }
-    }
-
-    override fun onUserInteraction() {
-        super.onUserInteraction()
-        if (AuthManager.isSignedIn()) {
-            sendBroadcast(Intent(CryptoIntents.ACTION_RESTART_TIMER))
-        }
-    }
-
-    private fun startFrontDoor() {
-        val intent = Intent(this, AskPassword::class.java)
-        intent.action = CryptoIntents.ACTION_AUTOLOCK
-        intent.putExtra(AskPassword.EXTRA_IS_LOCAL, true)
-        startActivity(intent)
+        startActivity(forwardIntent)
         finish()
-    }
-
-    companion object {
-        private const val TAG = "Search"
     }
 }
