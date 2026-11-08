@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-
-  android:installLocation="internalOnly">
+  xmlns:tools="http://schemas.android.com/tools">
 
   <uses-permission android:name="io.github.cfsima.modernsafe.ACCESS_INTENTS" />
-  <uses-permission android:name="io.github.cfsima.modernsafe.ACCESS_SERVICE" />
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
   <permission
@@ -13,14 +10,6 @@
     android:description="@string/oi_safe_permission_intents_descr"
     android:label="@string/oi_safe_permission_intents"
     android:protectionLevel="dangerous" />
-  <permission
-    android:name="io.github.cfsima.modernsafe.ACCESS_SERVICE"
-    android:description="@string/oi_safe_permission_service_descr"
-    android:exported="true"
-    android:label="@string/oi_safe_permission_service"
-    android:process=":remote"
-    android:protectionLevel="signature"
-    tools:remove="permission" />
 
   <uses-feature
     android:name="android.hardware.touchscreen"
