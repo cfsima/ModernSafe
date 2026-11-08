@@ -4,10 +4,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // Change from 9.0.0 to 8.13.0 to support Gradle 9.0.0
-        classpath("com.android.tools.build:gradle:8.13.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24")
-        classpath("com.github.triplet.gradle:play-publisher:3.9.1")
+        classpath("com.android.tools.build:gradle:9.5.1")
+        classpath("org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.2.10")
+        classpath("com.github.triplet.gradle:play-publisher:4.1.1")
     }
 }
 
@@ -23,9 +22,8 @@ val versionBuild = 1
 val versionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
 val versionName = "$versionMajor.$versionMinor.$versionPatch"
 
-// These versions are perfectly fine for AGP 8.13.0
-val compileSdkVersion = 35
-val buildToolsVersion = "35.0.0"
+val compileSdkVersion = 37
+val buildToolsVersion = "37.0.0"
 val targetSdkVersion = 35
 
 extra["ci"] = ci
