@@ -6,12 +6,10 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:9.5.1")
         classpath("org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.2.10")
-        classpath("com.github.triplet.gradle:play-publisher:4.1.1")
     }
 }
 
 val ci: Boolean = "true" == System.getenv("CI")
-val preDexEnabled: Boolean = "true" == System.getProperty("pre-dex", "true")
 
 // Manifest version information!
 val versionMajor = 2
@@ -27,7 +25,6 @@ val buildToolsVersion = "37.0.0"
 val targetSdkVersion = 35
 
 extra["ci"] = ci
-extra["preDexEnabled"] = preDexEnabled
 extra["versionCode"] = versionCode
 extra["versionName"] = versionName
 extra["compileSdkVersion"] = compileSdkVersion

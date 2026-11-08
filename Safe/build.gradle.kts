@@ -43,8 +43,6 @@ configure<ApplicationExtension> {
 
     sourceSets {
         getByName("androidTest").setRoot("tests")
-        getByName("debug").setRoot("build-types/debug")
-        getByName("release").setRoot("build-types/release")
     }
 
     lint {
@@ -58,11 +56,7 @@ configure<ApplicationExtension> {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.txt")
-            signingConfig = signingConfigs.getByName("release")
-        }
-        create("alpha") {
-            initWith(getByName("release"))
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("release")
         }
     }
@@ -74,13 +68,8 @@ configure<ApplicationExtension> {
 }
 
 dependencies {
-
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-
     implementation("androidx.annotation:annotation:1.11.0")
-    implementation("androidx.fragment:fragment-ktx:1.9.1")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("com.google.android.material:material:1.14.0")
     implementation("androidx.appcompat:appcompat:1.8.0")
 
     // Compose Dependencies
