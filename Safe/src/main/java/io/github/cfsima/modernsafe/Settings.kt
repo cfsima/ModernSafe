@@ -1,7 +1,6 @@
 package io.github.cfsima.modernsafe
 
 import android.content.Context
-import androidx.preference.PreferenceManager
 import java.io.File
 
 object Settings {
@@ -36,80 +35,62 @@ object Settings {
     const val REQUEST_EXPORT_DOCUMENT = 3
 
     @JvmStatic
-    fun getBackupPath(context: Context): String {
-        val path = PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(PREFERENCE_BACKUP_PATH, null)
-        if (path == null) {
-            val dir = context.getExternalFilesDir(null)
-            return if (dir != null) {
-                File(dir, OISAFE_XML).absolutePath
-            } else {
-                File(context.filesDir, OISAFE_XML).absolutePath
-            }
+    fun getDefaultBackupPath(context: Context): String {
+        val dir = context.getExternalFilesDir(null)
+        return if (dir != null) {
+            File(dir, OISAFE_XML).absolutePath
+        } else {
+            File(context.filesDir, OISAFE_XML).absolutePath
         }
-        return path
+    }
+
+    @JvmStatic
+    fun getDefaultExportPath(context: Context): String {
+        val dir = context.getExternalFilesDir(null)
+        return if (dir != null) {
+            File(dir, OISAFE_CSV).absolutePath
+        } else {
+            File(context.filesDir, OISAFE_CSV).absolutePath
+        }
+    }
+
+    @JvmStatic
+    fun getBackupPath(context: Context): String {
+        return SettingsRepository.getInstance(context).getBackupPath()
     }
 
     @JvmStatic
     fun setBackupPathAndMethod(context: Context, path: String) {
-        val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(PREFERENCE_BACKUP_PATH, path)
-        editor.putString(PREFERENCE_BACKUP_METHOD, IO_METHOD_FILE)
-        editor.apply()
+        SettingsRepository.getInstance(context).updateBackupPathAndMethodAsync(path)
     }
 
     @JvmStatic
     fun getBackupDocument(context: Context): String? {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(PREFERENCE_BACKUP_DOCUMENT, null)
+        return SettingsRepository.getInstance(context).getBackupDocument()
     }
 
     @JvmStatic
     fun setBackupDocumentAndMethod(context: Context, uriString: String) {
-        val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(PREFERENCE_BACKUP_DOCUMENT, uriString)
-        editor.putString(PREFERENCE_BACKUP_METHOD, IO_METHOD_DOCUMENT_PROVIDER)
-        editor.apply()
+        SettingsRepository.getInstance(context).updateBackupDocumentAndMethodAsync(uriString)
     }
 
     @JvmStatic
     fun getExportPath(context: Context): String {
-        val path = PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(PREFERENCE_EXPORT_PATH, null)
-        if (path == null) {
-            val dir = context.getExternalFilesDir(null)
-            return if (dir != null) {
-                File(dir, OISAFE_CSV).absolutePath
-            } else {
-                File(context.filesDir, OISAFE_CSV).absolutePath
-            }
-        }
-        return path
+        return SettingsRepository.getInstance(context).getExportPath()
     }
 
     @JvmStatic
     fun setExportPathAndMethod(context: Context, path: String) {
-        val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(PREFERENCE_EXPORT_PATH, path)
-        editor.putString(PREFERENCE_EXPORT_METHOD, IO_METHOD_FILE)
-        editor.apply()
+        SettingsRepository.getInstance(context).updateExportPathAndMethodAsync(path)
     }
 
     @JvmStatic
     fun getExportDocument(context: Context): String? {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(PREFERENCE_EXPORT_DOCUMENT, null)
+        return SettingsRepository.getInstance(context).getExportDocument()
     }
 
     @JvmStatic
     fun setExportDocumentAndMethod(context: Context, uriString: String) {
-        val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(PREFERENCE_EXPORT_DOCUMENT, uriString)
-        editor.putString(PREFERENCE_EXPORT_METHOD, IO_METHOD_DOCUMENT_PROVIDER)
-        editor.apply()
+        SettingsRepository.getInstance(context).updateExportDocumentAndMethodAsync(uriString)
     }
 }

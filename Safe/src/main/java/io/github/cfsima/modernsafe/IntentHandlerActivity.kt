@@ -19,10 +19,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.CheckBox
@@ -138,8 +138,7 @@ class IntentHandlerActivity : AppCompatActivity() {
         }
 
         // If external, check preference
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        return sp.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
+        return SettingsRepository.getInstance(this).isExternalAccessAllowed()
     }
 
     private fun showDialogAllowExternalAccess() {
@@ -149,8 +148,8 @@ class IntentHandlerActivity : AppCompatActivity() {
 
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_allow_access, null)
         val checkbox = view.findViewById<CheckBox>(R.id.checkbox)
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val externalAccess = sp.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
+        val repo = SettingsRepository.getInstance(this)
+        val externalAccess = repo.isExternalAccessAllowed()
         checkbox.isChecked = externalAccess
 
         dialog = AlertDialog.Builder(this)
@@ -159,9 +158,11 @@ class IntentHandlerActivity : AppCompatActivity() {
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 val newAccess = checkbox.isChecked
-                sp.edit().putBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, newAccess).apply()
-                // Retry dispatch
-                actionDispatch()
+                lifecycleScope.launch {
+                    repo.setExternalAccess(newAccess)
+                    // Retry dispatch
+                    actionDispatch()
+                }
             }
             .setNegativeButton(android.R.string.cancel) { _, _ ->
                 setResult(RESULT_CANCELED)

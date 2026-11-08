@@ -1,7 +1,6 @@
 package io.github.cfsima.modernsafe
 
 import android.app.Application
-import androidx.preference.PreferenceManager
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,7 +34,10 @@ sealed class AskPasswordEffect {
     object CloseApp : AskPasswordEffect()
 }
 
-class AskPasswordViewModel(application: Application) : AndroidViewModel(application) {
+class AskPasswordViewModel(
+    application: Application,
+    private val settingsRepository: SettingsRepository = SettingsRepository.getInstance(application)
+) : AndroidViewModel(application) {
 
     private val TAG = "AskPasswordViewModel"
 
@@ -59,6 +61,20 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
 
     init {
         initialize()
+        observeSettings()
+    }
+
+    private fun observeSettings() {
+        viewModelScope.launch {
+            settingsRepository.settingsFlow.collect { settings ->
+                _uiState.update {
+                    it.copy(
+                        isKeypadMode = settings.keypad,
+                        isMuted = settings.keypadMute
+                    )
+                }
+            }
+        }
     }
 
     fun checkSignedIn() {
@@ -87,15 +103,12 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
         // Note: fetchMasterKey returns encrypted key from DB
         cachedEncryptedMasterKey = dbHelper?.fetchMasterKey() ?: ""
 
-        val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefKeypad = sp.getBoolean(Settings.PREFERENCE_KEYPAD, false)
-        val prefMute = sp.getBoolean(Settings.PREFERENCE_KEYPAD_MUTE, false)
-
+        val userSettings = settingsRepository.userSettings.value
         _uiState.update {
             it.copy(
                 isFirstTime = cachedEncryptedMasterKey.isEmpty(),
-                isKeypadMode = prefKeypad,
-                isMuted = prefMute
+                isKeypadMode = userSettings.keypad,
+                isMuted = userSettings.keypadMute
             )
         }
     }
@@ -201,18 +214,16 @@ class AskPasswordViewModel(application: Application) : AndroidViewModel(applicat
 
     fun toggleKeypadMode() {
         val newMode = !_uiState.value.isKeypadMode
-        _uiState.update { it.copy(isKeypadMode = newMode) }
-
-        val sp = PreferenceManager.getDefaultSharedPreferences(getApplication())
-        sp.edit().putBoolean(Settings.PREFERENCE_KEYPAD, newMode).apply()
+        viewModelScope.launch {
+            settingsRepository.setKeypad(newMode)
+        }
     }
 
     fun toggleMute() {
         val newMute = !_uiState.value.isMuted
-        _uiState.update { it.copy(isMuted = newMute) }
-
-        val sp = PreferenceManager.getDefaultSharedPreferences(getApplication())
-        sp.edit().putBoolean(Settings.PREFERENCE_KEYPAD_MUTE, newMute).apply()
+        viewModelScope.launch {
+            settingsRepository.setKeypadMute(newMute)
+        }
     }
 
     fun onKeypadInput(digit: Char) {

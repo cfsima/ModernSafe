@@ -1,18 +1,3 @@
-/*
- * Copyright 2012 OpenIntents.org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.github.cfsima.modernsafe.service
 
 import android.app.Service
@@ -20,23 +5,33 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.os.CountDownTimer
 import android.os.IBinder
-import androidx.preference.PreferenceManager
 import android.util.Log
 import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.AuthManager
-import io.github.cfsima.modernsafe.Settings
+import io.github.cfsima.modernsafe.SettingsRepository
 import io.github.cfsima.modernsafe.intents.CryptoIntents
 import io.github.cfsima.modernsafe.password.Master
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class AutoLockService : Service() {
 
     private var t: CountDownTimer? = null
     private lateinit var mIntentReceiver: BroadcastReceiver
-    private lateinit var mPreferences: SharedPreferences
     private lateinit var serviceNotification: ServiceNotification
+
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private val settingsRepository by lazy { SettingsRepository.getInstance(applicationContext) }
+
+    @Volatile
+    private var lockOnScreenLock: Boolean = true
+    @Volatile
+    private var timeoutMinutes: Int = 5
 
     override fun onCreate() {
         if (debug) {
@@ -48,9 +43,6 @@ class AutoLockService : Service() {
                     if (debug) {
                         Log.d(TAG, "caught ACTION_SCREEN_OFF")
                     }
-                    val lockOnScreenLock = mPreferences.getBoolean(
-                        Settings.PREFERENCE_LOCK_ON_SCREEN_LOCK, true
-                    )
                     if (lockOnScreenLock) {
                         lockOut()
                     }
@@ -65,8 +57,19 @@ class AutoLockService : Service() {
         filter.addAction(Intent.ACTION_SCREEN_OFF)
         ContextCompat.registerReceiver(this, mIntentReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         serviceNotification = ServiceNotification(this)
+
+        serviceScope.launch {
+            settingsRepository.settingsFlow.collect { settings ->
+                lockOnScreenLock = settings.lockOnScreenLock
+                timeoutMinutes = try {
+                    settings.lockTimeout.toInt()
+                } catch (e: NumberFormatException) {
+                    Log.w(TAG, "why is lock_timeout busted?", e)
+                    5
+                }
+            }
+        }
     }
 
     @Deprecated("Deprecated in Java")
@@ -102,6 +105,7 @@ class AutoLockService : Service() {
         }
         serviceNotification.clearNotification()
         t?.cancel()
+        serviceScope.cancel()
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -133,16 +137,6 @@ class AutoLockService : Service() {
             return
         }
         serviceNotification.setNotification(this@AutoLockService)
-        val timeout = mPreferences.getString(
-            Settings.PREFERENCE_LOCK_TIMEOUT,
-            Settings.PREFERENCE_LOCK_TIMEOUT_DEFAULT_VALUE
-        )
-        var timeoutMinutes = 5 // default to 5
-        try {
-            timeoutMinutes = timeout?.toInt() ?: 5
-        } catch (e: NumberFormatException) {
-            Log.w(TAG, "why is lock_timeout busted?", e)
-        }
         val timeoutUntilStop = (timeoutMinutes * 60000).toLong()
 
         if (debug) {
@@ -176,29 +170,25 @@ class AutoLockService : Service() {
                 if (debug) {
                     Log.d(TAG, "onFinish()")
                 }
-                lockOut()
                 AuthManager.timeRemaining = 0
+                lockOut()
             }
-        }.start()
-
-        AuthManager.timeRemaining = timeoutUntilStop
-        if (debug) {
-            Log.d(TAG, "Timer started with: ")
         }
+        t?.start()
     }
 
     /**
-     * Restart the CountDownTimer()
+     * Restart the timer.
+     *
+     *
+     * Cancel any existing timers, and call [.startTimer].
      */
     private fun restartTimer() {
-        // must be started with startTimer first.
         if (debug) {
-            Log.d(TAG, "timer restarted")
+            Log.d(TAG, "restartTimer")
         }
-        if (t != null) {
-            t?.cancel()
-            t?.start()
-        }
+        t?.cancel()
+        startTimer()
     }
 
     companion object {

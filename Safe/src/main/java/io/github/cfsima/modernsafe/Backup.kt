@@ -1,7 +1,6 @@
 package io.github.cfsima.modernsafe
 
 import android.content.Context
-import androidx.preference.PreferenceManager
 import android.text.format.Time
 import android.util.Log
 import android.util.Xml
@@ -126,8 +125,7 @@ class Backup(private val context: Context) {
                 Log.d(TAG, "julianDay=$julianDay")
             }
 
-            val sp = PreferenceManager.getDefaultSharedPreferences(context)
-            sp.edit().putInt(Settings.PREFERENCE_LAST_BACKUP_JULIAN, julianDay).apply()
+            SettingsRepository.getInstance(context).setLastBackupJulianAsync(julianDay)
 
             result = context.getString(R.string.backup_complete) + " " +
                     totalPasswords + "\n" + filename

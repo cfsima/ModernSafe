@@ -1,117 +1,146 @@
 package io.github.cfsima.modernsafe
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(application: Application) : AndroidViewModel(application) {
+class SettingsViewModel(
+    application: Application,
+    private val settingsRepository: SettingsRepository = SettingsRepository.getInstance(application)
+) : AndroidViewModel(application) {
 
-    private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+    val externalAccess: StateFlow<Boolean> = settingsRepository.settingsFlow
+        .map { it.externalAccess }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = settingsRepository.userSettings.value.externalAccess
+        )
 
-    private val _externalAccess = MutableStateFlow(false)
-    val externalAccess: StateFlow<Boolean> = _externalAccess.asStateFlow()
+    val lockTimeout: StateFlow<String> = settingsRepository.settingsFlow
+        .map { it.lockTimeout }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = settingsRepository.userSettings.value.lockTimeout
+        )
 
-    private val _lockTimeout = MutableStateFlow(Settings.PREFERENCE_LOCK_TIMEOUT_DEFAULT_VALUE)
-    val lockTimeout: StateFlow<String> = _lockTimeout.asStateFlow()
+    val lockOnScreenLock: StateFlow<Boolean> = settingsRepository.settingsFlow
+        .map { it.lockOnScreenLock }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = settingsRepository.userSettings.value.lockOnScreenLock
+        )
 
-    private val _lockOnScreenLock = MutableStateFlow(true)
-    val lockOnScreenLock: StateFlow<Boolean> = _lockOnScreenLock.asStateFlow()
+    val keypad: StateFlow<Boolean> = settingsRepository.settingsFlow
+        .map { it.keypad }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = settingsRepository.userSettings.value.keypad
+        )
 
-    private val _keypad = MutableStateFlow(false)
-    val keypad: StateFlow<Boolean> = _keypad.asStateFlow()
+    val keypadMute: StateFlow<Boolean> = settingsRepository.settingsFlow
+        .map { it.keypadMute }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = settingsRepository.userSettings.value.keypadMute
+        )
 
-    private val _keypadMute = MutableStateFlow(false)
-    val keypadMute: StateFlow<Boolean> = _keypadMute.asStateFlow()
+    val autoBackup: StateFlow<Boolean> = settingsRepository.settingsFlow
+        .map { it.autoBackup }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = settingsRepository.userSettings.value.autoBackup
+        )
 
-    private val _autoBackup = MutableStateFlow(true)
-    val autoBackup: StateFlow<Boolean> = _autoBackup.asStateFlow()
+    val autoBackupDays: StateFlow<String> = settingsRepository.settingsFlow
+        .map { it.autoBackupDays }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = settingsRepository.userSettings.value.autoBackupDays
+        )
 
-    private val _autoBackupDays = MutableStateFlow(Settings.PREFERENCE_AUTOBACKUP_DAYS_DEFAULT_VALUE)
-    val autoBackupDays: StateFlow<String> = _autoBackupDays.asStateFlow()
+    val backupPath: StateFlow<String> = settingsRepository.settingsFlow
+        .map { it.displayBackupPath }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = settingsRepository.userSettings.value.displayBackupPath
+        )
 
-    private val _backupPath = MutableStateFlow("")
-    val backupPath: StateFlow<String> = _backupPath.asStateFlow()
-
-    private val _exportPath = MutableStateFlow("")
-    val exportPath: StateFlow<String> = _exportPath.asStateFlow()
-
-    init {
-        loadSettings()
-    }
-
-    private fun loadSettings() {
-        _externalAccess.value = prefs.getBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, false)
-        _lockTimeout.value = prefs.getString(Settings.PREFERENCE_LOCK_TIMEOUT, Settings.PREFERENCE_LOCK_TIMEOUT_DEFAULT_VALUE) ?: Settings.PREFERENCE_LOCK_TIMEOUT_DEFAULT_VALUE
-        _lockOnScreenLock.value = prefs.getBoolean(Settings.PREFERENCE_LOCK_ON_SCREEN_LOCK, true)
-        _keypad.value = prefs.getBoolean(Settings.PREFERENCE_KEYPAD, false)
-        _keypadMute.value = prefs.getBoolean(Settings.PREFERENCE_KEYPAD_MUTE, false)
-        _autoBackup.value = prefs.getBoolean(Settings.PREFERENCE_AUTOBACKUP, true)
-        _autoBackupDays.value = prefs.getString(Settings.PREFERENCE_AUTOBACKUP_DAYS, Settings.PREFERENCE_AUTOBACKUP_DAYS_DEFAULT_VALUE) ?: Settings.PREFERENCE_AUTOBACKUP_DAYS_DEFAULT_VALUE
-
-        refreshPaths()
-    }
+    val exportPath: StateFlow<String> = settingsRepository.settingsFlow
+        .map { it.displayExportPath }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = settingsRepository.userSettings.value.displayExportPath
+        )
 
     fun setExternalAccess(enabled: Boolean) {
-        prefs.edit().putBoolean(Settings.PREFERENCE_ALLOW_EXTERNAL_ACCESS, enabled).apply()
-        _externalAccess.value = enabled
+        viewModelScope.launch {
+            settingsRepository.setExternalAccess(enabled)
+        }
     }
 
     fun setLockTimeout(timeout: String) {
-        prefs.edit().putString(Settings.PREFERENCE_LOCK_TIMEOUT, timeout).apply()
-        _lockTimeout.value = timeout
+        viewModelScope.launch {
+            settingsRepository.setLockTimeout(timeout)
+        }
     }
 
     fun setLockOnScreenLock(enabled: Boolean) {
-        prefs.edit().putBoolean(Settings.PREFERENCE_LOCK_ON_SCREEN_LOCK, enabled).apply()
-        _lockOnScreenLock.value = enabled
+        viewModelScope.launch {
+            settingsRepository.setLockOnScreenLock(enabled)
+        }
     }
 
     fun setKeypad(enabled: Boolean) {
-        prefs.edit().putBoolean(Settings.PREFERENCE_KEYPAD, enabled).apply()
-        _keypad.value = enabled
+        viewModelScope.launch {
+            settingsRepository.setKeypad(enabled)
+        }
     }
 
     fun setKeypadMute(enabled: Boolean) {
-        prefs.edit().putBoolean(Settings.PREFERENCE_KEYPAD_MUTE, enabled).apply()
-        _keypadMute.value = enabled
+        viewModelScope.launch {
+            settingsRepository.setKeypadMute(enabled)
+        }
     }
 
     fun setAutoBackup(enabled: Boolean) {
-        prefs.edit().putBoolean(Settings.PREFERENCE_AUTOBACKUP, enabled).apply()
-        _autoBackup.value = enabled
+        viewModelScope.launch {
+            settingsRepository.setAutoBackup(enabled)
+        }
     }
 
     fun setAutoBackupDays(days: String) {
-        prefs.edit().putString(Settings.PREFERENCE_AUTOBACKUP_DAYS, days).apply()
-        _autoBackupDays.value = days
+        viewModelScope.launch {
+            settingsRepository.setAutoBackupDays(days)
+        }
+    }
+
+    fun setBackupDocument(uriString: String) {
+        viewModelScope.launch {
+            settingsRepository.setBackupDocumentAndMethod(uriString)
+        }
+    }
+
+    fun setExportDocument(uriString: String) {
+        viewModelScope.launch {
+            settingsRepository.setExportDocumentAndMethod(uriString)
+        }
     }
 
     fun refreshPaths() {
-        _backupPath.value = getSmartBackupPath()
-        _exportPath.value = getSmartExportPath()
-    }
-
-    private fun getSmartBackupPath(): String {
-        val method = prefs.getString(Settings.PREFERENCE_BACKUP_METHOD, Settings.IO_METHOD_FILE)
-        return if (method == Settings.IO_METHOD_DOCUMENT_PROVIDER) {
-             Settings.getBackupDocument(getApplication()) ?: ""
-        } else {
-             Settings.getBackupPath(getApplication())
-        }
-    }
-
-    private fun getSmartExportPath(): String {
-        val method = prefs.getString(Settings.PREFERENCE_EXPORT_METHOD, Settings.IO_METHOD_FILE)
-        return if (method == Settings.IO_METHOD_DOCUMENT_PROVIDER) {
-             Settings.getExportDocument(getApplication()) ?: ""
-        } else {
-             Settings.getExportPath(getApplication())
-        }
+        // No-op: paths are reactively updated via Flow
     }
 }

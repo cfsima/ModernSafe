@@ -28,8 +28,7 @@ class SettingsActivity : AppCompatActivity() {
     private val backupPathLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
-                Settings.setBackupDocumentAndMethod(this, uri.toString())
-                viewModel.refreshPaths()
+                viewModel.setBackupDocument(uri.toString())
             }
         }
     }
@@ -37,8 +36,7 @@ class SettingsActivity : AppCompatActivity() {
     private val exportPathLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
-                Settings.setExportDocumentAndMethod(this, uri.toString())
-                viewModel.refreshPaths()
+                viewModel.setExportDocument(uri.toString())
             }
         }
     }
