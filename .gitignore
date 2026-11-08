@@ -17,3 +17,9 @@ app/build/
 #private files
 release.keystore
 service_account.json
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
