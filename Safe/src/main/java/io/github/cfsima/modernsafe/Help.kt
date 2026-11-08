@@ -6,27 +6,35 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.webkit.WebView
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.intents.CryptoIntents
-import io.github.cfsima.modernsafe.ui.theme.OISafeTheme
+import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 import java.io.IOException
 
 class Help : AppCompatActivity() {
 
     private val debug = false
     private val TAG = "Help"
-    private val CLOSE_HELP_INDEX = Menu.FIRST
 
     private lateinit var frontdoor: Intent
     private var restartTimerIntent: Intent? = null
@@ -42,15 +50,18 @@ class Help : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        supportActionBar?.hide()
 
         frontdoor = Intent(this, FrontDoor::class.java)
         frontdoor.action = CryptoIntents.ACTION_AUTOLOCK
         restartTimerIntent = Intent(CryptoIntents.ACTION_RESTART_TIMER)
 
         val title = "${getString(R.string.app_name)} - ${getString(R.string.help)}"
-        setTitle(title)
 
         // Read help.html
         var helpText = ""
@@ -63,12 +74,30 @@ class Help : AppCompatActivity() {
         }
 
         setContent {
-            OISafeTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    HelpScreen(helpText)
+            ModernSafeTheme {
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = { Text(title) },
+                            navigationIcon = {
+                                IconButton(onClick = { finish() }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = stringResource(R.string.close)
+                                    )
+                                }
+                            }
+                        )
+                    }
+                ) { innerPadding ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding)
+                    ) {
+                        HelpScreen(helpText)
+                    }
                 }
             }
         }
@@ -96,22 +125,6 @@ class Help : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        super.onCreateOptionsMenu(menu)
-        menu.add(0, CLOSE_HELP_INDEX, 0, R.string.close)
-            .setIcon(android.R.drawable.ic_menu_close_clear_cancel)
-            .setShortcut('0', 'w')
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == CLOSE_HELP_INDEX) {
-            finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onUserInteraction() {
         super.onUserInteraction()
         if (debug) Log.d(TAG, "onUserInteraction()")
@@ -125,6 +138,7 @@ class Help : AppCompatActivity() {
 @Composable
 fun HelpScreen(htmlContent: String) {
     AndroidView(
+        modifier = Modifier.fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
                 loadData(htmlContent, "text/html", "utf-8")

@@ -78,7 +78,8 @@
     <activity
       android:name=".PassGen"
       android:exported="false"
-      android:label="@string/app_name" />
+      android:label="@string/app_name"
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".PassView"
       android:exported="false"
@@ -90,20 +91,23 @@
     <activity
       android:name=".PassEdit"
       android:exported="false"
-      android:label="@string/app_name" />
+      android:label="@string/app_name"
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".CategoryList"
       android:exported="false"
-      android:label="@string/app_name" />
+      android:label="@string/app_name"
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".Search"
       android:exported="false"
-      android:label="@string/app_name" />
+      android:label="@string/app_name"
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".AskPassword"
       android:exported="false"
       android:label="@string/app_name"
-      android:windowSoftInputMode="adjustPan" />
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".Help"
       android:exported="false"
@@ -111,11 +115,13 @@
     <activity
       android:name=".ChangePass"
       android:exported="false"
-      android:label="@string/app_name" />
+      android:label="@string/app_name"
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".Restore"
       android:exported="false"
-      android:label="@string/app_name" />
+      android:label="@string/app_name"
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".SettingsActivity"
       android:exported="false"

@@ -40,9 +40,11 @@ fun PassGenScreen(
     ) { paddingValues ->
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
-                .fillMaxSize(),
+                .consumeWindowInsets(paddingValues)
+                .imePadding()
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {

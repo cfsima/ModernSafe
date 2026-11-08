@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +21,7 @@ import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.intents.CryptoIntents
 import io.github.cfsima.modernsafe.model.PassEntry
 import io.github.cfsima.modernsafe.model.Passwords
-import io.github.cfsima.modernsafe.ui.theme.OISafeTheme
+import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 
 class PassList : AppCompatActivity() {
 
@@ -74,6 +75,7 @@ class PassList : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         window.setFlags(
@@ -91,7 +93,7 @@ class PassList : AppCompatActivity() {
         viewModel.load(categoryId)
 
         setContent {
-            OISafeTheme {
+            ModernSafeTheme {
                 val uiState by viewModel.uiState.collectAsState()
 
                 var showDeleteDialog by remember { mutableStateOf<PassEntry?>(null) }

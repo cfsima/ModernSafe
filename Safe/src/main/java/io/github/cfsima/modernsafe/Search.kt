@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.intents.CryptoIntents
-import io.github.cfsima.modernsafe.ui.theme.OISafeTheme
+import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 
 class Search : AppCompatActivity() {
 
@@ -41,6 +42,7 @@ class Search : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         window.setFlags(
@@ -51,7 +53,7 @@ class Search : AppCompatActivity() {
         supportActionBar?.hide()
 
         setContent {
-            OISafeTheme {
+            ModernSafeTheme {
                 val uiState by viewModel.uiState.collectAsState()
 
                 SearchScreen(

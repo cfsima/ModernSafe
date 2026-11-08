@@ -4,6 +4,8 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -92,6 +94,8 @@ fun AskPasswordScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
+                .consumeWindowInsets(padding)
+                .imePadding()
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -134,7 +138,9 @@ fun FirstTimeContent(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier.widthIn(max = 400.dp)
+        modifier = modifier
+            .widthIn(max = 400.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Icon(
             imageVector = Icons.Default.Lock,
@@ -198,7 +204,9 @@ fun LoginContent(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier.widthIn(max = 400.dp)
+        modifier = modifier
+            .widthIn(max = 400.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Icon(
             imageVector = Icons.Default.Lock,
@@ -247,7 +255,9 @@ fun KeypadContent(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier.widthIn(max = 400.dp)
+        modifier = modifier
+            .widthIn(max = 400.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = if (input.isEmpty()) "Enter Password" else "•".repeat(input.length),

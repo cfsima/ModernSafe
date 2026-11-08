@@ -56,7 +56,13 @@ fun PassViewScreen(
         }
     ) { paddingValues ->
         if (passEntry == null) {
-            Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator()
             }
         } else {
@@ -64,6 +70,7 @@ fun PassViewScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {

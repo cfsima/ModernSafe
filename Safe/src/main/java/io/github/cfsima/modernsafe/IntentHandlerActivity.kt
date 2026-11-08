@@ -21,6 +21,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -53,6 +54,7 @@ class IntentHandlerActivity : AppCompatActivity() {
     private var dialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         if (debug) Log.d(TAG, "onCreate()")
 

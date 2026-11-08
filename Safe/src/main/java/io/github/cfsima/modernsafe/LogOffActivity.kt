@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +17,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,13 +34,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.cfsima.modernsafe.service.AutoLockService
-import io.github.cfsima.modernsafe.ui.theme.OISafeTheme
+import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 import io.github.cfsima.modernsafe.util.VersionUtils
 import kotlinx.coroutines.delay
 
 class LogOffActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         val appName = "Modern Safe" // VersionUtils.getApplicationName(this) requires resource lookup which might fail if context issue, using hardcoded for now or fix VersionUtils?
@@ -53,7 +58,7 @@ class LogOffActivity : AppCompatActivity() {
         val headerText = "Modern Safe "
 
         setContent {
-            OISafeTheme {
+            ModernSafeTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -114,6 +119,8 @@ fun LogOffScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .safeDrawingPadding()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
         // Header

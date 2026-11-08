@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.intents.CryptoIntents
 import io.github.cfsima.modernsafe.model.Passwords
-import io.github.cfsima.modernsafe.ui.theme.OISafeTheme
+import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 
 class PassEdit : AppCompatActivity() {
 
@@ -48,6 +49,7 @@ class PassEdit : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         window.setFlags(
@@ -64,7 +66,7 @@ class PassEdit : AppCompatActivity() {
         }
 
         setContent {
-            OISafeTheme {
+            ModernSafeTheme {
                 val uiState by viewModel.uiState.collectAsState()
 
                 LaunchedEffect(uiState.isSaved) {

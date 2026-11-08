@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import io.github.cfsima.modernsafe.service.AutoLockService
-import io.github.cfsima.modernsafe.ui.theme.OISafeTheme
+import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -57,6 +58,7 @@ class AskPassword : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
@@ -79,7 +81,7 @@ class AskPassword : AppCompatActivity() {
         }
 
         setContent {
-            OISafeTheme {
+            ModernSafeTheme {
                 val uiState by viewModel.uiState.collectAsState()
 
                 if (uiState.showDatabaseError) {

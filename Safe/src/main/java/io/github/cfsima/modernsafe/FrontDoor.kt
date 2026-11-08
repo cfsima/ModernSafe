@@ -3,6 +3,7 @@ package io.github.cfsima.modernsafe
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import io.github.cfsima.modernsafe.intents.CryptoIntents
 
@@ -17,6 +18,7 @@ class FrontDoor : AppCompatActivity() {
     private val debug = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         if (debug) Log.d(TAG, "onCreate()")
 

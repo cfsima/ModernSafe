@@ -205,14 +205,21 @@ fun CategoryListScreen(
         }
     ) { paddingValues ->
         if (uiState.isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator()
             }
         } else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues),
+                contentPadding = paddingValues
             ) {
                 items(uiState.categories) { category ->
                     CategoryItem(

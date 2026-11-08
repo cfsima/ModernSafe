@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -23,7 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.intents.CryptoIntents
 import io.github.cfsima.modernsafe.model.Passwords
-import io.github.cfsima.modernsafe.ui.theme.OISafeTheme
+import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 import io.github.cfsima.modernsafe.util.VersionUtils
 import java.io.File
 
@@ -121,6 +122,7 @@ class CategoryList : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
@@ -128,7 +130,7 @@ class CategoryList : AppCompatActivity() {
         restartTimerIntent = Intent(CryptoIntents.ACTION_RESTART_TIMER)
 
         setContent {
-            OISafeTheme {
+            ModernSafeTheme {
                 val uiState by viewModel.uiState.collectAsState()
 
                 LaunchedEffect(uiState.importedFilePath) {

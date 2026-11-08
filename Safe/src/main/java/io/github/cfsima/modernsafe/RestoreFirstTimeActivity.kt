@@ -5,16 +5,19 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import io.github.cfsima.modernsafe.ui.theme.OISafeTheme
+import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 import java.io.File
 import io.github.cfsima.modernsafe.util.VersionUtils
 
@@ -35,6 +38,7 @@ class RestoreFirstTimeActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         val defaultPath = Settings.getBackupPath(this)
@@ -45,7 +49,7 @@ class RestoreFirstTimeActivity : AppCompatActivity() {
         val headerText = "$appName $version"
 
         setContent {
-            OISafeTheme {
+            ModernSafeTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     RestoreFirstTimeScreen(
                         headerText = headerText,
@@ -81,7 +85,11 @@ fun RestoreFirstTimeScreen(
     onCancel: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

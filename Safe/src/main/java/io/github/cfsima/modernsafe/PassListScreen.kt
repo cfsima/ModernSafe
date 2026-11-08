@@ -48,7 +48,8 @@ fun PassListScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
@@ -57,7 +58,8 @@ fun PassListScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues),
+                contentPadding = paddingValues
             ) {
                 items(uiState.entries) { entry ->
                     PassListItem(

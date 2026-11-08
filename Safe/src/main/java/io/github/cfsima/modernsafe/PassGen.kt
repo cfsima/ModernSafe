@@ -6,10 +6,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import io.github.cfsima.modernsafe.intents.CryptoIntents
-import io.github.cfsima.modernsafe.ui.theme.OISafeTheme
+import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 
 class PassGen : AppCompatActivity() {
 
@@ -29,6 +30,7 @@ class PassGen : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         supportActionBar?.hide()
@@ -40,7 +42,7 @@ class PassGen : AppCompatActivity() {
         }
 
         setContent {
-            OISafeTheme {
+            ModernSafeTheme {
                 PassGenScreen(
                     onUsePassword = { password ->
                         val resultIntent = Intent().apply {
