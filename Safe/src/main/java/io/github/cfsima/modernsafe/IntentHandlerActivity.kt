@@ -21,6 +21,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import android.util.Log
@@ -53,6 +54,15 @@ class IntentHandlerActivity : AppCompatActivity() {
 
     private var dialog: AlertDialog? = null
 
+    private val unlockLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            actionDispatch()
+        } else {
+            setResult(RESULT_CANCELED)
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -67,24 +77,34 @@ class IntentHandlerActivity : AppCompatActivity() {
 
         // If not logged in, show AskPassword to log in
         if (!AuthManager.isSignedIn()) {
-            val askPassword = Intent(this, AskPassword::class.java)
+            val askPassword = Intent(this, MainActivity::class.java)
             askPassword.action = action
             if (thisIntent.extras != null) {
                 askPassword.putExtras(thisIntent.extras!!)
             }
             askPassword.data = thisIntent.data
 
-            if (checkExternalAccess(action)) {
-                askPassword.putExtra(AskPassword.EXTRA_IS_LOCAL, true)
-            }
+            val isLocal = checkExternalAccess(action)
+            askPassword.putExtra(AskPassword.EXTRA_IS_LOCAL, isLocal)
 
-            startActivity(askPassword)
-            finish()
+            if (!isLocal) {
+                unlockLauncher.launch(askPassword)
+            } else {
+                startActivity(askPassword)
+                finish()
+            }
             return
         }
 
         // Initialize Passwords DB (required for GET_PASSWORD/SET_PASSWORD)
         Passwords.Initialize(this)
+
+        if (action == null || action == Intent.ACTION_MAIN) {
+            val mainIntent = Intent(this, MainActivity::class.java)
+            startActivity(mainIntent)
+            finish()
+            return
+        }
 
         if (!checkExternalAccess(action)) {
             showDialogAllowExternalAccess()

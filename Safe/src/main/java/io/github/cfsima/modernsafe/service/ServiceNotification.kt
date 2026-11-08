@@ -25,7 +25,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import io.github.cfsima.modernsafe.LogOffActivity
+import io.github.cfsima.modernsafe.MainActivity
 import io.github.cfsima.modernsafe.R
 
 class ServiceNotification(context: Context) {
@@ -52,7 +52,11 @@ class ServiceNotification(context: Context) {
 
     @SuppressLint("NewApi", "MissingPermission")
     fun setNotification(context: Context) {
-        val intent = Intent(context, LogOffActivity::class.java)
+        val intent = Intent(context, MainActivity::class.java).apply {
+            action = MainActivity.ACTION_LOG_OFF
+            putExtra(MainActivity.EXTRA_DESTINATION, MainActivity.DESTINATION_LOG_OFF)
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         } else {

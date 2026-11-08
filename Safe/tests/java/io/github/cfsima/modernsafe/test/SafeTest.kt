@@ -11,7 +11,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.github.cfsima.modernsafe.FrontDoor
+import io.github.cfsima.modernsafe.MainActivity
 import io.github.cfsima.modernsafe.R
 import org.junit.After
 import org.junit.Before
@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 class SafeTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<FrontDoor>()
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     private val masterPassword = "1234"
 
