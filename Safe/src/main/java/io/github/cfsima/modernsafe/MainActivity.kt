@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "DestructuringDeclaration", "MoveLambdaOutsideParentheses")
+
 package io.github.cfsima.modernsafe
 
 import android.app.KeyguardManager
@@ -50,11 +52,11 @@ class MainActivity : AppCompatActivity() {
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
+            WindowManager.LayoutParams.FLAG_SECURE,
         )
 
         val isLocal = intent.getBooleanExtra(AskPassword.EXTRA_IS_LOCAL, true)
-        val isLogOff = intent.action == ACTION_LOG_OFF || intent.getStringExtra(EXTRA_DESTINATION) == DESTINATION_LOG_OFF
+        val isLogOff = (intent.action == ACTION_LOG_OFF) || (intent.getStringExtra(EXTRA_DESTINATION) == DESTINATION_LOG_OFF)
 
         val startDestination: Any = when {
             isLogOff -> LogOffRoute
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
             ModernSafeTheme(
                 themePalette = userSettings.themePalette,
-                darkMode = userSettings.darkMode
+                darkMode = userSettings.darkMode,
             ) {
                 val hostNavController = rememberNavController()
                 navController = hostNavController
@@ -80,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                     onSetResultOkAndFinish = {
                         setResult(RESULT_OK)
                         finish()
-                    }
+                    },
                 )
             }
         }
@@ -89,7 +91,7 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        val isLogOff = intent.action == ACTION_LOG_OFF || intent.getStringExtra(EXTRA_DESTINATION) == DESTINATION_LOG_OFF
+        val isLogOff = (intent.action == ACTION_LOG_OFF) || (intent.getStringExtra(EXTRA_DESTINATION) == DESTINATION_LOG_OFF)
         if (isLogOff) {
             navController?.navigate(LogOffRoute)
         }
@@ -158,7 +160,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onLoggedOut() {
         val currentDest = navController?.currentDestination
-        if (currentDest == null || currentDest.hasRoute<AskPasswordRoute>()) {
+        if ((currentDest == null) || currentDest.hasRoute<AskPasswordRoute>()) {
             return
         }
         navController?.navigate(AskPasswordRoute(isLocal = true)) {
