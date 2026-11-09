@@ -181,7 +181,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                     if (count == 1L) categoryCount++
                     categoriesFound[line[0]] = count
 
-                    if (categoryCount > CategoryList.MAX_CATEGORIES) {
+                    if (categoryCount > Intents.MAX_CATEGORIES) {
                          _uiState.update { it.copy(isImporting = false, userMessage = context.getString(R.string.import_too_many_categories)) }
                          return@launch
                     }

@@ -1,8 +1,5 @@
 package io.github.cfsima.modernsafe
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,25 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-/**
- * Legacy activity replaced by LogOffRoute in ModernSafeNavHost.
- */
-@Deprecated("Migrated to Compose Navigation within MainActivity. ModernSafeNavHost now manages this destination.")
-class LogOffActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val forwardIntent = Intent(this, MainActivity::class.java).apply {
-            action = intent.action
-            data = intent.data
-            intent.extras?.let { putExtras(it) }
-            addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
-        }
-        startActivity(forwardIntent)
-        finish()
-    }
-}
 
 @Composable
 fun LogOffScreenContent(

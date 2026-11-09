@@ -53,7 +53,6 @@ import io.github.cfsima.modernsafe.AskPasswordEffect
 import io.github.cfsima.modernsafe.AskPasswordScreen
 import io.github.cfsima.modernsafe.AskPasswordViewModel
 import io.github.cfsima.modernsafe.AuthManager
-import io.github.cfsima.modernsafe.CategoryList
 import io.github.cfsima.modernsafe.CategoryListScreen
 import io.github.cfsima.modernsafe.CategoryListViewModel
 import io.github.cfsima.modernsafe.ChangePassScreen
@@ -266,7 +265,7 @@ fun ModernSafeNavHost(
                         TextButton(onClick = {
                             showExportConfirmDialog = false
                             val filename = Settings.getExportPath(context)
-                            val intent = Intents.createCreateDocumentIntent(CategoryList.MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
+                            val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
                             try {
                                 exportFileLauncher.launch(intent)
                             } catch (e: ActivityNotFoundException) {
@@ -332,7 +331,7 @@ fun ModernSafeNavHost(
                 onDeleteCategory = { id -> viewModel.deleteCategory(id) },
                 onSearch = { navController.navigate(SearchRoute) },
                 onBackup = {
-                    val intent = Intents.createCreateDocumentIntent(CategoryList.MIME_TYPE_BACKUP, Settings.OISAFE_XML)
+                    val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_BACKUP, Settings.OISAFE_XML)
                     try {
                         backupFileLauncher.launch(intent)
                     } catch (e: ActivityNotFoundException) {
@@ -342,7 +341,7 @@ fun ModernSafeNavHost(
                 onRestore = { navController.navigate(RestoreRoute()) },
                 onExport = { showExportConfirmDialog = true },
                 onImport = {
-                    val intent = Intents.createOpenDocumentIntents(CategoryList.MIME_TYPE_ANY_TEXT, Settings.getExportDocument(context) ?: "")
+                    val intent = Intents.createOpenDocumentIntents(Intents.MIME_TYPE_ANY_TEXT, Settings.getExportDocument(context) ?: "")
                     try {
                         importFileLauncher.launch(intent)
                     } catch (e: ActivityNotFoundException) {
@@ -688,7 +687,7 @@ fun ModernSafeNavHost(
                 onAutoBackupDaysChange = viewModel::setAutoBackupDays,
                 onLanguageChange = viewModel::setLanguage,
                 onBackupPathClick = {
-                    val intent = Intents.createCreateDocumentIntent(CategoryList.MIME_TYPE_BACKUP, Settings.OISAFE_XML)
+                    val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_BACKUP, Settings.OISAFE_XML)
                     try {
                         backupPathLauncher.launch(intent)
                     } catch (e: ActivityNotFoundException) {
@@ -696,7 +695,7 @@ fun ModernSafeNavHost(
                     }
                 },
                 onExportPathClick = {
-                    val intent = Intents.createCreateDocumentIntent(CategoryList.MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
+                    val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
                     try {
                         exportPathLauncher.launch(intent)
                     } catch (e: ActivityNotFoundException) {
