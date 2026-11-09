@@ -8,7 +8,7 @@ import java.io.OutputStream
 
 class OutputStreamData private constructor(
     val filename: String,
-    val stream: OutputStream
+    val stream: OutputStream,
 ) {
     @Throws(FileNotFoundException::class)
     constructor(filename: String) : this(filename, FileOutputStream(filename))
@@ -17,6 +17,6 @@ class OutputStreamData private constructor(
     constructor(documentUri: Uri, context: Context) : this(
         documentUri.toString(),
         context.contentResolver.openOutputStream(documentUri)
-            ?: throw FileNotFoundException("Could not open stream for $documentUri")
+            ?: throw FileNotFoundException("Could not open stream for $documentUri"),
     )
 }
