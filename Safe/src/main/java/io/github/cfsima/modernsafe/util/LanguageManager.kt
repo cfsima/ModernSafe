@@ -10,7 +10,7 @@ object LanguageManager {
 
     data class LanguageItem(
         val tag: String,
-        val nativeName: String
+        val nativeName: String,
     )
 
     // Supported language tags matching res/values-* folders
@@ -47,7 +47,7 @@ object LanguageManager {
         "sk",
         "tl",
         "tr",
-        "ug"
+        "ug",
     )
 
     fun getLanguageItems(context: Context): List<LanguageItem> {
