@@ -9,8 +9,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +41,8 @@ fun PassViewScreen(
     hasNext: Boolean,
     hasPrev: Boolean
 ) {
+    var passwordVisible by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -136,6 +144,8 @@ fun PassViewScreen(
 
                 // Password
                 val passwordLabel = stringResource(id = R.string.password)
+                val rawPassword = passEntry.plainPassword ?: ""
+                val displayedPassword = if (passwordVisible) rawPassword else "•".repeat(if (rawPassword.isEmpty()) 0 else rawPassword.length)
                 Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = passwordLabel,
@@ -143,15 +153,22 @@ fun PassViewScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = passEntry.plainPassword ?: "",
+                        text = displayedPassword,
                         modifier = Modifier
                             .weight(1f)
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(4.dp)
-                            .clickable { onCopy(passwordLabel, passEntry.plainPassword ?: "") },
+                            .clickable { onCopy(passwordLabel, rawPassword) },
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 18.sp
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                        )
+                    }
                 }
 
                 // Notes
