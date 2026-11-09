@@ -2,16 +2,34 @@ package io.github.cfsima.modernsafe
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,17 +56,19 @@ fun PassViewScreen(
     onNext: () -> Unit,
     onPrev: () -> Unit,
     hasNext: Boolean,
-    hasPrev: Boolean
+    hasPrev: Boolean,
+    modifier: Modifier = Modifier,
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(value = false) }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.app_name) + " - " + stringResource(id = R.string.view_entry)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
@@ -59,9 +78,9 @@ fun PassViewScreen(
                     IconButton(onClick = { onDelete(passEntry) }) {
                         Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.password_delete))
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         if (passEntry == null) {
             Box(
@@ -69,7 +88,7 @@ fun PassViewScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
                     .consumeWindowInsets(paddingValues),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
@@ -80,32 +99,38 @@ fun PassViewScreen(
                     .padding(paddingValues)
                     .consumeWindowInsets(paddingValues)
                     .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
                 // Description
-                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
                         text = stringResource(id = R.string.description),
                         modifier = Modifier.padding(end = 8.dp).width(100.dp),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                     Text(
-                        text = passEntry.plainDescription ?: "",
+                        text = passEntry.plainDescription,
                         modifier = Modifier
                             .weight(1f)
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(4.dp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
                     )
                 }
 
                 // Website
-                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
                         text = stringResource(id = R.string.website),
                         modifier = Modifier.padding(end = 8.dp).width(100.dp),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                     Text(
                         text = passEntry.plainWebsite ?: "",
@@ -114,7 +139,7 @@ fun PassViewScreen(
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(4.dp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(onClick = { onLaunchUrl(passEntry.plainWebsite ?: "") }) {
@@ -124,11 +149,14 @@ fun PassViewScreen(
 
                 // Username
                 val usernameLabel = stringResource(id = R.string.username)
-                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
                         text = usernameLabel,
                         modifier = Modifier.padding(end = 8.dp).width(100.dp),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                     Text(
                         text = passEntry.plainUsername ?: "",
@@ -138,7 +166,7 @@ fun PassViewScreen(
                             .padding(4.dp)
                             .clickable { onCopy(usernameLabel, passEntry.plainUsername ?: "") },
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
                     )
                 }
 
@@ -146,11 +174,14 @@ fun PassViewScreen(
                 val passwordLabel = stringResource(id = R.string.password)
                 val rawPassword = passEntry.plainPassword ?: ""
                 val displayedPassword = if (passwordVisible) rawPassword else "•".repeat(if (rawPassword.isEmpty()) 0 else rawPassword.length)
-                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
                         text = passwordLabel,
                         modifier = Modifier.padding(end = 8.dp).width(100.dp),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                     Text(
                         text = displayedPassword,
@@ -160,13 +191,13 @@ fun PassViewScreen(
                             .padding(4.dp)
                             .clickable { onCopy(passwordLabel, rawPassword) },
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
                         )
                     }
                 }
@@ -175,7 +206,7 @@ fun PassViewScreen(
                 Text(
                     text = stringResource(id = R.string.notes),
                     modifier = Modifier.padding(vertical = 8.dp),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = passEntry.plainNote ?: "",
@@ -184,7 +215,7 @@ fun PassViewScreen(
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                         .padding(4.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 18.sp
+                    fontSize = 18.sp,
                 )
 
                 // Last Edited
@@ -192,7 +223,7 @@ fun PassViewScreen(
                 val lastEditedLabel = stringResource(id = R.string.last_edited)
                 Text(
                     text = "$lastEditedLabel: ${passEntry.lastEdited}",
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
                 )
 
                 // Unique Name
@@ -200,7 +231,7 @@ fun PassViewScreen(
                     val uniqueNameLabel = stringResource(id = R.string.uniquename)
                     Text(
                         text = "$uniqueNameLabel: ${passEntry.plainUniqueName}",
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                 }
 
@@ -210,7 +241,7 @@ fun PassViewScreen(
                     val packageAccessLabel = stringResource(id = R.string.package_access)
                     Text(
                         text = "$packageAccessLabel: $packageText",
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                 }
 
@@ -219,18 +250,18 @@ fun PassViewScreen(
                 // Navigation
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Button(
                         onClick = onPrev,
-                        enabled = hasPrev
+                        enabled = hasPrev,
                     ) {
                         Text(text = stringResource(id = R.string.previous))
                     }
 
                     Button(
                         onClick = onNext,
-                        enabled = hasNext
+                        enabled = hasNext,
                     ) {
                         Text(text = stringResource(id = R.string.next))
                     }
