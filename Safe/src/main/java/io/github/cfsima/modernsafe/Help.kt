@@ -1,3 +1,5 @@
+@file:Suppress("MoveLambdaOutsideParentheses")
+
 package io.github.cfsima.modernsafe
 
 import android.content.Intent
@@ -29,9 +31,12 @@ class Help : AppCompatActivity() {
 }
 
 @Composable
-fun HelpScreen(htmlContent: String) {
+fun HelpScreen(
+    htmlContent: String,
+    modifier: Modifier = Modifier,
+) {
     AndroidView(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
                 loadData(htmlContent, "text/html", "utf-8")
@@ -39,6 +44,6 @@ fun HelpScreen(htmlContent: String) {
         },
         update = { webView ->
             webView.loadData(htmlContent, "text/html", "utf-8")
-        }
+        },
     )
 }
