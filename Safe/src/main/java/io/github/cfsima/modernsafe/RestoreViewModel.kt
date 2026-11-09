@@ -21,7 +21,8 @@ data class RestoreUiState(
     val status: RestoreStatus = RestoreStatus.Idle,
     val error: String? = null,
     val restoreDataSet: RestoreDataSet? = null,
-    val masterKey: String? = null
+    val masterKey: String? = null,
+    val userPassword: String? = null
 )
 
 sealed class RestoreStatus {
@@ -157,7 +158,11 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
                  }
 
                  // Success! Ask for confirmation
-                 _uiState.value = _uiState.value.copy(status = RestoreStatus.Confirming, masterKey = masterKey)
+                 _uiState.value = _uiState.value.copy(
+                     status = RestoreStatus.Confirming,
+                     masterKey = masterKey,
+                     userPassword = password
+                 )
 
              } catch (e: Exception) {
                  _uiState.value = RestoreUiState(status = RestoreStatus.Error, error = e.localizedMessage)
@@ -168,6 +173,7 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
     fun performRestore() {
         val data = _uiState.value.restoreDataSet ?: return
         val masterKey = _uiState.value.masterKey ?: return
+        val userPassword = _uiState.value.userPassword
 
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = _uiState.value.copy(status = RestoreStatus.Restoring)
@@ -181,26 +187,92 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
 
                 dbHelper.deleteDatabase()
 
-                dbHelper.storeSalt(data.salt)
-                dbHelper.storeMasterKey(data.masterKeyEncrypted)
-                val version = if (data.masterKeyEncrypted.startsWith(CryptoHelper.V5_PREFIX)) 5 else 4
-                dbHelper.updateVersion(version)
-                Master.salt = data.salt
-                Master.masterKey = masterKey
+                val isV5Backup = data.masterKeyEncrypted.startsWith(CryptoHelper.V5_PREFIX)
 
-                for (category in data.categories) {
-                    dbHelper.addCategory(category)
-                }
+                if (isV5Backup || userPassword == null) {
+                    // Backup is already V5 (or no password provided): write directly
+                    dbHelper.storeSalt(data.salt)
+                    dbHelper.storeMasterKey(data.masterKeyEncrypted)
+                    val version = if (isV5Backup) 5 else 4
+                    dbHelper.updateVersion(version)
+                    Master.salt = data.salt
+                    Master.masterKey = masterKey
 
-                for (password in data.pass) {
-                    val rowid = dbHelper.addPassword(password)
-                    password.packageAccess?.forEach { packageName ->
-                        dbHelper.addPackageAccess(rowid, packageName)
+                    for (category in data.categories) {
+                        dbHelper.addCategory(category)
                     }
-                }
 
-                dbHelper.commit()
-                Passwords.Reset()
+                    for (password in data.pass) {
+                        val rowid = dbHelper.addPassword(password)
+                        password.packageAccess?.forEach { packageName ->
+                            dbHelper.addPackageAccess(rowid, packageName)
+                        }
+                    }
+
+                    dbHelper.commit()
+                    val strength = if (isV5Backup) CryptoHelper.EncryptionV5 else CryptoHelper.EncryptionMedium
+                    Passwords.InitCrypto(strength, data.salt, masterKey)
+                    Passwords.Reset()
+                } else {
+                    // Upgrade legacy backup transparently to V5 (AES-256-GCM + PBKDF2)
+                    val legacyDekCrypto = CryptoHelper()
+                    legacyDekCrypto.init(CryptoHelper.EncryptionMedium, data.salt)
+                    legacyDekCrypto.setPassword(masterKey)
+
+                    val newSalt = CryptoHelper.generateSalt(CryptoHelper.SALT_LENGTH)
+                    val v5KekCrypto = CryptoHelper()
+                    v5KekCrypto.initV5(newSalt)
+                    v5KekCrypto.setPassword(userPassword)
+                    val newEncryptedMasterKey = v5KekCrypto.encrypt(masterKey)
+
+                    val v5DekCrypto = CryptoHelper()
+                    v5DekCrypto.initV5WithMasterKey(masterKey)
+
+                    dbHelper.storeSalt(newSalt)
+                    dbHelper.storeMasterKey(newEncryptedMasterKey)
+                    dbHelper.updateVersion(5)
+                    Master.salt = newSalt
+                    Master.masterKey = masterKey
+
+                    for (category in data.categories) {
+                        val plainName = try { legacyDekCrypto.decrypt(category.name) } catch (_: Exception) { category.name }
+                        category.name = v5DekCrypto.encrypt(plainName)
+                        dbHelper.addCategory(category)
+                    }
+
+                    for (passRow in data.pass) {
+                        val plainDesc = try { legacyDekCrypto.decrypt(passRow.description) } catch (_: Exception) { passRow.description }
+                        val plainPass = try { legacyDekCrypto.decrypt(passRow.password) } catch (_: Exception) { passRow.password }
+                        val plainWeb = if (!passRow.website.isNullOrEmpty()) {
+                            try { legacyDekCrypto.decrypt(passRow.website) } catch (_: Exception) { passRow.website }
+                        } else ""
+                        val plainUser = if (!passRow.username.isNullOrEmpty()) {
+                            try { legacyDekCrypto.decrypt(passRow.username) } catch (_: Exception) { passRow.username }
+                        } else ""
+                        val plainNote = if (!passRow.note.isNullOrEmpty()) {
+                            try { legacyDekCrypto.decrypt(passRow.note) } catch (_: Exception) { passRow.note }
+                        } else ""
+                        val plainUnique = if (!passRow.uniqueName.isNullOrEmpty()) {
+                            try { legacyDekCrypto.decrypt(passRow.uniqueName) } catch (_: Exception) { passRow.uniqueName }
+                        } else ""
+
+                        passRow.description = v5DekCrypto.encrypt(plainDesc)
+                        passRow.password = v5DekCrypto.encrypt(plainPass)
+                        passRow.website = if (plainWeb.isNotEmpty()) v5DekCrypto.encrypt(plainWeb) else ""
+                        passRow.username = if (plainUser.isNotEmpty()) v5DekCrypto.encrypt(plainUser) else ""
+                        passRow.note = if (plainNote.isNotEmpty()) v5DekCrypto.encrypt(plainNote) else ""
+                        passRow.uniqueName = if (plainUnique.isNotEmpty()) v5DekCrypto.encrypt(plainUnique) else ""
+
+                        val rowid = dbHelper.addPassword(passRow)
+                        passRow.packageAccess?.forEach { packageName ->
+                            dbHelper.addPackageAccess(rowid, packageName)
+                        }
+                    }
+
+                    dbHelper.commit()
+                    Passwords.InitCrypto(CryptoHelper.EncryptionV5, newSalt, masterKey)
+                    Passwords.Reset()
+                }
 
                 _uiState.value = _uiState.value.copy(status = RestoreStatus.Success)
             } catch (e: Exception) {
