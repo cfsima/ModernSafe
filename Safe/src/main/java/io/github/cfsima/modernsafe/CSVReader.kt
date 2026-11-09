@@ -13,7 +13,7 @@ class CSVReader(
     reader: Reader,
     private val separator: Char = DEFAULT_SEPARATOR,
     private val quotechar: Char = DEFAULT_QUOTE_CHARACTER,
-    private val skipLines: Int = DEFAULT_SKIP_LINES
+    private val skipLines: Int = DEFAULT_SKIP_LINES,
 ) {
     private val br = BufferedReader(reader)
     private var hasNext = true
@@ -30,13 +30,11 @@ class CSVReader(
      * if bad things happen during the read
      */
     @Throws(IOException::class)
+    @Suppress("unused")
     fun readAll(): List<Array<String>> {
         val allElements = ArrayList<Array<String>>()
         while (hasNext) {
-            val nextLineAsTokens = readNext()
-            if (nextLineAsTokens != null) {
-                allElements.add(nextLineAsTokens)
-            }
+            readNext()?.let { allElements.add(it) }
         }
         return allElements
     }
@@ -66,7 +64,7 @@ class CSVReader(
     @Throws(IOException::class)
     private fun getNextLine(): String? {
         if (!this.linesSkiped) {
-            for (i in 0 until skipLines) {
+            repeat(skipLines) {
                 br.readLine()
             }
             this.linesSkiped = true
@@ -113,8 +111,8 @@ class CSVReader(
                     // this gets complex... the quote may end a quoted block, or escape another quote.
                     // do a 1-char lookahead:
                     if (inQuotes // we are in quotes, therefore there can be escaped quotes in here.
-                        && line.length > (i + 1) // there is indeed another character to check.
-                        && line[i + 1] == quotechar // ..and that char. is a quote also.
+                        && (line.length > (i + 1)) // there is indeed another character to check.
+                        && (line[i + 1] == quotechar) // ..and that char. is a quote also.
                     ) {
                         // we have two quote chars in a row == one quote char, so consume them both and
                         // put one on the token. we do *not* exit the quoted text.
@@ -123,15 +121,15 @@ class CSVReader(
                     } else {
                         inQuotes = !inQuotes
                         // the tricky case of an embedded quote in the middle: a,bc"d"ef,g
-                        if (i > 2 //not on the begining of the line
-                            && line[i - 1] != this.separator //not at the begining of an escape sequence
-                            && line.length > (i + 1) &&
-                            line[i + 1] != this.separator //not at the	end of an escape sequence
+                        if ((i > 2) //not on the begining of the line
+                            && (line[i - 1] != this.separator) //not at the begining of an escape sequence
+                            && (line.length > (i + 1))
+                            && (line[i + 1] != this.separator) //not at the	end of an escape sequence
                         ) {
                             sb.append(c)
                         }
                     }
-                } else if (c == separator && !inQuotes) {
+                } else if ((c == separator) && !inQuotes) {
                     tokensOnThisLine.add(sb.toString())
                     sb = StringBuilder() // start work on next token
                 } else {
