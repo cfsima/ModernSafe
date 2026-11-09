@@ -34,7 +34,7 @@ sealed class AskPasswordEffect {
     object CloseApp : AskPasswordEffect()
 }
 
-class AskPasswordViewModel(
+class AskPasswordViewModel @JvmOverloads constructor(
     application: Application,
     private val settingsRepository: SettingsRepository = SettingsRepository.getInstance(application)
 ) : AndroidViewModel(application) {
