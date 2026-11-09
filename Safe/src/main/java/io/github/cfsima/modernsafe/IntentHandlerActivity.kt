@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package io.github.cfsima.modernsafe
 
 import android.content.BroadcastReceiver
@@ -36,15 +38,13 @@ import io.github.cfsima.modernsafe.intents.CryptoIntents
 import io.github.cfsima.modernsafe.model.CategoryEntry
 import io.github.cfsima.modernsafe.model.PassEntry
 import io.github.cfsima.modernsafe.model.Passwords
-import io.github.cfsima.modernsafe.password.Master
-import java.util.Arrays
 
 class IntentHandlerActivity : AppCompatActivity() {
 
     private val logoutReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == CryptoIntents.ACTION_CRYPTO_LOGGED_OUT) {
-                if (debug) Log.d(TAG, "caught ACTION_CRYPTO_LOGGED_OUT")
+                if (DEBUG) Log.d(TAG, "caught ACTION_CRYPTO_LOGGED_OUT")
                 finish()
             }
         }
@@ -69,9 +69,9 @@ class IntentHandlerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
+            WindowManager.LayoutParams.FLAG_SECURE,
         )
-        if (debug) Log.d(TAG, "onCreate()")
+        if (DEBUG) Log.d(TAG, "onCreate()")
 
         actionDispatch()
     }
@@ -104,7 +104,7 @@ class IntentHandlerActivity : AppCompatActivity() {
         // Initialize Passwords DB (required for GET_PASSWORD/SET_PASSWORD)
         Passwords.Initialize(this)
 
-        if (action == null || action == Intent.ACTION_MAIN) {
+        if ((action == null) || (action == Intent.ACTION_MAIN)) {
             val mainIntent = Intent(this, MainActivity::class.java)
             startActivity(mainIntent)
             finish()
@@ -119,30 +119,40 @@ class IntentHandlerActivity : AppCompatActivity() {
         var callbackIntent = Intent(thisIntent)
         var callbackResult = RESULT_CANCELED
 
-        if (action == CryptoIntents.ACTION_ENCRYPT || action == CryptoIntents.ACTION_ENCRYPT_MODERN) {
-            callbackResult = encryptIntent(thisIntent, callbackIntent)
-        } else if (action == CryptoIntents.ACTION_DECRYPT || action == CryptoIntents.ACTION_DECRYPT_MODERN) {
-            callbackResult = decryptIntent(thisIntent, callbackIntent)
-        } else if (action == CryptoIntents.ACTION_GET_PASSWORD || action == CryptoIntents.ACTION_GET_PASSWORD_MODERN ||
-            action == CryptoIntents.ACTION_SET_PASSWORD || action == CryptoIntents.ACTION_SET_PASSWORD_MODERN
-        ) {
-            try {
-                callbackIntent = getSetPassword(thisIntent, callbackIntent)
-                callbackResult = RESULT_OK
-            } catch (e: CryptoHelperException) {
-                Log.e(TAG, e.toString(), e)
-                Toast.makeText(
-                    this@IntentHandlerActivity,
-                    getString(R.string.crypto_error_retrieving_password, e.message),
-                    Toast.LENGTH_SHORT
-                ).show()
-            } catch (e: Exception) {
-                Log.e(TAG, e.toString(), e)
-                Toast.makeText(
-                    this@IntentHandlerActivity,
-                    getString(R.string.error_retrieving_password, e.message),
-                    Toast.LENGTH_SHORT
-                ).show()
+        when (action) {
+            CryptoIntents.ACTION_ENCRYPT,
+            CryptoIntents.ACTION_ENCRYPT_MODERN,
+            -> {
+                callbackResult = encryptIntent(thisIntent, callbackIntent)
+            }
+            CryptoIntents.ACTION_DECRYPT,
+            CryptoIntents.ACTION_DECRYPT_MODERN,
+            -> {
+                callbackResult = decryptIntent(thisIntent, callbackIntent)
+            }
+            CryptoIntents.ACTION_GET_PASSWORD,
+            CryptoIntents.ACTION_GET_PASSWORD_MODERN,
+            CryptoIntents.ACTION_SET_PASSWORD,
+            CryptoIntents.ACTION_SET_PASSWORD_MODERN,
+            -> {
+                try {
+                    callbackIntent = getSetPassword(thisIntent, callbackIntent)
+                    callbackResult = RESULT_OK
+                } catch (e: CryptoHelperException) {
+                    Log.e(TAG, e.toString(), e)
+                    Toast.makeText(
+                        this@IntentHandlerActivity,
+                        getString(R.string.crypto_error_retrieving_password, e.message),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                } catch (e: Exception) {
+                    Log.e(TAG, e.toString(), e)
+                    Toast.makeText(
+                        this@IntentHandlerActivity,
+                        getString(R.string.error_retrieving_password, e.message),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
             }
         }
         setResult(callbackResult, callbackIntent)
@@ -150,24 +160,16 @@ class IntentHandlerActivity : AppCompatActivity() {
     }
 
     private fun checkExternalAccess(action: String?): Boolean {
-        val isLocalAction = action == null || action == Intent.ACTION_MAIN || action == CryptoIntents.ACTION_AUTOLOCK
-        var isLocalPackage = false
-        if (callingPackage == packageName) {
-            isLocalPackage = true
-        }
+        val isLocalAction = (action == null) || (action == Intent.ACTION_MAIN) || (action == CryptoIntents.ACTION_AUTOLOCK)
+        val isLocalPackage = (callingPackage == packageName)
 
-        if (debug) Log.d(TAG, "checkExternalAccess: callingPackage=$callingPackage, isLocalAction=$isLocalAction, isLocalPackage=$isLocalPackage")
+        if (DEBUG) Log.d(TAG, "checkExternalAccess: callingPackage=$callingPackage, isLocalAction=$isLocalAction, isLocalPackage=$isLocalPackage")
 
-        if (isLocalAction || isLocalPackage) {
-            return true
-        }
-
-        // If external, check preference
-        return SettingsRepository.getInstance(this).isExternalAccessAllowed()
+        return (isLocalAction || isLocalPackage) || SettingsRepository.getInstance(this).isExternalAccessAllowed()
     }
 
     private fun showDialogAllowExternalAccess() {
-        if (dialog != null && dialog!!.isShowing) {
+        if (dialog?.isShowing == true) {
              return
         }
 
@@ -202,10 +204,10 @@ class IntentHandlerActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (debug) Log.d(TAG, "onResume")
+        if (DEBUG) Log.d(TAG, "onResume")
 
         if (!AuthManager.isSignedIn()) {
-            if (debug) Log.d(TAG, "not signed in")
+            if (DEBUG) Log.d(TAG, "not signed in")
             finish()
             return
         }
@@ -216,13 +218,13 @@ class IntentHandlerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (debug) Log.d(TAG, "onPause")
+        if (DEBUG) Log.d(TAG, "onPause")
         try {
             unregisterReceiver(logoutReceiver)
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // ignore
         }
-        if (isFinishing && dialog != null) {
+        if (isFinishing && (dialog != null)) {
             dialog?.dismiss()
             dialog = null
         }
@@ -237,6 +239,7 @@ class IntentHandlerActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("SameParameterValue")
     private fun getExtraStringArray(intent: Intent, legacyKey: String, modernKey: String): Array<String>? {
         return if (intent.hasExtra(modernKey)) {
             intent.getStringArrayExtra(modernKey)
@@ -246,13 +249,13 @@ class IntentHandlerActivity : AppCompatActivity() {
     }
 
     private fun encryptIntent(thisIntent: Intent, callbackIntent: Intent): Int {
-        if (debug) Log.d(TAG, "encryptIntent()")
+        if (DEBUG) Log.d(TAG, "encryptIntent()")
         var callbackResult = RESULT_CANCELED
 
         try {
             val inputBody = getExtraString(thisIntent, CryptoIntents.EXTRA_TEXT, CryptoIntents.EXTRA_TEXT_MODERN)
             if (inputBody != null) {
-                if (debug) Log.d(TAG, "inputBody=$inputBody")
+                if (DEBUG) Log.d(TAG, "inputBody=$inputBody")
                 val outputBody = ch?.encryptWithSessionKey(inputBody)
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT, outputBody)
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_MODERN, outputBody)
@@ -260,12 +263,12 @@ class IntentHandlerActivity : AppCompatActivity() {
 
             val inputArr = getExtraStringArray(thisIntent, CryptoIntents.EXTRA_TEXT_ARRAY, CryptoIntents.EXTRA_TEXT_ARRAY_MODERN)
             if (inputArr != null) {
-                if (debug) Log.d(TAG, "in=${Arrays.toString(inputArr)}")
+                if (DEBUG) Log.d(TAG, "in=${inputArr.contentToString()}")
                 val outputArr = arrayOfNulls<String>(inputArr.size)
                 for (i in inputArr.indices) {
                     outputArr[i] = ch?.encryptWithSessionKey(inputArr[i])
                 }
-                if (debug) Log.d(TAG, "out=${Arrays.toString(outputArr)}")
+                if (DEBUG) Log.d(TAG, "out=${outputArr.contentToString()}")
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY, outputArr)
                 callbackIntent.putExtra(CryptoIntents.EXTRA_TEXT_ARRAY_MODERN, outputArr)
             }
@@ -276,10 +279,7 @@ class IntentHandlerActivity : AppCompatActivity() {
             }
 
             if (thisIntent.hasExtra(CryptoIntents.EXTRA_SESSION_KEY) || thisIntent.hasExtra(CryptoIntents.EXTRA_SESSION_KEY_MODERN)) {
-                val sessionKey = ch?.currentSessionKey
-                if (sessionKey == null) {
-                    return RESULT_CANCELED
-                }
+                val sessionKey = ch?.currentSessionKey ?: return RESULT_CANCELED
                 callbackIntent.putExtra(CryptoIntents.EXTRA_SESSION_KEY, sessionKey)
                 callbackIntent.putExtra(CryptoIntents.EXTRA_SESSION_KEY_MODERN, sessionKey)
                 callbackIntent.data = CryptoContentProvider.CONTENT_URI
@@ -333,46 +333,42 @@ class IntentHandlerActivity : AppCompatActivity() {
     @Throws(Exception::class)
     private fun getSetPassword(thisIntent: Intent, callbackIntent: Intent): Intent {
         val action = thisIntent.action
-        if (debug) Log.d(TAG, "GET_or_SET_PASSWORD")
-
-        var username: String? = null
-        var password: String? = null
+        if (DEBUG) Log.d(TAG, "GET_or_SET_PASSWORD")
 
         val clearUniqueName = getExtraString(thisIntent, CryptoIntents.EXTRA_UNIQUE_NAME, CryptoIntents.EXTRA_UNIQUE_NAME_MODERN)
             ?: throw IllegalArgumentException(getString(R.string.extra_unique_name_not_set))
 
-        var row: PassEntry? = Passwords.findPassWithUniqueName(clearUniqueName)
-        val passExists = (row != null)
+        val existingRow = Passwords.findPassWithUniqueName(clearUniqueName)
+        val passExists = (existingRow != null)
 
         val callingPackage = callingPackage ?: throw SecurityException(getString(R.string.unknown_calling_package))
 
-        if (passExists) {
-            val packageAccess = Passwords.getPackageAccess(row!!.id)
-            if (packageAccess == null || !PassEntry.checkPackageAccess(packageAccess!!, callingPackage)) {
+        if (existingRow != null) {
+            val packageAccess = Passwords.getPackageAccess(existingRow.id)
+            if ((packageAccess == null) || !PassEntry.checkPackageAccess(packageAccess, callingPackage)) {
                 throw SecurityException(getString(R.string.request_password_not_permissible))
             }
-        } else {
-            row = PassEntry()
         }
+        val row = existingRow ?: PassEntry()
 
-        if (action == CryptoIntents.ACTION_GET_PASSWORD || action == CryptoIntents.ACTION_GET_PASSWORD_MODERN) {
+        if ((action == CryptoIntents.ACTION_GET_PASSWORD) || (action == CryptoIntents.ACTION_GET_PASSWORD_MODERN)) {
             if (passExists) {
-                username = row?.plainUsername
-                password = row?.plainPassword
+                val username = row.plainUsername
+                val password = row.plainPassword
+                callbackIntent.putExtra(CryptoIntents.EXTRA_USERNAME, username)
+                callbackIntent.putExtra(CryptoIntents.EXTRA_USERNAME_MODERN, username)
+                callbackIntent.putExtra(CryptoIntents.EXTRA_PASSWORD, password)
+                callbackIntent.putExtra(CryptoIntents.EXTRA_PASSWORD_MODERN, password)
             } else {
                 throw IllegalArgumentException(getString(R.string.password_not_found_unique_name, clearUniqueName))
             }
-            callbackIntent.putExtra(CryptoIntents.EXTRA_USERNAME, username)
-            callbackIntent.putExtra(CryptoIntents.EXTRA_USERNAME_MODERN, username)
-            callbackIntent.putExtra(CryptoIntents.EXTRA_PASSWORD, password)
-            callbackIntent.putExtra(CryptoIntents.EXTRA_PASSWORD_MODERN, password)
 
-        } else if (action == CryptoIntents.ACTION_SET_PASSWORD || action == CryptoIntents.ACTION_SET_PASSWORD_MODERN) {
+        } else if ((action == CryptoIntents.ACTION_SET_PASSWORD) || (action == CryptoIntents.ACTION_SET_PASSWORD_MODERN)) {
             val clearUsername = getExtraString(thisIntent, CryptoIntents.EXTRA_USERNAME, CryptoIntents.EXTRA_USERNAME_MODERN)
             val clearPassword = getExtraString(thisIntent, CryptoIntents.EXTRA_PASSWORD, CryptoIntents.EXTRA_PASSWORD_MODERN)
                 ?: throw IllegalArgumentException(getString(R.string.extra_password_not_set))
 
-            row!!.plainUsername = clearUsername ?: ""
+            row.plainUsername = clearUsername ?: ""
             row.plainPassword = clearPassword
 
             if (passExists) {
@@ -388,19 +384,17 @@ class IntentHandlerActivity : AppCompatActivity() {
                 row.plainNote = ""
 
                 val category = "Application Data"
-                var c: CategoryEntry? = Passwords.getCategoryEntryByName(category)
-                if (c == null) {
-                    c = CategoryEntry()
-                    c.plainName = "Application Data"
-                    c.id = Passwords.putCategoryEntry(c)
+                val c = Passwords.getCategoryEntryByName(category) ?: CategoryEntry().apply {
+                    plainName = "Application Data"
+                    id = Passwords.putCategoryEntry(this)
                 }
-                row.category = c!!.id
+                row.category = c.id
                 row.id = 0
                 row.id = Passwords.putPassEntry(row)
             }
-            val packageAccess = Passwords.getPackageAccess(row!!.id)
-            if (packageAccess == null || !PassEntry.checkPackageAccess(packageAccess!!, callingPackage)) {
-                Passwords.addPackageAccess(row!!.id, callingPackage)
+            val packageAccess = Passwords.getPackageAccess(row.id)
+            if ((packageAccess == null) || !PassEntry.checkPackageAccess(packageAccess, callingPackage)) {
+                Passwords.addPackageAccess(row.id, callingPackage)
             }
         }
         return callbackIntent
@@ -408,6 +402,6 @@ class IntentHandlerActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "IntentHandlerActivity"
-        private const val debug = false
+        private const val DEBUG = false
     }
 }
