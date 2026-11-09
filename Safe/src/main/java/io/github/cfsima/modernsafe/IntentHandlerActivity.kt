@@ -26,6 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.WindowManager
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -66,6 +67,10 @@ class IntentHandlerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         if (debug) Log.d(TAG, "onCreate()")
 
         actionDispatch()
