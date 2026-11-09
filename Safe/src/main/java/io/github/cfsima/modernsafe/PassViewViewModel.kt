@@ -16,8 +16,7 @@ class PassViewViewModel(application: Application) : AndroidViewModel(application
     private val _currentPassEntry = MutableStateFlow<PassEntry?>(null)
     val currentPassEntry: StateFlow<PassEntry?> = _currentPassEntry.asStateFlow()
 
-    private val _currentPosition = MutableStateFlow<Int>(-1)
-    val currentPosition: StateFlow<Int> = _currentPosition.asStateFlow()
+    private val _currentPosition = MutableStateFlow(-1)
 
     private val _packageAccess = MutableStateFlow<List<String>>(emptyList())
     val packageAccess: StateFlow<List<String>> = _packageAccess.asStateFlow()
@@ -29,10 +28,10 @@ class PassViewViewModel(application: Application) : AndroidViewModel(application
         this.categoryId = categoryId
         this.rowIds = rowIds
 
-        if (listPosition != -1 && rowIds != null && listPosition < rowIds.size) {
+        if ((listPosition != -1) && (rowIds != null) && (listPosition < rowIds.size)) {
              _currentPosition.value = listPosition
              loadPassword(rowIds[listPosition])
-        } else if (rowId != null && rowId > 0) {
+        } else if ((rowId != null) && (rowId > 0)) {
              loadPassword(rowId)
              if (rowIds != null) {
                  val index = rowIds.indexOf(rowId)
@@ -45,7 +44,7 @@ class PassViewViewModel(application: Application) : AndroidViewModel(application
 
     private fun loadPassword(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val entry = Passwords.getPassEntry(id, true, false)
+            val entry = Passwords.getPassEntry(id, decrypt = true, descriptionOnly = false)
             _currentPassEntry.value = entry
 
             val packages = Passwords.getPackageAccess(id)
@@ -56,7 +55,7 @@ class PassViewViewModel(application: Application) : AndroidViewModel(application
     fun loadNext() {
         val currentPos = _currentPosition.value
         rowIds?.let { ids ->
-            if (currentPos < ids.size - 1) {
+            if (currentPos < (ids.size - 1)) {
                 val newPos = currentPos + 1
                 _currentPosition.value = newPos
                 loadPassword(ids[newPos])
@@ -76,7 +75,7 @@ class PassViewViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun hasNext(): Boolean {
-        return rowIds?.let { _currentPosition.value < it.size - 1 } ?: false
+        return rowIds?.let { _currentPosition.value < (it.size - 1) } ?: false
     }
 
     fun hasPrevious(): Boolean {
@@ -88,10 +87,7 @@ class PassViewViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun reloadCurrent() {
-        val currentEntry = _currentPassEntry.value
-        if (currentEntry != null) {
-             loadPassword(currentEntry.id)
-        }
+        _currentPassEntry.value?.let { loadPassword(it.id) }
     }
 
     fun deleteCurrentEntry() {
