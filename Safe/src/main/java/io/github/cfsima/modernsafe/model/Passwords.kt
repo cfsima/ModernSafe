@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,6 @@ import io.github.cfsima.modernsafe.DBHelper
 import io.github.cfsima.modernsafe.R
 import io.github.cfsima.modernsafe.password.Master
 import java.text.DateFormat
-import java.util.Collections
 import java.util.Date
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
@@ -57,6 +56,7 @@ object Passwords {
     private var dbHelper: DBHelper? = null
 
     @Synchronized
+    @Suppress("FunctionName")
     fun Initialize(ctx: Context): Boolean {
         if (DEBUG) {
             Log.d(TAG, "Initialize()")
@@ -72,22 +72,24 @@ object Passwords {
             }
         }
         if (!isCryptoInitialized &&
-            Master.salt != null &&
-            Master.masterKey != null
+            (Master.salt != null) &&
+            (Master.masterKey != null)
         ) {
             try {
                 val version = dbHelper?.fetchVersion() ?: 5
                 val strength = if (version >= 5) CryptoHelper.EncryptionV5 else CryptoHelper.EncryptionMedium
                 InitCrypto(
-                    strength,
-                    Master.salt!!, Master.masterKey!!
+                    strength = strength,
+                    salt = Master.salt!!,
+                    masterKey = Master.masterKey!!,
                 )
                 isCryptoInitialized = true
             } catch (e: Exception) {
                 Log.e(TAG, "Initialization failed", e)
                 Toast.makeText(
-                    ctx, "CategoryList: " + ctx.getString(R.string.crypto_error),
-                    Toast.LENGTH_SHORT
+                    ctx,
+                    "CategoryList: " + ctx.getString(R.string.crypto_error),
+                    Toast.LENGTH_SHORT,
                 ).show()
             }
         }
@@ -127,6 +129,7 @@ object Passwords {
      * Force a fresh load from the database.
      */
     @Synchronized
+    @Suppress("FunctionName")
     fun Reset() {
         categoryEntries?.clear()
         initCategoryEntries()
@@ -137,6 +140,7 @@ object Passwords {
     }
 
     @Throws(Exception::class)
+    @Suppress("FunctionName")
     fun InitCrypto(strength: Int, salt: String, masterKey: String) {
         if (DEBUG) {
             Log.d(TAG, "InitCrypto($strength,$salt,$masterKey)")
@@ -152,7 +156,7 @@ object Passwords {
             Log.e(TAG, "InitCrypto failed", e1)
             throw Exception(
                 "Error with Passwords.InitCrypto: " +
-                        e1.localizedMessage
+                        e1.localizedMessage,
             )
         }
     }
@@ -163,9 +167,11 @@ object Passwords {
         Reset()
     }
 
+    @Suppress("unused")
     val prePopulate: Boolean
         get() = DBHelper.needsPrePopulation
 
+    @Suppress("unused")
     fun clearPrePopulate() {
         DBHelper.clearPrePopulate()
     }
@@ -201,7 +207,7 @@ object Passwords {
             getCategoryEntry(catEntry.id)
         }
         val catList = ArrayList(categories)
-        Collections.sort(catList) { o1, o2 ->
+        catList.sortWith { o1, o2 ->
             val o1PlainName = plainName(o1)
             val o2PlainName = plainName(o2)
             o1PlainName.compareTo(o2PlainName, ignoreCase = true)
@@ -213,6 +219,7 @@ object Passwords {
         return categoryEntry?.plainName ?: ""
     }
 
+    @Suppress("unused")
     fun getCategoryNames(): List<String> {
         val items = ArrayList<String>()
         val catList = getCategoryEntries()
@@ -344,13 +351,13 @@ object Passwords {
         val passwords = passEntries?.values ?: return emptyList()
         val passList = ArrayList<PassEntry>()
         for (passEntry in passwords) {
-            if (categoryId == 0L || passEntry.category == categoryId) {
+            if ((categoryId == 0L) || (passEntry.category == categoryId)) {
                 getPassEntry(passEntry.id, decrypt, descriptionOnly)
                 passList.add(passEntry)
             }
         }
         if (decrypt) {
-            Collections.sort(passList) { o1, o2 ->
+            passList.sortWith { o1, o2 ->
                 o1.plainDescription.compareTo(o2.plainDescription, ignoreCase = true)
             }
         }
@@ -362,7 +369,7 @@ object Passwords {
         if (DEBUG) {
             Log.d(TAG, "getPassEntry($id)")
         }
-        if (id == null || passEntries == null) {
+        if ((id == null) || (passEntries == null)) {
             return null
         }
         val passEntry = passEntries?.get(id) ?: return null
