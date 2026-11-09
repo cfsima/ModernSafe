@@ -243,17 +243,21 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
                     for (passRow in data.pass) {
                         val plainDesc = try { legacyDekCrypto.decrypt(passRow.description) } catch (_: Exception) { passRow.description }
                         val plainPass = try { legacyDekCrypto.decrypt(passRow.password) } catch (_: Exception) { passRow.password }
-                        val plainWeb = if (!passRow.website.isNullOrEmpty()) {
-                            try { legacyDekCrypto.decrypt(passRow.website) } catch (_: Exception) { passRow.website }
+                        val web = passRow.website
+                        val plainWeb = if (!web.isNullOrEmpty()) {
+                            try { legacyDekCrypto.decrypt(web) } catch (_: Exception) { web }
                         } else ""
-                        val plainUser = if (!passRow.username.isNullOrEmpty()) {
-                            try { legacyDekCrypto.decrypt(passRow.username) } catch (_: Exception) { passRow.username }
+                        val user = passRow.username
+                        val plainUser = if (!user.isNullOrEmpty()) {
+                            try { legacyDekCrypto.decrypt(user) } catch (_: Exception) { user }
                         } else ""
-                        val plainNote = if (!passRow.note.isNullOrEmpty()) {
-                            try { legacyDekCrypto.decrypt(passRow.note) } catch (_: Exception) { passRow.note }
+                        val note = passRow.note
+                        val plainNote = if (!note.isNullOrEmpty()) {
+                            try { legacyDekCrypto.decrypt(note) } catch (_: Exception) { note }
                         } else ""
-                        val plainUnique = if (!passRow.uniqueName.isNullOrEmpty()) {
-                            try { legacyDekCrypto.decrypt(passRow.uniqueName) } catch (_: Exception) { passRow.uniqueName }
+                        val unique = passRow.uniqueName
+                        val plainUnique = if (!unique.isNullOrEmpty()) {
+                            try { legacyDekCrypto.decrypt(unique) } catch (_: Exception) { unique }
                         } else ""
 
                         passRow.description = v5DekCrypto.encrypt(plainDesc)
