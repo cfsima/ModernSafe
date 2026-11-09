@@ -22,7 +22,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import io.github.cfsima.modernsafe.MainActivity
@@ -37,40 +36,35 @@ class ServiceNotification(context: Context) {
     }
 
     private fun createChannel(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = context.getString(R.string.notif_channel_title)
-            val description = context.getString(R.string.notif_channel_description)
-            val importance = NotificationManager.IMPORTANCE_LOW
-            val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
-            mChannel.enableLights(false)
-            mChannel.enableVibration(false)
-            mChannel.description = description
-            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                .createNotificationChannel(mChannel)
-        }
+        val name = context.getString(R.string.notif_channel_title)
+        val description = context.getString(R.string.notif_channel_description)
+        val importance = NotificationManager.IMPORTANCE_LOW
+        val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
+        mChannel.enableLights(false)
+        mChannel.enableVibration(false)
+        mChannel.description = description
+        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+            .createNotificationChannel(mChannel)
     }
 
-    @SuppressLint("NewApi", "MissingPermission")
+    @SuppressLint("MissingPermission")
     fun setNotification(context: Context) {
         val intent = Intent(context, MainActivity::class.java).apply {
             action = MainActivity.ACTION_LOG_OFF
             putExtra(MainActivity.EXTRA_DESTINATION, MainActivity.DESTINATION_LOG_OFF)
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
-        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        } else {
-            PendingIntent.FLAG_CANCEL_CURRENT
-        }
         val pi = PendingIntent.getActivity(
-            context, 0, intent,
-            flags
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
         builder.setContentTitle(context.getString(R.string.app_name))
         builder.setContentText(
-            context.getString(R.string.notification_msg)
+            context.getString(R.string.notification_msg),
         )
         builder.setSmallIcon(R.drawable.passicon)
         builder.setOngoing(true)
