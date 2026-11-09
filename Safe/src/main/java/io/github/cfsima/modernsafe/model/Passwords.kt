@@ -106,6 +106,23 @@ object Passwords {
     }
 
     /**
+     * Clear all decrypted data, database helpers, and crypto references from memory upon sign-out / lock.
+     */
+    @Synchronized
+    fun tearDown() {
+        passEntries?.clear()
+        passEntries = null
+        categoryEntries?.clear()
+        categoryEntries = null
+        packageAccessEntries?.clear()
+        packageAccessEntries = null
+        ch = null
+        isCryptoInitialized = false
+        dbHelper?.close()
+        dbHelper = null
+    }
+
+    /**
      * Force a fresh load from the database.
      */
     @Synchronized

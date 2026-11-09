@@ -79,5 +79,6 @@ object AuthManager {
         cryptoHelper = null
         timeRemaining = 0
         lastActiveTimestamp = 0L
+        io.github.cfsima.modernsafe.model.Passwords.tearDown()
     }
 }
