@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 data class PassListUiState(
     val entries: List<PassEntry> = emptyList(),
     val categoryName: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
 )
 
 class PassListViewModel(application: Application) : AndroidViewModel(application) {
@@ -33,12 +33,12 @@ class PassListViewModel(application: Application) : AndroidViewModel(application
             val categoryName = categoryEntry?.plainName ?: ""
 
             // getPassEntries(categoryId, decrypt=true, descriptionOnly=true)
-            val entries = Passwords.getPassEntries(categoryId, true, true) ?: ArrayList()
+            val entries = Passwords.getPassEntries(categoryId, decrypt = true, descriptionOnly = true)
 
             _uiState.value = PassListUiState(
                 entries = entries,
                 categoryName = categoryName,
-                isLoading = false
+                isLoading = false,
             )
         }
     }
@@ -64,7 +64,7 @@ class PassListViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getAvailableCategories(): Map<String, Long> {
-        val allCategories = Passwords.getCategoryNameToId() ?: HashMap()
+        val allCategories = Passwords.getCategoryNameToId()
         val currentName = _uiState.value.categoryName
         if (currentName.isNotEmpty()) {
             allCategories.remove(currentName)
