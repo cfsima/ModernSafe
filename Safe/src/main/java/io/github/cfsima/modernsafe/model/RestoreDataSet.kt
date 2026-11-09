@@ -92,14 +92,15 @@ class RestoreDataSet {
         // only add an entry if we had all the fields
         if (DEBUG) {
             Log.d(
-                TAG, "${entry.description} ${entry.website} ${entry.username} ${entry.password} ${entry.note} $currentPackageAccess"
+                TAG,
+                "${entry.description} ${entry.website} ${entry.username} ${entry.password} ${entry.note} $currentPackageAccess",
             )
         }
 
         if (entry.description.isNotEmpty()) {
             try {
                 entry.id = currentRowID.toLong()
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 entry.id = 0
             }
             if (currentPackageAccess.isNotEmpty()) {
@@ -108,7 +109,7 @@ class RestoreDataSet {
                 if (currentPackageAccess.length > 2) {
                     val packageList = currentPackageAccess.substring(
                         1,
-                        currentPackageAccess.length - 1
+                        currentPackageAccess.length - 1,
                     )
                     val packages = packageList.split(",").map { it.trim() }
                     entry.packageAccess = ArrayList(packages)
@@ -137,7 +138,7 @@ class RestoreDataSet {
             Log.d(TAG, "setDescription($extractedDescription)")
         }
         currentEntry?.let {
-            it.description = (it.description) + extractedDescription
+            it.description += extractedDescription
         }
     }
 
@@ -158,7 +159,7 @@ class RestoreDataSet {
 
     fun setPassword(extractedPassword: String) {
         currentEntry?.let {
-            it.password = (it.password ?: "") + extractedPassword
+            it.password += extractedPassword
         }
     }
 
