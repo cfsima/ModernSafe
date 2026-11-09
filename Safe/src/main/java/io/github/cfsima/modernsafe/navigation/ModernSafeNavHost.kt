@@ -3,11 +3,13 @@ package io.github.cfsima.modernsafe.navigation
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ClipData
+import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -495,7 +497,12 @@ fun ModernSafeNavHost(
                 onDelete = { showDeleteConfirmDialog = true },
                 onCopy = { label, text ->
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    clipboard.setPrimaryClip(ClipData.newPlainText(label, text))
+                    val clipData = ClipData.newPlainText(label, text).apply {
+                        description.extras = PersistableBundle().apply {
+                            putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true)
+                        }
+                    }
+                    clipboard.setPrimaryClip(clipData)
                     viewModel.updateLastUsedPassword(text)
                     Toast.makeText(context, "$label ${context.getString(R.string.copied_to_clipboard)}", Toast.LENGTH_SHORT).show()
                 },
@@ -846,15 +853,19 @@ fun ModernSafeNavHost(
                     timeRemaining = timeRemaining,
                     onLogOff = {
                         context.stopService(Intent(context.applicationContext, AutoLockService::class.java))
-                        val cb = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        if (cb.hasPrimaryClip()) {
-                            val clip = cb.primaryClip
-                            if (clip != null && clip.itemCount > 0) {
-                                val text = clip.getItemAt(0).text.toString()
-                                if (text == AuthManager.lastUsedPassword) {
-                                    cb.setPrimaryClip(ClipData.newPlainText("", ""))
+                        try {
+                            val cb = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            if (cb.hasPrimaryClip()) {
+                                val clip = cb.primaryClip
+                                if (clip != null && clip.itemCount > 0) {
+                                    val text = clip.getItemAt(0).text?.toString()
+                                    if (text == AuthManager.lastUsedPassword) {
+                                        cb.clearPrimaryClip()
+                                    }
                                 }
                             }
+                        } catch (_: Exception) {
+                            // Clipboard access restricted or unavailable
                         }
                         AuthManager.setSignedOut()
                         navController.navigate(AskPasswordRoute()) {
