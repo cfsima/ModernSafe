@@ -1,6 +1,5 @@
 package io.github.cfsima.modernsafe.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +46,7 @@ val EmeraldDarkColorScheme = darkColorScheme(
     surfaceVariant = EmeraldDarkSurfaceVariant,
     onSurfaceVariant = EmeraldDarkOnSurfaceVariant,
     outline = EmeraldDarkOutline,
-    outlineVariant = EmeraldDarkOutlineVariant
+    outlineVariant = EmeraldDarkOutlineVariant,
 )
 
 val EmeraldLightColorScheme = lightColorScheme(
@@ -70,7 +69,7 @@ val EmeraldLightColorScheme = lightColorScheme(
     surfaceVariant = EmeraldLightSurfaceVariant,
     onSurfaceVariant = EmeraldLightOnSurfaceVariant,
     outline = EmeraldLightOutline,
-    outlineVariant = EmeraldLightOutlineVariant
+    outlineVariant = EmeraldLightOutlineVariant,
 )
 
 // 2. Titanium Sapphire Schemes
@@ -94,7 +93,7 @@ val SapphireDarkColorScheme = darkColorScheme(
     surfaceVariant = SapphireDarkSurfaceVariant,
     onSurfaceVariant = SapphireDarkOnSurfaceVariant,
     outline = SapphireDarkOutline,
-    outlineVariant = SapphireDarkOutlineVariant
+    outlineVariant = SapphireDarkOutlineVariant,
 )
 
 val SapphireLightColorScheme = lightColorScheme(
@@ -117,7 +116,7 @@ val SapphireLightColorScheme = lightColorScheme(
     surfaceVariant = SapphireLightSurfaceVariant,
     onSurfaceVariant = SapphireLightOnSurfaceVariant,
     outline = SapphireLightOutline,
-    outlineVariant = SapphireLightOutlineVariant
+    outlineVariant = SapphireLightOutlineVariant,
 )
 
 // 3. Nordic Copper Schemes
@@ -141,7 +140,7 @@ val CopperDarkColorScheme = darkColorScheme(
     surfaceVariant = CopperDarkSurfaceVariant,
     onSurfaceVariant = CopperDarkOnSurfaceVariant,
     outline = CopperDarkOutline,
-    outlineVariant = CopperDarkOutlineVariant
+    outlineVariant = CopperDarkOutlineVariant,
 )
 
 val CopperLightColorScheme = lightColorScheme(
@@ -164,7 +163,7 @@ val CopperLightColorScheme = lightColorScheme(
     surfaceVariant = CopperLightSurfaceVariant,
     onSurfaceVariant = CopperLightOnSurfaceVariant,
     outline = CopperLightOutline,
-    outlineVariant = CopperLightOutlineVariant
+    outlineVariant = CopperLightOutlineVariant,
 )
 
 // 4. Material You Fallback Schemes
@@ -188,7 +187,7 @@ val DynamicDarkColorScheme = darkColorScheme(
     surfaceVariant = DynamicDarkSurfaceVariant,
     onSurfaceVariant = DynamicDarkOnSurfaceVariant,
     outline = DynamicDarkOutline,
-    outlineVariant = DynamicDarkOutlineVariant
+    outlineVariant = DynamicDarkOutlineVariant,
 )
 
 val DynamicLightColorScheme = lightColorScheme(
@@ -211,7 +210,7 @@ val DynamicLightColorScheme = lightColorScheme(
     surfaceVariant = DynamicLightSurfaceVariant,
     onSurfaceVariant = DynamicLightOnSurfaceVariant,
     outline = DynamicLightOutline,
-    outlineVariant = DynamicLightOutlineVariant
+    outlineVariant = DynamicLightOutlineVariant,
 )
 
 val ModernSafeShapes = Shapes(
@@ -219,7 +218,7 @@ val ModernSafeShapes = Shapes(
     small = RoundedCornerShape(12.dp),
     medium = RoundedCornerShape(16.dp),
     large = RoundedCornerShape(20.dp),
-    extraLarge = RoundedCornerShape(28.dp)
+    extraLarge = RoundedCornerShape(28.dp),
 )
 
 val ModernSafeTypography = Typography(
@@ -227,74 +226,74 @@ val ModernSafeTypography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
         lineHeight = 40.sp,
-        letterSpacing = 0.sp
+        letterSpacing = 0.sp,
     ),
     headlineMedium = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 26.sp,
         lineHeight = 34.sp,
-        letterSpacing = 0.sp
+        letterSpacing = 0.sp,
     ),
     headlineSmall = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
-        letterSpacing = 0.sp
+        letterSpacing = 0.sp,
     ),
     titleLarge = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         lineHeight = 26.sp,
-        letterSpacing = 0.sp
+        letterSpacing = 0.sp,
     ),
     titleMedium = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.15.sp
+        letterSpacing = 0.15.sp,
     ),
     titleSmall = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = 0.1.sp
+        letterSpacing = 0.1.sp,
     ),
     bodyLarge = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.5.sp,
     ),
     bodyMedium = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = 0.25.sp
+        letterSpacing = 0.25.sp,
     ),
     bodySmall = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
+        letterSpacing = 0.4.sp,
     ),
     labelLarge = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = 0.1.sp
+        letterSpacing = 0.1.sp,
     ),
     labelMedium = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.5.sp,
     ),
     labelSmall = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
+        letterSpacing = 0.5.sp,
+    ),
 )
 
 @Composable
@@ -308,7 +307,7 @@ fun ModernSafeTheme(
     },
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
     val colorScheme = when (themePalette) {
@@ -316,7 +315,7 @@ fun ModernSafeTheme(
         THEME_SAPPHIRE -> if (darkTheme) SapphireDarkColorScheme else SapphireLightColorScheme
         THEME_COPPER -> if (darkTheme) CopperDarkColorScheme else CopperLightColorScheme
         else -> { // THEME_DYNAMIC
-            if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (dynamicColor) {
                 if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
             } else {
                 if (darkTheme) DynamicDarkColorScheme else DynamicLightColorScheme
@@ -328,6 +327,6 @@ fun ModernSafeTheme(
         colorScheme = colorScheme,
         shapes = ModernSafeShapes,
         typography = ModernSafeTypography,
-        content = content
+        content = content,
     )
 }
