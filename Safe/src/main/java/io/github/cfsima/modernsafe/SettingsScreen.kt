@@ -1,7 +1,12 @@
 package io.github.cfsima.modernsafe
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -37,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import io.github.cfsima.modernsafe.biometric.BiometricHelper
 import io.github.cfsima.modernsafe.util.LanguageManager
 
+@Suppress("DestructuringDeclaration")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -49,12 +55,6 @@ fun SettingsScreen(
     autoBackupDays: String,
     backupPath: String,
     exportPath: String,
-    currentLanguage: String = "",
-    biometricEnabled: Boolean = false,
-    biometricStatus: BiometricHelper.BiometricStatus = BiometricHelper.BiometricStatus.UNAVAILABLE,
-    isBiometricAvailable: Boolean = (biometricStatus == BiometricHelper.BiometricStatus.AVAILABLE),
-    themePalette: String = "dynamic",
-    darkMode: String = "system",
     onExternalAccessChange: (Boolean) -> Unit,
     onLockTimeoutChange: (String) -> Unit,
     onLockOnScreenLockChange: (Boolean) -> Unit,
@@ -64,11 +64,18 @@ fun SettingsScreen(
     onAutoBackupDaysChange: (String) -> Unit,
     onBackupPathClick: () -> Unit,
     onExportPathClick: () -> Unit,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    currentLanguage: String = "",
+    biometricEnabled: Boolean = false,
+    biometricStatus: BiometricHelper.BiometricStatus = BiometricHelper.BiometricStatus.UNAVAILABLE,
+    isBiometricAvailable: Boolean = (biometricStatus == BiometricHelper.BiometricStatus.AVAILABLE),
+    themePalette: String = "dynamic",
+    darkMode: String = "system",
     onLanguageChange: (String) -> Unit = {},
     onBiometricChange: (Boolean) -> Unit = {},
     onThemePaletteChange: (String) -> Unit = {},
     onDarkModeChange: (String) -> Unit = {},
-    onBack: () -> Unit
 ) {
     val context = LocalContext.current
     val languageItems = remember(context) { LanguageManager.getLanguageItems(context) }
@@ -80,6 +87,7 @@ fun SettingsScreen(
             ?: ""
     }
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.preferences)) },
@@ -87,15 +95,15 @@ fun SettingsScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.close))
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .consumeWindowInsets(paddingValues),
-            contentPadding = paddingValues
+            contentPadding = paddingValues,
         ) {
             item {
                 ListPreference(
@@ -105,7 +113,7 @@ fun SettingsScreen(
                     entries = languageEntries,
                     entryValues = languageEntryValues,
                     currentValue = currentLanguage,
-                    onValueChange = onLanguageChange
+                    onValueChange = onLanguageChange,
                 )
                 HorizontalDivider()
             }
@@ -124,7 +132,7 @@ fun SettingsScreen(
                     entries = themeEntries,
                     entryValues = themeValues,
                     currentValue = themePalette,
-                    onValueChange = onThemePaletteChange
+                    onValueChange = onThemePaletteChange,
                 )
                 HorizontalDivider()
             }
@@ -143,7 +151,7 @@ fun SettingsScreen(
                     entries = darkModeEntries,
                     entryValues = darkModeValues,
                     currentValue = darkMode,
-                    onValueChange = onDarkModeChange
+                    onValueChange = onDarkModeChange,
                 )
                 HorizontalDivider()
             }
@@ -153,7 +161,7 @@ fun SettingsScreen(
                     title = stringResource(R.string.pref_title_external_access),
                     summary = stringResource(R.string.pref_summary_external_access),
                     checked = externalAccess,
-                    onCheckedChange = onExternalAccessChange
+                    onCheckedChange = onExternalAccessChange,
                 )
                 HorizontalDivider()
             }
@@ -166,7 +174,7 @@ fun SettingsScreen(
                     entries = stringArrayResource(R.array.pref_entries_lock_timeout),
                     entryValues = stringArrayResource(R.array.pref_entryvalues_lock_timeout),
                     currentValue = lockTimeout,
-                    onValueChange = onLockTimeoutChange
+                    onValueChange = onLockTimeoutChange,
                 )
                 HorizontalDivider()
             }
@@ -176,7 +184,7 @@ fun SettingsScreen(
                     title = stringResource(R.string.pref_title_lock_on_screen_lock),
                     summary = stringResource(R.string.pref_summary_lock_on_screen_lock),
                     checked = lockOnScreenLock,
-                    onCheckedChange = onLockOnScreenLockChange
+                    onCheckedChange = onLockOnScreenLockChange,
                 )
                 HorizontalDivider()
             }
@@ -197,7 +205,7 @@ fun SettingsScreen(
                             summary = stringResource(R.string.pref_summary_biometrics),
                             checked = biometricEnabled,
                             onCheckedChange = onBiometricChange,
-                            enabled = true
+                            enabled = true,
                         )
                     }
                     BiometricHelper.BiometricStatus.NOT_ENROLLED -> {
@@ -207,12 +215,12 @@ fun SettingsScreen(
                             modifier = Modifier.clickable {
                                 try {
                                     context.startActivity(BiometricHelper.createEnrollIntent())
-                                } catch (e: Exception) {
+                                } catch (_: Exception) {
                                     try {
                                         context.startActivity(android.content.Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS))
                                     } catch (_: Exception) {}
                                 }
-                            }
+                            },
                         )
                     }
                     BiometricHelper.BiometricStatus.UNAVAILABLE -> {
@@ -221,7 +229,7 @@ fun SettingsScreen(
                             summary = stringResource(R.string.pref_summary_biometrics_unavailable),
                             checked = false,
                             onCheckedChange = {},
-                            enabled = false
+                            enabled = false,
                         )
                     }
                 }
@@ -233,7 +241,7 @@ fun SettingsScreen(
                     title = stringResource(R.string.pref_title_keypad),
                     summary = stringResource(R.string.pref_summary_keypad),
                     checked = keypad,
-                    onCheckedChange = onKeypadChange
+                    onCheckedChange = onKeypadChange,
                 )
                 HorizontalDivider()
             }
@@ -244,7 +252,7 @@ fun SettingsScreen(
                     summary = stringResource(R.string.pref_summary_keypad_mute),
                     checked = keypadMute,
                     onCheckedChange = onKeypadMuteChange,
-                    enabled = keypad
+                    enabled = keypad,
                 )
                 HorizontalDivider()
             }
@@ -254,7 +262,7 @@ fun SettingsScreen(
                     title = stringResource(R.string.pref_title_autobackup),
                     summary = stringResource(R.string.pref_summary_autobackup),
                     checked = autoBackup,
-                    onCheckedChange = onAutoBackupChange
+                    onCheckedChange = onAutoBackupChange,
                 )
                 HorizontalDivider()
             }
@@ -268,7 +276,7 @@ fun SettingsScreen(
                     entryValues = stringArrayResource(R.array.pref_entryvalues_autobackup_days),
                     currentValue = autoBackupDays,
                     onValueChange = onAutoBackupDaysChange,
-                    enabled = autoBackup
+                    enabled = autoBackup,
                 )
                 HorizontalDivider()
             }
@@ -277,7 +285,7 @@ fun SettingsScreen(
                 ListItem(
                     headlineContent = { Text(stringResource(R.string.pref_title_backup_path)) },
                     supportingContent = { Text(backupPath) },
-                    modifier = Modifier.clickable(onClick = onBackupPathClick)
+                    modifier = Modifier.clickable(onClick = onBackupPathClick),
                 )
                 HorizontalDivider()
             }
@@ -286,7 +294,7 @@ fun SettingsScreen(
                 ListItem(
                     headlineContent = { Text(stringResource(R.string.pref_title_export_path)) },
                     supportingContent = { Text(exportPath) },
-                    modifier = Modifier.clickable(onClick = onExportPathClick)
+                    modifier = Modifier.clickable(onClick = onExportPathClick),
                 )
             }
         }
@@ -299,19 +307,38 @@ fun SwitchPreference(
     summary: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    enabled: Boolean = true
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     ListItem(
-        headlineContent = { Text(title, style = if (enabled) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))) },
-        supportingContent = { Text(summary, style = if (enabled) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))) },
+        headlineContent = {
+            Text(
+                title,
+                style = if (enabled) {
+                    MaterialTheme.typography.bodyLarge
+                } else {
+                    MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
+                },
+            )
+        },
+        supportingContent = {
+            Text(
+                summary,
+                style = if (enabled) {
+                    MaterialTheme.typography.bodyMedium
+                } else {
+                    MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
+                },
+            )
+        },
         trailingContent = {
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
-                enabled = enabled
+                enabled = enabled,
             )
         },
-        modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) }
+        modifier = modifier.clickable(enabled = enabled) { onCheckedChange(!checked) },
     )
 }
 
@@ -324,14 +351,33 @@ fun ListPreference(
     entryValues: Array<String>,
     currentValue: String,
     onValueChange: (String) -> Unit,
-    enabled: Boolean = true
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
-    var showDialog by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(value = false) }
 
     ListItem(
-        headlineContent = { Text(title, style = if (enabled) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))) },
-        supportingContent = { Text(summary, style = if (enabled) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))) },
-        modifier = Modifier.clickable(enabled = enabled) { showDialog = true }
+        headlineContent = {
+            Text(
+                title,
+                style = if (enabled) {
+                    MaterialTheme.typography.bodyLarge
+                } else {
+                    MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
+                },
+            )
+        },
+        supportingContent = {
+            Text(
+                summary,
+                style = if (enabled) {
+                    MaterialTheme.typography.bodyMedium
+                } else {
+                    MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
+                },
+            )
+        },
+        modifier = modifier.clickable(enabled = enabled) { showDialog = true },
     )
 
     if (showDialog) {
@@ -342,7 +388,7 @@ fun ListPreference(
                 Column(
                     Modifier
                         .selectableGroup()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
                 ) {
                     entries.forEachIndexed { index, entry ->
                         Row(
@@ -354,29 +400,31 @@ fun ListPreference(
                                         onValueChange(entryValues[index])
                                         showDialog = false
                                     },
-                                    role = Role.RadioButton
+                                    role = Role.RadioButton,
                                 )
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             RadioButton(
                                 selected = (entryValues[index] == currentValue),
-                                onClick = null // null recommended for accessibility with selectable
+                                onClick = null, // null recommended for accessibility with selectable
                             )
                             Text(
                                 text = entry,
                                 style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(start = 16.dp)
+                                modifier = Modifier.padding(start = 16.dp),
                             )
                         }
                     }
                 }
             },
             confirmButton = {
-                TextButton(onClick = { showDialog = false }) {
+                TextButton(
+                    onClick = { showDialog = false },
+                ) {
                     Text(stringResource(R.string.cancel))
                 }
-            }
+            },
         )
     }
 }
