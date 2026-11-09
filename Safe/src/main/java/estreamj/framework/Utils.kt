@@ -5,6 +5,7 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.util.Arrays
 
+@Suppress("unused")
 object Utils {
     fun fillPattern123(buf: ByteArray, ofs: Int, len: Int) {
         var currentOfs = ofs
@@ -36,7 +37,7 @@ object Utils {
     }
 
     fun arraysEquals(
-        a: ByteArray, ofsA: Int, b: ByteArray, ofsB: Int, len: Int
+        a: ByteArray, ofsA: Int, b: ByteArray, ofsB: Int, len: Int,
     ): Boolean {
         var currentOfsA = ofsA
         var currentOfsB = ofsB
@@ -87,15 +88,13 @@ object Utils {
         var pos = 0
         while (pos < len) {
             var nReg = 0
-            for (nI in 0..1) {
+            repeat(2) {
                 nReg = nReg shl 4
                 val c = hex[pos++].lowercaseChar()
-                if (c in '0'..'9') {
-                    nReg = nReg or (c - '0')
-                } else if (c in 'a'..'f') {
-                    nReg = nReg or ((c - 'a') + 10)
-                } else {
-                    return null
+                nReg = when (c) {
+                    in '0'..'9' -> nReg or (c - '0')
+                    in 'a'..'f' -> nReg or ((c - 'a') + 10)
+                    else -> return null
                 }
             }
             result[r++] = nReg.toByte()
@@ -104,38 +103,31 @@ object Utils {
     }
 
     val HEXTAB = charArrayOf(
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
     )
 
     fun hexDump(
         shouldRead: InputStream,
         ps: PrintStream,
         maxRead: Int,
-        bytesPerLine: Int
+        bytesPerLine: Int,
     ): Int {
-        var read: Int
         var chr: Int
-        var i: Int
-        var result: Int
         var pad: CharArray
-        val left: StringBuilder
-        val right: StringBuilder
 
         var bPerLine = bytesPerLine
         if (1 > bPerLine) {
             bPerLine = 1
         }
 
-        left = StringBuilder()
-        right = StringBuilder()
+        val left = StringBuilder()
+        val right = StringBuilder()
 
-        result = 0
-
-        read = 0
-        i = 0
+        var result = 0
+        var i = 0
         while (true) {
             if (-1 != maxRead) {
-                if (maxRead <= read) {
+                if (maxRead <= result) {
                     break
                 }
             }
@@ -145,7 +137,7 @@ object Utils {
                 if (-1 == chr) {
                     break
                 }
-            } catch (ioe: IOException) {
+            } catch (_: IOException) {
                 break
             }
 
