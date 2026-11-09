@@ -20,6 +20,7 @@ package io.github.cfsima.modernsafe.intents
  * @author Peli
  * @version 1.1.1
  */
+@Suppress("unused")
 object CryptoIntents {
 
     /**
