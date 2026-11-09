@@ -21,7 +21,7 @@ package io.github.cfsima.modernsafe.model
  */
 class CategoryEntry(
     var name: String = "",
-    var count: Int = 0
+    var count: Int = 0,
 ) {
     var id: Long = -1
     var nameNeedsDecrypt: Boolean = false
