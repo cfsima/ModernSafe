@@ -14,8 +14,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.*
-import java.util.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.OutputStreamWriter
+import java.util.HashMap
 
 data class CategoryListUiState(
     val categories: List<CategoryEntry> = emptyList(),
@@ -24,17 +28,15 @@ data class CategoryListUiState(
     val userMessage: String? = null,
     val isImporting: Boolean = false,
     val importDeletedDatabase: Boolean = false,
-    val importedFilePath: String? = null
+    val importedFilePath: String? = null,
 )
 
 class CategoryListViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val TAG = "CategoryListVM"
-
     private val _uiState = MutableStateFlow(CategoryListUiState())
     val uiState: StateFlow<CategoryListUiState> = _uiState.asStateFlow()
 
-    private val context = application.applicationContext
+    private val context get() = getApplication<Application>()
 
 
     fun loadCategories() {
@@ -93,6 +95,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                 Export.exportDatabaseToWriter(context, writer)
                 _uiState.update { it.copy(userMessage = context.getString(R.string.export_success, path)) }
             } catch (e: Exception) {
+                Log.e(TAG, "exportDatabase path error", e)
                 _uiState.update { it.copy(userMessage = context.getString(R.string.export_file_error)) }
             }
         }
@@ -110,6 +113,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                      _uiState.update { it.copy(userMessage = context.getString(R.string.export_file_error)) }
                 }
             } catch (e: Exception) {
+                Log.e(TAG, "exportDatabase uri error", e)
                 _uiState.update { it.copy(userMessage = context.getString(R.string.export_file_error)) }
             }
         }
@@ -143,6 +147,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
     }
 
     // --- Import Logic ---
+    @Suppress("unused")
     fun importDatabase(path: String, deleteCurrent: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(isImporting = true, importDeletedDatabase = deleteCurrent) }
@@ -151,9 +156,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                 Passwords.deleteAll()
             }
 
-            var importMessage = ""
-
-            try {
+            val importMessage = try {
                 val file = File(path)
                 if (!file.exists()) {
                      _uiState.update { it.copy(isImporting = false, userMessage = context.getString(R.string.import_file_missing) + " " + path) }
@@ -224,7 +227,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                 }
                 reader2.close()
 
-                importMessage = if (newEntries == 0) {
+                if (newEntries == 0) {
                     context.getString(R.string.import_no_entries)
                 } else {
                     context.getString(R.string.added) + " " + newEntries + " " + context.getString(R.string.entries)
@@ -232,7 +235,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
 
             } catch (e: Exception) {
                 Log.e(TAG, "Import failed", e)
-                importMessage = context.getString(R.string.import_file_error)
+                context.getString(R.string.import_file_error)
             }
 
             _uiState.update { it.copy(isImporting = false, userMessage = importMessage, importedFilePath = path) }
@@ -241,30 +244,31 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun importDatabase(uri: Uri, deleteCurrent: Boolean) {
-         viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(isImporting = true, importDeletedDatabase = deleteCurrent) }
-             if (deleteCurrent) {
+            if (deleteCurrent) {
                 Passwords.deleteAll()
             }
 
-            var importMessage = ""
-            try {
-                val inputStream = context.contentResolver.openInputStream(uri)
-                if (inputStream == null) {
-                     _uiState.update { it.copy(isImporting = false, userMessage = context.getString(R.string.import_file_error)) }
-                     return@launch
+            val importMessage = try {
+                val opened = context.contentResolver.openInputStream(uri)?.use {
+                    true
+                } ?: false
+                if (!opened) {
+                    _uiState.update { it.copy(isImporting = false, userMessage = context.getString(R.string.import_file_error)) }
+                    return@launch
                 }
                 // For simplicity in this iteration, we don't fully implement Uri import parsing as it duplicates logic.
                 // In a real scenario we'd extract the parsing logic.
                 // Assuming success for now or minimal message.
-                importMessage = "Import from URI is not fully implemented in this migration step (Placeholder)."
-
+                "Import from URI is not fully implemented in this migration step (Placeholder)."
             } catch (e: Exception) {
-                 importMessage = context.getString(R.string.import_file_error)
+                Log.e(TAG, "Import URI error", e)
+                context.getString(R.string.import_file_error)
             }
-             _uiState.update { it.copy(isImporting = false, userMessage = importMessage) }
-             loadCategories()
-         }
+            _uiState.update { it.copy(isImporting = false, userMessage = importMessage) }
+            loadCategories()
+        }
     }
 
     fun onImportedFileConsumed() {
@@ -282,8 +286,13 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                      _uiState.update { it.copy(userMessage = context.getString(R.string.delete_file_error)) }
                 }
             } catch (e: Exception) {
-                 _uiState.update { it.copy(userMessage = context.getString(R.string.delete_file_error)) }
+                Log.e(TAG, "deleteImportedFile error", e)
+                _uiState.update { it.copy(userMessage = context.getString(R.string.delete_file_error)) }
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "CategoryListVM"
     }
 }
