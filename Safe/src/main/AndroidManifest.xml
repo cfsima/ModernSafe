@@ -87,6 +87,19 @@
       android:exported="false"
       android:enabled="true" />
 
+    <service
+      android:name=".autofill.ModernSafeAutofillService"
+      android:label="@string/autofill_service_label"
+      android:permission="android.permission.BIND_AUTOFILL_SERVICE"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="android.service.autofill.AutofillService" />
+      </intent-filter>
+      <meta-data
+        android:name="android.autofill"
+        android:resource="@xml/autofill_service_config" />
+    </service>
+
     <provider
       android:name=".CryptoContentProvider"
       android:exported="false"

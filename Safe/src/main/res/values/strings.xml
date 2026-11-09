@@ -333,4 +333,7 @@
   <string name="biometric_prompt_enroll_title">Enable Biometric Unlock</string>
   <string name="biometric_prompt_enroll_subtitle">Touch your biometric sensor to authorize biometric unlock</string>
   <string name="use_password">Use Password</string>
+  <string name="autofill_service_label">ModernSafe Autofill</string>
+  <string name="autofill_unlock_title">Unlock ModernSafe</string>
+  <string name="autofill_unlock_subtitle">Tap to unlock and autofill</string>
 </resources>
