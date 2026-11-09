@@ -15,11 +15,11 @@ fun ModernSafeNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: Any = if (AuthManager.isSignedIn()) CategoryListRoute else AskPasswordRoute(isLocal = true),
     onFinishActivity: () -> Unit = {},
-    onSetResultOkAndFinish: () -> Unit = {}
+    onSetResultOkAndFinish: () -> Unit = {},
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
     ) {
         askPasswordDestination(navController, onFinishActivity, onSetResultOkAndFinish)
         categoryListDestination(navController)
