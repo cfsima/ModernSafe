@@ -158,7 +158,7 @@ fun FirstTimeContent(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Master Password") },
+            label = { Text(stringResource(R.string.master_password)) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth(),
@@ -168,7 +168,7 @@ fun FirstTimeContent(
         OutlinedTextField(
             value = confirm,
             onValueChange = { confirm = it },
-            label = { Text("Confirm Password") },
+            label = { Text(stringResource(R.string.confirm_password)) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {
@@ -216,14 +216,14 @@ fun LoginContent(
         )
 
         Text(
-            text = "Welcome Back",
+            text = stringResource(R.string.welcome_back),
             style = MaterialTheme.typography.headlineMedium
         )
 
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text(stringResource(R.string.password)) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {
@@ -294,7 +294,7 @@ fun KeypadContent(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer, contentColor = MaterialTheme.colorScheme.onSecondaryContainer),
                 shape = MaterialTheme.shapes.medium
             ) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Delete")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.password_delete))
             }
 
             Button(
@@ -302,7 +302,7 @@ fun KeypadContent(
                 modifier = Modifier.weight(1f).height(56.dp),
                 shape = MaterialTheme.shapes.medium
             ) {
-                Icon(Icons.Default.Check, contentDescription = "Enter")
+                Icon(Icons.Default.Check, contentDescription = stringResource(R.string.confirm))
             }
         }
     }

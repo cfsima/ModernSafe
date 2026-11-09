@@ -309,4 +309,15 @@
   <string name="extra_password_not_set">PASSWORD extra must be set.</string>
   <string name="password_not_found_unique_name">Could not find password with the unique name: %s</string>
   <string name="version_label">Version: </string>
+  <string name="welcome_back">Welcome Back</string>
+  <string name="confirm_password">Confirm Password</string>
+  <string name="discard_changes_msg">You have unsaved changes. Discard them?</string>
+  <string name="error">Error</string>
+  <string name="parsing_backup">Parsing backup file…</string>
+  <string name="restoring_database">Restoring database…</string>
+  <string name="restore_complete_status">Restore Complete!</string>
+  <string name="select_another_file">Select Another File</string>
+  <string name="back">Back</string>
+  <string name="options">Options</string>
+  <string name="clear">Clear</string>
 </resources>

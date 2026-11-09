@@ -24,13 +24,13 @@
   Carl Fredrik Sima https://launchpad.net/~cf-sima</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Lagra dina privata data med OI Safe</string>
+  <string name="about_comments">Lagra dina privata data med Modern Safe</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Safe</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">Inga lösenord tillgängliga för den här kategorin.</string>
   <string name="empty_category">Inga kategorier tillgängliga. Var god lägg till via Menu-&gt;Add</string>
   <string name="password_lock">Lås</string>
@@ -241,6 +241,7 @@
   <string name="download_oi_filemanager">Om den inte är nerladdad används den förvalda platsen.</string>
   <string name="backup_file_found">En säkerhetskopia hittades. Vill du återställa till den?</string>
   <string name="backup_file_found_label">Säkerhetskopia hittad</string>
+  <string name="choose_file">Välj fil</string>
   <string name="zero">0</string>
   <string name="one">1</string>
   <string name="two">2</string>
@@ -253,7 +254,8 @@
   <string name="nine">9</string>
   <string name="numbersign">#</string>
   <string name="asterisk">*</string>
-  <string name="invalid_url">Invalid URL</string>
+  <string name="invalid_url">Ogiltig webbadress</string>
+  <string name="notification_msg">Huvudnyckel inloggad</string>
 
   <!-- ***************************
        Permissions
@@ -266,6 +268,9 @@
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">kryptera och dekryptera data</string>
   <string name="oi_safe_permission_intents_descr">Tillåter applikationen att kryptera och dekryptera text, och få tillgång till lösenord som sparats av applikationen i OI SAfe</string>
+  <string name="password_file">Lösenordsfil</string>
+  <string name="notif_channel_title">Automatiskt lås</string>
+  <string name="notif_channel_description">Avisering när Modern Safe är upplåst</string>
 
   <!-- ***************************
        Preferences
@@ -289,4 +294,29 @@
   </string-array>
 
 
+  <string name="about">Om</string>
+  <string name="menu">Meny</string>
+  <string name="delete_success">Fil borttagen: %s</string>
+  <string name="delete_file_error">Kunde inte ta bort fil.</string>
+  <string name="confirm_delete_category">Är du säker på att du vill ta bort kategorin %s?</string>
+  <string name="external_request_password">Extern applikation begär lösenord</string>
+  <string name="crypto_error_retrieving_password">Det uppstod ett krypteringsfel vid hämtning av begärt lösenord: %s</string>
+  <string name="error_retrieving_password">Det uppstod ett fel vid hämtning av begärt lösenord: %s</string>
+  <string name="request_password_not_permissible">Det är för närvarande inte tillåtet för denna applikation att begära detta lösenord.</string>
+  <string name="unknown_calling_package">Okänt anropande paket</string>
+  <string name="extra_unique_name_not_set">EXTRA_UNIQUE_NAME ej angivet.</string>
+  <string name="extra_password_not_set">PASSWORD extra måste anges.</string>
+  <string name="password_not_found_unique_name">Kunde inte hitta lösenord med det unika namnet: %s</string>
+  <string name="version_label">Version: </string>
+  <string name="welcome_back">Välkommen tillbaka</string>
+  <string name="confirm_password">Bekräfta lösenord</string>
+  <string name="discard_changes_msg">Du har osparade ändringar. Vill du avfärda dem?</string>
+  <string name="error">Fel</string>
+  <string name="parsing_backup">Tolkar säkerhetskopia…</string>
+  <string name="restoring_database">Återställer databasen…</string>
+  <string name="restore_complete_status">Återställning slutförd!</string>
+  <string name="select_another_file">Välj en annan fil</string>
+  <string name="back">Tillbaka</string>
+  <string name="options">Alternativ</string>
+  <string name="clear">Rensa</string>
 </resources>

@@ -68,11 +68,11 @@ fun RestoreScreen(
     if (uiState.error != null) {
         AlertDialog(
             onDismissRequest = onErrorDismiss,
-            title = { Text("Error") },
+            title = { Text(stringResource(R.string.error)) },
             text = { Text(uiState.error) },
             confirmButton = {
                 TextButton(onClick = onErrorDismiss) {
-                    Text("OK")
+                    Text(stringResource(android.R.string.ok))
                 }
             }
         )
@@ -116,7 +116,7 @@ fun RestoreScreen(
             }
             RestoreStatus.Parsing -> {
                 CircularProgressIndicator()
-                Text("Parsing backup file...")
+                Text(stringResource(R.string.parsing_backup))
             }
             RestoreStatus.PasswordRequired -> {
                 var password by remember { mutableStateOf("") }
@@ -146,19 +146,19 @@ fun RestoreScreen(
             }
             RestoreStatus.Decrypting -> {
                 CircularProgressIndicator()
-                Text("Decrypting...")
+                Text(stringResource(R.string.decrypt_progress))
             }
             RestoreStatus.Restoring -> {
                 CircularProgressIndicator()
-                Text("Restoring database...")
+                Text(stringResource(R.string.restoring_database))
             }
             RestoreStatus.Success -> {
-                Text("Restore Complete!")
+                Text(stringResource(R.string.restore_complete_status))
             }
             RestoreStatus.Error -> {
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = onSelectFile) {
-                    Text("Select Another File")
+                    Text(stringResource(R.string.select_another_file))
                 }
             }
             else -> {}

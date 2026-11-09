@@ -33,7 +33,7 @@ fun PassListScreen(
                 title = { Text(text = uiState.categoryName) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -91,7 +91,7 @@ fun PassListItem(
         trailingContent = {
             Box {
                 IconButton(onClick = { expanded = true }) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "Options")
+                    Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.options))
                 }
                 DropdownMenu(
                     expanded = expanded,

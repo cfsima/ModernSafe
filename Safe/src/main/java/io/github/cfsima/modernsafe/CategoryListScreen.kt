@@ -52,7 +52,7 @@ fun CategoryListScreen(
     if (uiState.userMessage != null) {
         AlertDialog(
             onDismissRequest = onUserMessageDismiss,
-            confirmButton = { TextButton(onClick = onUserMessageDismiss) { Text("OK") } },
+            confirmButton = { TextButton(onClick = onUserMessageDismiss) { Text(stringResource(android.R.string.ok)) } },
             text = { Text(uiState.userMessage) }
         )
     }

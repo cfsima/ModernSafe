@@ -41,15 +41,15 @@ fun PassViewScreen(
                 title = { Text(text = stringResource(id = R.string.app_name) + " - " + stringResource(id = R.string.view_entry)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
                     IconButton(onClick = { onEdit(passEntry) }) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit")
+                        Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.password_edit))
                     }
                     IconButton(onClick = { onDelete(passEntry) }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete")
+                        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.password_delete))
                     }
                 }
             )

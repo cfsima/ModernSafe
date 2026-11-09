@@ -78,7 +78,7 @@ fun PassEditScreen(
         AlertDialog(
             onDismissRequest = { showDiscardDialog = false },
             title = { Text(stringResource(R.string.discard_changes)) },
-            text = { Text("You have unsaved changes. Discard them?") },
+            text = { Text(stringResource(R.string.discard_changes_msg)) },
             confirmButton = {
                 TextButton(onClick = {
                     showDiscardDialog = false
@@ -128,7 +128,7 @@ fun PassEditScreen(
                             onBack()
                         }
                     }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
@@ -213,7 +213,7 @@ fun PassEditScreen(
                 onClick = onGeneratePassword,
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Text("Generate Password")
+                Text(stringResource(R.string.generate_password))
             }
 
             Spacer(modifier = Modifier.height(8.dp))
