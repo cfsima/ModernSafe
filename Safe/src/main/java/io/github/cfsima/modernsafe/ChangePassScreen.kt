@@ -1,9 +1,16 @@
 package io.github.cfsima.modernsafe
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
@@ -19,7 +26,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,17 +45,19 @@ fun ChangePassScreen(
     uiState: ChangePassUiState,
     onChangePassword: (String, String, String) -> Unit,
     onBack: () -> Unit,
-    onClearErrors: () -> Unit
+    onClearErrors: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    var oldPasswordVisible by remember { mutableStateOf(false) }
-    var newPasswordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
+    var oldPasswordVisible by remember { mutableStateOf(value = false) }
+    var newPasswordVisible by remember { mutableStateOf(value = false) }
+    var confirmPasswordVisible by remember { mutableStateOf(value = false) }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.change_password)) },
@@ -57,9 +65,9 @@ fun ChangePassScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.close))
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -69,12 +77,12 @@ fun ChangePassScreen(
                 .imePadding()
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = stringResource(R.string.chg_pass_explaination),
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
             )
 
             OutlinedTextField(
@@ -90,7 +98,7 @@ fun ChangePassScreen(
                     IconButton(onClick = { oldPasswordVisible = !oldPasswordVisible }) {
                         Icon(
                             imageVector = if (oldPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = if (oldPasswordVisible) "Hide password" else "Show password"
+                            contentDescription = if (oldPasswordVisible) "Hide password" else "Show password",
                         )
                     }
                 },
@@ -100,7 +108,7 @@ fun ChangePassScreen(
                         Text(stringResource(it))
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -118,7 +126,7 @@ fun ChangePassScreen(
                     IconButton(onClick = { newPasswordVisible = !newPasswordVisible }) {
                         Icon(
                             imageVector = if (newPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = if (newPasswordVisible) "Hide password" else "Show password"
+                            contentDescription = if (newPasswordVisible) "Hide password" else "Show password",
                         )
                     }
                 },
@@ -128,7 +136,7 @@ fun ChangePassScreen(
                         Text(stringResource(it))
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -146,7 +154,7 @@ fun ChangePassScreen(
                     IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                         Icon(
                             imageVector = if (confirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = if (confirmPasswordVisible) "Hide password" else "Show password"
+                            contentDescription = if (confirmPasswordVisible) "Hide password" else "Show password",
                         )
                     }
                 },
@@ -156,7 +164,7 @@ fun ChangePassScreen(
                         Text(stringResource(it))
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             if (uiState.generalError != null) {
@@ -164,7 +172,7 @@ fun ChangePassScreen(
                 Text(
                     text = uiState.generalError,
                     color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
 
@@ -176,7 +184,7 @@ fun ChangePassScreen(
                 Button(
                     onClick = { onChangePassword(oldPassword, newPassword, confirmPassword) },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = oldPassword.isNotEmpty() && newPassword.isNotEmpty() && confirmPassword.isNotEmpty()
+                    enabled = (oldPassword.isNotEmpty()) && (newPassword.isNotEmpty()) && (confirmPassword.isNotEmpty()),
                 ) {
                     Text(stringResource(R.string.change_password))
                 }
