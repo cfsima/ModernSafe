@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import io.github.cfsima.modernsafe.biometric.BiometricHelper
 import io.github.cfsima.modernsafe.util.LanguageManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +51,8 @@ fun SettingsScreen(
     exportPath: String,
     currentLanguage: String = "",
     biometricEnabled: Boolean = false,
-    isBiometricAvailable: Boolean = false,
+    biometricStatus: BiometricHelper.BiometricStatus = BiometricHelper.BiometricStatus.UNAVAILABLE,
+    isBiometricAvailable: Boolean = (biometricStatus == BiometricHelper.BiometricStatus.AVAILABLE),
     themePalette: String = "dynamic",
     darkMode: String = "system",
     onExternalAccessChange: (Boolean) -> Unit,
@@ -180,13 +182,49 @@ fun SettingsScreen(
             }
 
             item {
-                SwitchPreference(
-                    title = stringResource(R.string.pref_title_biometrics),
-                    summary = stringResource(if (isBiometricAvailable) R.string.pref_summary_biometrics else R.string.pref_summary_biometrics_unavailable),
-                    checked = biometricEnabled,
-                    onCheckedChange = onBiometricChange,
-                    enabled = isBiometricAvailable
-                )
+                val effectiveStatus = if (biometricStatus != BiometricHelper.BiometricStatus.UNAVAILABLE) {
+                    biometricStatus
+                } else if (isBiometricAvailable) {
+                    BiometricHelper.BiometricStatus.AVAILABLE
+                } else {
+                    BiometricHelper.BiometricStatus.UNAVAILABLE
+                }
+
+                when (effectiveStatus) {
+                    BiometricHelper.BiometricStatus.AVAILABLE -> {
+                        SwitchPreference(
+                            title = stringResource(R.string.pref_title_biometrics),
+                            summary = stringResource(R.string.pref_summary_biometrics),
+                            checked = biometricEnabled,
+                            onCheckedChange = onBiometricChange,
+                            enabled = true
+                        )
+                    }
+                    BiometricHelper.BiometricStatus.NOT_ENROLLED -> {
+                        ListItem(
+                            headlineContent = { Text(stringResource(R.string.pref_title_biometrics)) },
+                            supportingContent = { Text(stringResource(R.string.pref_summary_biometrics_not_enrolled)) },
+                            modifier = Modifier.clickable {
+                                try {
+                                    context.startActivity(BiometricHelper.createEnrollIntent())
+                                } catch (e: Exception) {
+                                    try {
+                                        context.startActivity(android.content.Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS))
+                                    } catch (_: Exception) {}
+                                }
+                            }
+                        )
+                    }
+                    BiometricHelper.BiometricStatus.UNAVAILABLE -> {
+                        SwitchPreference(
+                            title = stringResource(R.string.pref_title_biometrics),
+                            summary = stringResource(R.string.pref_summary_biometrics_unavailable),
+                            checked = false,
+                            onCheckedChange = {},
+                            enabled = false
+                        )
+                    }
+                }
                 HorizontalDivider()
             }
 

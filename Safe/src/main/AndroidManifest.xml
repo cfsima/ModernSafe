@@ -4,6 +4,8 @@
 
   <uses-permission android:name="io.github.cfsima.modernsafe.ACCESS_INTENTS" />
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+  <uses-permission android:name="android.permission.USE_FINGERPRINT" tools:ignore="Deprecated" />
 
   <permission
     android:name="io.github.cfsima.modernsafe.ACCESS_INTENTS"
@@ -13,6 +15,12 @@
 
   <uses-feature
     android:name="android.hardware.touchscreen"
+    android:required="false" />
+  <uses-feature
+    android:name="android.hardware.fingerprint"
+    android:required="false" />
+  <uses-feature
+    android:name="android.hardware.biometrics.face"
     android:required="false" />
 
   <application

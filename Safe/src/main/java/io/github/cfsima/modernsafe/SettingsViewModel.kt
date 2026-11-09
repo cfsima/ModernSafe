@@ -29,6 +29,7 @@ data class SettingsUiState(
     val exportPath: String = "",
     val currentLanguage: String = "",
     val biometricEnabled: Boolean = false,
+    val biometricStatus: BiometricHelper.BiometricStatus = BiometricHelper.BiometricStatus.UNAVAILABLE,
     val themePalette: String = "dynamic",
     val darkMode: String = "system"
 )
@@ -41,10 +42,18 @@ class SettingsViewModel @JvmOverloads constructor(
     private val _currentLanguage = MutableStateFlow(LanguageManager.getCurrentLanguageTag())
     val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
 
+    private val _biometricStatus = MutableStateFlow(BiometricHelper.checkBiometricStatus(application))
+    val biometricStatus: StateFlow<BiometricHelper.BiometricStatus> = _biometricStatus.asStateFlow()
+
+    fun refreshBiometricStatus() {
+        _biometricStatus.value = BiometricHelper.checkBiometricStatus(getApplication())
+    }
+
     val uiState: StateFlow<SettingsUiState> = combine(
         settingsRepository.settingsFlow,
-        _currentLanguage
-    ) { settings, lang ->
+        _currentLanguage,
+        _biometricStatus
+    ) { settings, lang, bioStatus ->
         SettingsUiState(
             externalAccess = settings.externalAccess,
             lockTimeout = settings.lockTimeout,
@@ -57,6 +66,7 @@ class SettingsViewModel @JvmOverloads constructor(
             exportPath = settings.displayExportPath,
             currentLanguage = lang,
             biometricEnabled = settings.biometricEnabled,
+            biometricStatus = bioStatus,
             themePalette = settings.themePalette,
             darkMode = settings.darkMode
         )

@@ -646,6 +646,19 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
             }
         }
 
+        val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+        DisposableEffect(lifecycleOwner) {
+            val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+                if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                    viewModel.refreshBiometricStatus()
+                }
+            }
+            lifecycleOwner.lifecycle.addObserver(observer)
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+            }
+        }
+
         SettingsScreen(
             externalAccess = uiState.externalAccess,
             lockTimeout = uiState.lockTimeout,
@@ -658,6 +671,7 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
             exportPath = uiState.exportPath,
             currentLanguage = uiState.currentLanguage,
             biometricEnabled = uiState.biometricEnabled,
+            biometricStatus = uiState.biometricStatus,
             isBiometricAvailable = viewModel.isBiometricAvailable,
             themePalette = uiState.themePalette,
             darkMode = uiState.darkMode,

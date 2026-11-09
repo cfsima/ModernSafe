@@ -4,7 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.hardware.biometrics.BiometricManager
 import android.hardware.biometrics.BiometricPrompt
+import android.content.Intent
+import android.os.Build
 import android.os.CancellationSignal
+import android.provider.Settings
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
@@ -24,13 +27,41 @@ object BiometricHelper {
     private const val GCM_IV_LENGTH = 12
     private const val GCM_TAG_LENGTH = 128
 
-    fun isBiometricAvailable(context: Context): Boolean {
+    enum class BiometricStatus {
+        AVAILABLE,
+        NOT_ENROLLED,
+        UNAVAILABLE
+    }
+
+    fun checkBiometricStatus(context: Context): BiometricStatus {
         return try {
-            val biometricManager = context.getSystemService(BiometricManager::class.java) ?: return false
-            biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
+            val biometricManager = context.getSystemService(BiometricManager::class.java)
+                ?: return BiometricStatus.UNAVAILABLE
+            when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
+                BiometricManager.BIOMETRIC_SUCCESS -> BiometricStatus.AVAILABLE
+                BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> BiometricStatus.NOT_ENROLLED
+                else -> BiometricStatus.UNAVAILABLE
+            }
         } catch (e: Exception) {
-            Log.e(TAG, "isBiometricAvailable error", e)
-            false
+            Log.e(TAG, "checkBiometricStatus error", e)
+            BiometricStatus.UNAVAILABLE
+        }
+    }
+
+    fun isBiometricAvailable(context: Context): Boolean {
+        return checkBiometricStatus(context) == BiometricStatus.AVAILABLE
+    }
+
+    fun createEnrollIntent(): Intent {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                putExtra(
+                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                    BiometricManager.Authenticators.BIOMETRIC_STRONG
+                )
+            }
+        } else {
+            Intent(Settings.ACTION_SECURITY_SETTINGS)
         }
     }
 
