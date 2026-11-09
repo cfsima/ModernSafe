@@ -28,7 +28,9 @@ data class SettingsUiState(
     val backupPath: String = "",
     val exportPath: String = "",
     val currentLanguage: String = "",
-    val biometricEnabled: Boolean = false
+    val biometricEnabled: Boolean = false,
+    val themePalette: String = "dynamic",
+    val darkMode: String = "system"
 )
 
 class SettingsViewModel @JvmOverloads constructor(
@@ -54,7 +56,9 @@ class SettingsViewModel @JvmOverloads constructor(
             backupPath = settings.displayBackupPath,
             exportPath = settings.displayExportPath,
             currentLanguage = lang,
-            biometricEnabled = settings.biometricEnabled
+            biometricEnabled = settings.biometricEnabled,
+            themePalette = settings.themePalette,
+            darkMode = settings.darkMode
         )
     }.stateIn(
         scope = viewModelScope,
@@ -213,6 +217,18 @@ class SettingsViewModel @JvmOverloads constructor(
 
     fun setExportPath(uriString: String) {
         setExportDocument(uriString)
+    }
+
+    fun setThemePalette(palette: String) {
+        viewModelScope.launch {
+            settingsRepository.setThemePalette(palette)
+        }
+    }
+
+    fun setDarkMode(mode: String) {
+        viewModelScope.launch {
+            settingsRepository.setDarkMode(mode)
+        }
     }
 
     fun onBiometricChange(activity: Activity, enabled: Boolean) {

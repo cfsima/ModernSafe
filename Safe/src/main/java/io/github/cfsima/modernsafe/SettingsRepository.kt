@@ -57,7 +57,9 @@ data class UserSettings(
     val exportDocument: String? = null,
     val exportMethod: String = Settings.IO_METHOD_FILE,
     val biometricEnabled: Boolean = false,
-    val biometricPayload: String? = null
+    val biometricPayload: String? = null,
+    val themePalette: String = "dynamic",
+    val darkMode: String = "system"
 ) {
     val displayBackupPath: String
         get() = if (backupMethod == Settings.IO_METHOD_DOCUMENT_PROVIDER) {
@@ -109,6 +111,8 @@ class SettingsRepository(
         val EXPORT_METHOD = stringPreferencesKey(Settings.PREFERENCE_EXPORT_METHOD)
         val BIOMETRIC_ENABLED = booleanPreferencesKey("biometric_enabled")
         val BIOMETRIC_PAYLOAD = stringPreferencesKey("biometric_payload")
+        val THEME_PALETTE = stringPreferencesKey("pref_theme_palette")
+        val DARK_MODE = stringPreferencesKey("pref_dark_mode")
     }
 
     val settingsFlow: Flow<UserSettings> = dataStore.data
@@ -142,6 +146,8 @@ class SettingsRepository(
     val displayBackupPathFlow: Flow<String> = settingsFlow.map { it.displayBackupPath }.distinctUntilChanged()
     val displayExportPathFlow: Flow<String> = settingsFlow.map { it.displayExportPath }.distinctUntilChanged()
     val biometricEnabledFlow: Flow<Boolean> = settingsFlow.map { it.biometricEnabled }.distinctUntilChanged()
+    val themePaletteFlow: Flow<String> = settingsFlow.map { it.themePalette }.distinctUntilChanged()
+    val darkModeFlow: Flow<String> = settingsFlow.map { it.darkMode }.distinctUntilChanged()
 
     private fun mapPreferences(preferences: Preferences): UserSettings {
         val defaultBackup = Settings.getDefaultBackupPath(appContext)
@@ -165,7 +171,9 @@ class SettingsRepository(
             exportDocument = preferences[PreferencesKeys.EXPORT_DOCUMENT],
             exportMethod = preferences[PreferencesKeys.EXPORT_METHOD] ?: Settings.IO_METHOD_FILE,
             biometricEnabled = preferences[PreferencesKeys.BIOMETRIC_ENABLED] ?: false,
-            biometricPayload = preferences[PreferencesKeys.BIOMETRIC_PAYLOAD]
+            biometricPayload = preferences[PreferencesKeys.BIOMETRIC_PAYLOAD],
+            themePalette = preferences[PreferencesKeys.THEME_PALETTE] ?: "dynamic",
+            darkMode = preferences[PreferencesKeys.DARK_MODE] ?: "system"
         )
     }
 
@@ -283,6 +291,18 @@ class SettingsRepository(
             } else if (!enabled) {
                 preferences.remove(PreferencesKeys.BIOMETRIC_PAYLOAD)
             }
+        }
+    }
+
+    suspend fun setThemePalette(palette: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.THEME_PALETTE] = palette
+        }
+    }
+
+    suspend fun setDarkMode(mode: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.DARK_MODE] = mode
         }
     }
 

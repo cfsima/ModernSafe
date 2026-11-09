@@ -659,6 +659,8 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
             currentLanguage = uiState.currentLanguage,
             biometricEnabled = uiState.biometricEnabled,
             isBiometricAvailable = viewModel.isBiometricAvailable,
+            themePalette = uiState.themePalette,
+            darkMode = uiState.darkMode,
             onExternalAccessChange = viewModel::setExternalAccess,
             onLockTimeoutChange = viewModel::setLockTimeout,
             onLockOnScreenLockChange = viewModel::setLockOnScreenLock,
@@ -672,6 +674,8 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
                     viewModel.onBiometricChange(activity, enabled)
                 }
             },
+            onThemePaletteChange = viewModel::setThemePalette,
+            onDarkModeChange = viewModel::setDarkMode,
             onBackupPathClick = {
                 val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_BACKUP, Settings.OISAFE_XML)
                 try {

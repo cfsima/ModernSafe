@@ -336,4 +336,23 @@
   <string name="autofill_service_label">ModernSafe Autofill</string>
   <string name="autofill_unlock_title">Unlock ModernSafe</string>
   <string name="autofill_unlock_subtitle">Tap to unlock and autofill</string>
+
+  <string name="pref_title_theme_palette">Theme Palette</string>
+  <string name="pref_summary_theme_palette">Choose the visual appearance and color scheme</string>
+  <string name="pref_dialog_title_theme_palette">Choose Theme Palette</string>
+  <string-array name="pref_entries_theme_palette">
+    <item>Dynamic (Material You)</item>
+    <item>Modern Emerald Vault</item>
+    <item>Deep Titanium &amp; Sapphire</item>
+    <item>Nordic Slate &amp; Warm Copper</item>
+  </string-array>
+
+  <string name="pref_title_dark_mode">Dark Mode</string>
+  <string name="pref_summary_dark_mode">Choose dark, light, or follow system theme</string>
+  <string name="pref_dialog_title_dark_mode">Choose Dark Mode</string>
+  <string-array name="pref_entries_dark_mode">
+    <item>System default</item>
+    <item>Dark</item>
+    <item>Light</item>
+  </string-array>
 </resources>

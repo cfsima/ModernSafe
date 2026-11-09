@@ -15,4 +15,17 @@
     <item>30</item>
     <item>60</item>
   </string-array>
+
+  <string-array name="pref_entryvalues_theme_palette">
+    <item>dynamic</item>
+    <item>emerald</item>
+    <item>sapphire</item>
+    <item>copper</item>
+  </string-array>
+
+  <string-array name="pref_entryvalues_dark_mode">
+    <item>system</item>
+    <item>dark</item>
+    <item>light</item>
+  </string-array>
 </resources>

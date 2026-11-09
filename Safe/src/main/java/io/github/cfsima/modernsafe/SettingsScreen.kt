@@ -51,6 +51,8 @@ fun SettingsScreen(
     currentLanguage: String = "",
     biometricEnabled: Boolean = false,
     isBiometricAvailable: Boolean = false,
+    themePalette: String = "dynamic",
+    darkMode: String = "system",
     onExternalAccessChange: (Boolean) -> Unit,
     onLockTimeoutChange: (String) -> Unit,
     onLockOnScreenLockChange: (Boolean) -> Unit,
@@ -62,6 +64,8 @@ fun SettingsScreen(
     onExportPathClick: () -> Unit,
     onLanguageChange: (String) -> Unit = {},
     onBiometricChange: (Boolean) -> Unit = {},
+    onThemePaletteChange: (String) -> Unit = {},
+    onDarkModeChange: (String) -> Unit = {},
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -100,6 +104,44 @@ fun SettingsScreen(
                     entryValues = languageEntryValues,
                     currentValue = currentLanguage,
                     onValueChange = onLanguageChange
+                )
+                HorizontalDivider()
+            }
+
+            item {
+                val themeEntries = stringArrayResource(R.array.pref_entries_theme_palette)
+                val themeValues = stringArrayResource(R.array.pref_entryvalues_theme_palette)
+                val currentThemeSummary = remember(themePalette, themeEntries, themeValues) {
+                    val idx = themeValues.indexOf(themePalette)
+                    if (idx in themeEntries.indices) themeEntries[idx] else themeEntries.firstOrNull().orEmpty()
+                }
+                ListPreference(
+                    title = stringResource(R.string.pref_title_theme_palette),
+                    summary = currentThemeSummary,
+                    dialogTitle = stringResource(R.string.pref_dialog_title_theme_palette),
+                    entries = themeEntries,
+                    entryValues = themeValues,
+                    currentValue = themePalette,
+                    onValueChange = onThemePaletteChange
+                )
+                HorizontalDivider()
+            }
+
+            item {
+                val darkModeEntries = stringArrayResource(R.array.pref_entries_dark_mode)
+                val darkModeValues = stringArrayResource(R.array.pref_entryvalues_dark_mode)
+                val currentDarkModeSummary = remember(darkMode, darkModeEntries, darkModeValues) {
+                    val idx = darkModeValues.indexOf(darkMode)
+                    if (idx in darkModeEntries.indices) darkModeEntries[idx] else darkModeEntries.firstOrNull().orEmpty()
+                }
+                ListPreference(
+                    title = stringResource(R.string.pref_title_dark_mode),
+                    summary = currentDarkModeSummary,
+                    dialogTitle = stringResource(R.string.pref_dialog_title_dark_mode),
+                    entries = darkModeEntries,
+                    entryValues = darkModeValues,
+                    currentValue = darkMode,
+                    onValueChange = onDarkModeChange
                 )
                 HorizontalDivider()
             }

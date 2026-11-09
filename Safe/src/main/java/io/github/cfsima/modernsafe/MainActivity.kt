@@ -22,6 +22,9 @@ import io.github.cfsima.modernsafe.navigation.LogOffRoute
 import io.github.cfsima.modernsafe.navigation.ModernSafeNavHost
 import io.github.cfsima.modernsafe.service.AutoLockService
 import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,7 +63,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContent {
-            ModernSafeTheme {
+            val settingsRepository = remember { SettingsRepository.getInstance(applicationContext) }
+            val userSettings by settingsRepository.userSettings.collectAsState()
+
+            ModernSafeTheme(
+                themePalette = userSettings.themePalette,
+                darkMode = userSettings.darkMode
+            ) {
                 val hostNavController = rememberNavController()
                 navController = hostNavController
 
