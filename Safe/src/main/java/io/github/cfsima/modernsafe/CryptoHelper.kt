@@ -131,7 +131,7 @@ class CryptoHelper {
      */
     fun setPassword(pass: String?) {
         if (debug) {
-            Log.d(TAG, "setPassword($pass)")
+            Log.d(TAG, "setPassword called")
         }
         if (pass == null) {
             return
@@ -182,8 +182,10 @@ class CryptoHelper {
         return try {
             // simply create a new salt:
             generateSalt()
-        } catch (e: NoSuchAlgorithmException) {
-            "12345" // better than nothing... :-/
+        } catch (_: Exception) {
+            val fallback = ByteArray(8)
+            SecureRandom().nextBytes(fallback)
+            toHexString(fallback)
         }
     }
 
@@ -346,9 +348,6 @@ class CryptoHelper {
         val stringCipherVersion = "A"
         val stringCipherSessionKey = toHexString(cipherSessionKey)
         val stringCiphertext = toHexString(ciphertext)
-        if (debug) {
-            Log.i(TAG, "Length: " + stringCipherSessionKey.length + ", " + stringCipherSessionKey)
-        }
         return stringCipherVersion + stringCipherSessionKey + stringCiphertext
     }
 
