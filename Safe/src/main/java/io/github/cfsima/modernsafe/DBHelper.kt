@@ -18,7 +18,6 @@ package io.github.cfsima.modernsafe
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDiskIOException
@@ -26,9 +25,7 @@ import android.util.Log
 import io.github.cfsima.modernsafe.model.CategoryEntry
 import io.github.cfsima.modernsafe.model.PassEntry
 import java.text.DateFormat
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+import java.util.Date
 
 /**
  * DBHelper class.
@@ -39,7 +36,7 @@ import kotlin.collections.HashMap
  *
  * @author Steven Osborn - http://steven.bitsetters.com
  */
-class DBHelper(private val context: Context) {
+class DBHelper(context: Context) {
 
     private var db: SQLiteDatabase? = null
     var needsUpgrade: Boolean = false
@@ -131,7 +128,7 @@ class DBHelper(private val context: Context) {
             // Check for the existence of the DBVERSION table
             val c = db?.query(
                 "sqlite_master", arrayOf("name"),
-                "type='table' and name='$TABLE_DBVERSION'", null, null, null, null
+                "type='table' and name='$TABLE_DBVERSION'", null, null, null, null,
             )
 
             val numRows = c?.count ?: 0
@@ -143,9 +140,9 @@ class DBHelper(private val context: Context) {
                 var version = 0
                 val vc = db?.query(
                     true, TABLE_DBVERSION, arrayOf("version"),
-                    null, null, null, null, null, null
+                    null, null, null, null, null, null,
                 )
-                if (vc != null && vc.count > 0) {
+                if ((vc != null) && (vc.count > 0)) {
                     vc.moveToFirst()
                     version = vc.getInt(0)
                 }
@@ -233,7 +230,7 @@ class DBHelper(private val context: Context) {
             db?.query(
                 true, TABLE_DBVERSION,
                 arrayOf("version"),
-                null, null, null, null, null, null
+                null, null, null, null, null, null,
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -276,7 +273,7 @@ class DBHelper(private val context: Context) {
         try {
             db?.query(
                 true, TABLE_SALT, arrayOf("salt"),
-                null, null, null, null, null, null
+                null, null, null, null, null, null,
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -315,7 +312,7 @@ class DBHelper(private val context: Context) {
         try {
             db?.query(
                 true, TABLE_MASTER_KEY, arrayOf("encryptedkey"),
-                null, null, null, null, null, null
+                null, null, null, null, null, null,
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -358,14 +355,14 @@ class DBHelper(private val context: Context) {
         try {
             db?.query(
                 true, TABLE_CATEGORIES, arrayOf("id", "name"),
-                "name=?", arrayOf(entry.name), null, null, null, null
+                "name=?", arrayOf(entry.name), null, null, null, null,
             ).use { c ->
-                if (c != null && c.count > 0) {
+                rowID = if ((c != null) && (c.count > 0)) {
                     c.moveToFirst()
-                    rowID = c.getLong(0)
+                    c.getLong(0)
                 } else { // there's not already such a category...
                     initialValues.put("name", entry.name)
-                    rowID = db?.insert(TABLE_CATEGORIES, null, initialValues) ?: -1
+                    db?.insert(TABLE_CATEGORIES, null, initialValues) ?: -1
                 }
             }
         } catch (e: SQLException) {
@@ -397,11 +394,11 @@ class DBHelper(private val context: Context) {
         try {
             db?.query(
                 TABLE_CATEGORIES, arrayOf("id", "name"),
-                null, null, null, null, null
+                null, null, null, null, null,
             )?.use { c ->
                 val numRows = c.count
                 c.moveToFirst()
-                for (i in 0 until numRows) {
+                repeat(numRows) {
                     val row = CategoryEntry()
                     row.id = c.getLong(0)
                     row.name = c.getString(1)
@@ -424,7 +421,7 @@ class DBHelper(private val context: Context) {
         try {
             db?.query(
                 true, TABLE_CATEGORIES, arrayOf("id", "name"),
-                "id=$id", null, null, null, null, null
+                "id=$id", null, null, null, null, null,
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -485,7 +482,7 @@ class DBHelper(private val context: Context) {
             val selectionArgs = if (categoryId > 0) arrayOf(categoryId.toString()) else null
             db?.query(
                 TABLE_PASSWORDS, arrayOf("count(*)"),
-                selection, selectionArgs, null, null, null
+                selection, selectionArgs, null, null, null,
             )?.use { c ->
                 if (c.moveToFirst()) {
                     count = c.getInt(0)
@@ -513,13 +510,13 @@ class DBHelper(private val context: Context) {
             db?.query(
                 TABLE_PASSWORDS, arrayOf(
                     "id", "password", "description", "username", "website",
-                    "note", "category", "unique_name", "lastdatetimeedit"
+                    "note", "category", "unique_name", "lastdatetimeedit",
                 ),
-                selection, selectionArgs, null, null, null
+                selection, selectionArgs, null, null, null,
             )?.use { c ->
                 val numRows = c.count
                 c.moveToFirst()
-                for (i in 0 until numRows) {
+                repeat(numRows) {
                     val row = PassEntry()
                     row.id = c.getLong(0)
                     row.password = c.getString(1)
@@ -545,15 +542,16 @@ class DBHelper(private val context: Context) {
      * @return The password entry matching the Id.  If not found, then
      * the returned PassEntry.id will equal -1.
      */
+    @Suppress("unused")
     fun fetchPassword(id: Long): PassEntry {
         val row = PassEntry()
         try {
             db?.query(
                 true, TABLE_PASSWORDS, arrayOf(
                     "id", "password", "description", "username", "website",
-                    "note", "category", "unique_name", "lastdatetimeedit"
+                    "note", "category", "unique_name", "lastdatetimeedit",
                 ),
-                "id=$id", null, null, null, null, null
+                "id=$id", null, null, null, null, null,
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -576,6 +574,7 @@ class DBHelper(private val context: Context) {
         return row
     }
 
+    @Suppress("unused")
     fun fetchPassword(uniqueName: String): PassEntry {
         val row = PassEntry()
         row.id = -1
@@ -583,10 +582,10 @@ class DBHelper(private val context: Context) {
             db?.query(
                 true, TABLE_PASSWORDS, arrayOf(
                     "id", "password", "description", "username", "website",
-                    "note", "category", "unique_name", "lastdatetimeedit"
+                    "note", "category", "unique_name", "lastdatetimeedit",
                 ),
                 "unique_name=?", arrayOf(uniqueName),
-                null, null, null, null
+                null, null, null, null,
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -612,7 +611,7 @@ class DBHelper(private val context: Context) {
         try {
             db?.query(
                 true, TABLE_PACKAGE_ACCESS, arrayOf("package"),
-                "id=$passwordID", null, null, null, null, null
+                "id=$passwordID", null, null, null, null, null,
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -642,7 +641,7 @@ class DBHelper(private val context: Context) {
         try {
             db?.query(
                 true, TABLE_PACKAGE_ACCESS, arrayOf("id"),
-                null, null, null, null, null, null
+                null, null, null, null, null, null,
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
@@ -688,7 +687,7 @@ class DBHelper(private val context: Context) {
         args.put("unique_name", entry.uniqueName)
         val dateFormatter = DateFormat.getDateTimeInstance(
             DateFormat.DEFAULT,
-            DateFormat.FULL
+            DateFormat.FULL,
         )
         val today = Date()
         val dateOut = dateFormatter.format(today)
@@ -709,7 +708,7 @@ class DBHelper(private val context: Context) {
      * @param newCategoryId the updated category id
      */
     fun updatePasswordCategory(id: Long, newCategoryId: Long) {
-        if (id < 0 || newCategoryId < 0) {
+        if ((id < 0) || (newCategoryId < 0)) {
             //make sure values appear valid
             return
         }
@@ -733,7 +732,6 @@ class DBHelper(private val context: Context) {
      * @return long row id of newly added entry, equal to -1 if an error occurred
      */
     fun addPassword(entry: PassEntry): Long {
-        var id: Long = -1
         val initialValues = ContentValues()
         if (entry.id != 0L) {
             initialValues.put("id", entry.id)
@@ -747,17 +745,17 @@ class DBHelper(private val context: Context) {
         initialValues.put("unique_name", entry.uniqueName)
         val dateFormatter = DateFormat.getDateTimeInstance(
             DateFormat.DEFAULT,
-            DateFormat.FULL
+            DateFormat.FULL,
         )
         val today = Date()
         val dateOut = dateFormatter.format(today)
         initialValues.put("lastdatetimeedit", dateOut)
 
-        try {
-            id = db?.insertOrThrow(TABLE_PASSWORDS, null, initialValues) ?: -1
+        val id = try {
+            db?.insertOrThrow(TABLE_PASSWORDS, null, initialValues) ?: -1
         } catch (e: SQLException) {
             Log.d(TAG, "SQLite exception: " + e.localizedMessage)
-            id = -1
+            -1
         }
         return id
     }
@@ -783,13 +781,14 @@ class DBHelper(private val context: Context) {
      * @param packageToAdd
      * @param expiration   set to 0 if no expiration, otherwise epoch time
      */
+    @Suppress("unused")
     fun addCipherAccess(packageToAdd: String, expiration: Long) {
         val initialValues = ContentValues()
         initialValues.put("packagename", packageToAdd)
         initialValues.put("expires", expiration)
         val dateFormatter = DateFormat.getDateTimeInstance(
             DateFormat.DEFAULT,
-            DateFormat.FULL
+            DateFormat.FULL,
         )
         val today = Date()
         val dateOut = dateFormatter.format(today)
@@ -808,12 +807,13 @@ class DBHelper(private val context: Context) {
      * @param packageName
      * @return -1 if not found, 0 if no expiration, otherwise epoch date of expiration
      */
+    @Suppress("unused")
     fun fetchCipherAccess(packageName: String): Long {
         var expires: Long = -1 // default to not found
         try {
             db?.query(
                 true, TABLE_CIPHER_ACCESS, arrayOf("expires"),
-                "packagename=?", arrayOf(packageName), null, null, null, null
+                "packagename=?", arrayOf(packageName), null, null, null, null,
             )?.use { c ->
                 if (c.count > 0) {
                     c.moveToFirst()
