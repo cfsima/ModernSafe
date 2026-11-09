@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.github.cfsima.modernsafe
 
 import android.content.Context
@@ -36,7 +38,7 @@ class Backup(private val context: Context) {
 
                 val dateFormatter = DateFormat.getDateTimeInstance(
                     DateFormat.DEFAULT,
-                    DateFormat.FULL
+                    DateFormat.FULL,
                 )
                 val today = Date()
                 val dateOut = dateFormatter.format(today)
@@ -44,14 +46,14 @@ class Backup(private val context: Context) {
                 serializer.attribute(null, "date", dateOut)
 
                 val masterKeyEncrypted = Passwords.fetchMasterKeyEncrypted()
-                if (masterKeyEncrypted != null) {
+                if (masterKeyEncrypted.isNotEmpty()) {
                     serializer.startTag(null, "MasterKey")
                     serializer.text(masterKeyEncrypted)
                     serializer.endTag(null, "MasterKey")
                 }
 
                 val salt = Passwords.fetchSalt()
-                if (salt != null) {
+                if (salt.isNotEmpty()) {
                     serializer.startTag(null, "Salt")
                     serializer.text(salt)
                     serializer.endTag(null, "Salt")
@@ -64,7 +66,7 @@ class Backup(private val context: Context) {
                     serializer.startTag(null, "Category")
                     serializer.attribute(null, "name", crow.name)
 
-                    val rows = Passwords.getPassEntries(crow.id, false, false)
+                    val rows = Passwords.getPassEntries(crow.id, decrypt = false, descriptionOnly = false)
 
                     for (row in rows) {
                         totalPasswords++
@@ -102,7 +104,7 @@ class Backup(private val context: Context) {
                         }
 
                         val packageAccess = Passwords.getPackageAccessEntries(row.id)
-                        if (packageAccess != null && packageAccess.isNotEmpty()) {
+                        if (!packageAccess.isNullOrEmpty()) {
                             serializer.startTag(null, "PackageAccess")
                             val entry = packageAccess.joinToString(",") { it.packageAccess }
                             serializer.text("[$entry]")
