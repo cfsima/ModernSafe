@@ -112,6 +112,12 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
         updateState { it.copy(note = value) }
     }
 
+    fun onDescriptionChange(value: String) = updateDescription(value)
+    fun onWebsiteChange(value: String) = updateWebsite(value)
+    fun onUsernameChange(value: String) = updateUsername(value)
+    fun onPasswordChange(value: String) = updatePassword(value)
+    fun onNoteChange(value: String) = updateNote(value)
+
     fun save() {
         viewModelScope.launch(Dispatchers.IO) {
             val current = _uiState.value

@@ -149,9 +149,6 @@ class SettingsViewModel @JvmOverloads constructor(
     val isBiometricAvailable: Boolean
         get() = BiometricHelper.isBiometricAvailable(getApplication())
 
-    private val _currentLanguage = MutableStateFlow(LanguageManager.getCurrentLanguageTag())
-    val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
-
     fun setLanguage(tag: String) {
         _currentLanguage.value = tag
         LanguageManager.setLanguage(tag)

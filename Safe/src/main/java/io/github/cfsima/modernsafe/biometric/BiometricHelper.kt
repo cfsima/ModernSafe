@@ -152,7 +152,7 @@ object BiometricHelper {
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     if (errorCode == BiometricPrompt.BIOMETRIC_ERROR_USER_CANCELED ||
-                        errorCode == BiometricPrompt.BIOMETRIC_ERROR_NEGATIVE_BUTTON
+                        errorCode == BiometricPrompt.BIOMETRIC_ERROR_CANCELED
                     ) {
                         onCancel()
                     } else {
