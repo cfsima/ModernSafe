@@ -3,6 +3,8 @@ package io.github.cfsima.modernsafe
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import io.github.cfsima.modernsafe.navigation.AskPasswordRoute
+import io.github.cfsima.modernsafe.navigation.ModernSafeNavHost
 
 /**
  * Legacy activity replaced by [AskPasswordRoute] in [ModernSafeNavHost].
