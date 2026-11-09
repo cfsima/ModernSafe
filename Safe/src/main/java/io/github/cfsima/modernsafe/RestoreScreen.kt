@@ -38,7 +38,7 @@ fun RestoreScreen(
     onConfirmRestore: () -> Unit,
     onSelectFile: () -> Unit,
     onCancel: () -> Unit,
-    onErrorDismiss: () -> Unit
+    onErrorDismiss: () -> Unit,
 ) {
     if (uiState.error != null) {
         AlertDialog(
@@ -49,7 +49,7 @@ fun RestoreScreen(
                 TextButton(onClick = onErrorDismiss) {
                     Text(stringResource(android.R.string.ok))
                 }
-            }
+            },
         )
     }
 
@@ -67,7 +67,7 @@ fun RestoreScreen(
                 TextButton(onClick = onCancel) {
                     Text(stringResource(R.string.no))
                 }
-            }
+            },
         )
     }
 
@@ -79,7 +79,7 @@ fun RestoreScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         when (uiState.status) {
             RestoreStatus.Idle -> {
@@ -104,7 +104,7 @@ fun RestoreScreen(
                     onValueChange = { password = it },
                     label = { Text(stringResource(R.string.master_password)) },
                     visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true
+                    singleLine = true,
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -148,7 +148,7 @@ fun RestoreFirstTimeScreen(
     fileExists: Boolean,
     onRestore: () -> Unit,
     onChooseFile: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -157,7 +157,7 @@ fun RestoreFirstTimeScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Text(text = headerText, style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(32.dp))
