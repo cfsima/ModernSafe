@@ -319,4 +319,8 @@
   <string name="back">Tillbaka</string>
   <string name="options">Alternativ</string>
   <string name="clear">Rensa</string>
+  <string name="pref_title_language">Språk</string>
+  <string name="pref_summary_language">Välj gränssnittsspråk</string>
+  <string name="pref_dialog_title_language">Välj språk</string>
+  <string name="pref_language_system_default">Systemstandard</string>
 </resources>

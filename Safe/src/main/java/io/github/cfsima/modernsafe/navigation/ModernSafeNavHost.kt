@@ -658,6 +658,7 @@ fun ModernSafeNavHost(
             val autoBackupDays by viewModel.autoBackupDays.collectAsState()
             val backupPath by viewModel.backupPath.collectAsState()
             val exportPath by viewModel.exportPath.collectAsState()
+            val currentLanguage by viewModel.currentLanguage.collectAsState()
 
             SettingsScreen(
                 externalAccess = externalAccess,
@@ -669,6 +670,7 @@ fun ModernSafeNavHost(
                 autoBackupDays = autoBackupDays,
                 backupPath = backupPath,
                 exportPath = exportPath,
+                currentLanguage = currentLanguage,
                 onExternalAccessChange = viewModel::setExternalAccess,
                 onLockTimeoutChange = viewModel::setLockTimeout,
                 onLockOnScreenLockChange = viewModel::setLockOnScreenLock,
@@ -676,6 +678,7 @@ fun ModernSafeNavHost(
                 onKeypadMuteChange = viewModel::setKeypadMute,
                 onAutoBackupChange = viewModel::setAutoBackup,
                 onAutoBackupDaysChange = viewModel::setAutoBackupDays,
+                onLanguageChange = viewModel::setLanguage,
                 onBackupPathClick = {
                     val intent = Intents.createCreateDocumentIntent(CategoryList.MIME_TYPE_BACKUP, Settings.OISAFE_XML)
                     try {

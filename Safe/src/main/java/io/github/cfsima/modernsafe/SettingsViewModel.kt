@@ -3,8 +3,11 @@ package io.github.cfsima.modernsafe
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.cfsima.modernsafe.util.LanguageManager
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -85,6 +88,14 @@ class SettingsViewModel @JvmOverloads constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = settingsRepository.userSettings.value.displayExportPath
         )
+
+    private val _currentLanguage = MutableStateFlow(LanguageManager.getCurrentLanguageTag())
+    val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
+
+    fun setLanguage(tag: String) {
+        _currentLanguage.value = tag
+        LanguageManager.setLanguage(tag)
+    }
 
     fun setExternalAccess(enabled: Boolean) {
         viewModelScope.launch {
