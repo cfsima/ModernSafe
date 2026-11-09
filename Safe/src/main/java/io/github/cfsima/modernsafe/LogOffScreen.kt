@@ -29,52 +29,53 @@ fun LogOffScreenContent(
     headerText: String,
     timeRemaining: Long,
     onLogOff: () -> Unit,
-    onGoToPWS: () -> Unit
+    onGoToPWS: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .safeDrawingPadding()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         // Header
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         ) {
             Image(
                 painter = painterResource(id = R.drawable.passicon),
                 contentDescription = null,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(48.dp),
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
                 text = headerText,
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
 
         Text(
             text = stringResource(R.string.logoff_explanation),
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Button(
                 onClick = onLogOff,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 Text(text = stringResource(R.string.lock))
             }
 
             Button(
                 onClick = onGoToPWS,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 Text(text = stringResource(R.string.open_safe))
             }
@@ -85,7 +86,7 @@ fun LogOffScreenContent(
         val secondsTotal = timeRemaining / 1000
         val minutes = secondsTotal / 60
         val seconds = secondsTotal % 60
-        val timeString = String.format("%d:%02d", minutes, seconds)
+        val timeString = "$minutes:${seconds.toString().padStart(2, '0')}"
 
         Text(text = stringResource(R.string.lock_timeout, timeString))
     }
