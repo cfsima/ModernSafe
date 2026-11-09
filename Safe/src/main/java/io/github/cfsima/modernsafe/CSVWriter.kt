@@ -14,7 +14,7 @@ class CSVWriter(
     private val separator: Char = DEFAULT_SEPARATOR,
     private val quotechar: Char = DEFAULT_QUOTE_CHARACTER,
     private val escapechar: Char = DEFAULT_ESCAPE_CHARACTER,
-    private val lineEnd: String = DEFAULT_LINE_END
+    private val lineEnd: String = DEFAULT_LINE_END,
 ) {
     private val rawWriter: Writer = writer
     private val pw: PrintWriter = PrintWriter(writer)
@@ -27,6 +27,7 @@ class CSVWriter(
      * a List of String[], with each String[] representing a line of
      * the file.
      */
+    @Suppress("unused")
     fun writeAll(allLines: List<Array<out String?>>) {
         for (nextLine in allLines) {
             writeNext(nextLine)
@@ -51,20 +52,16 @@ class CSVWriter(
                 sb.append(separator)
             }
 
-            val nextElement = nextLine[i]
-            if (nextElement == null) {
-                continue
-            }
+            val nextElement = nextLine[i] ?: continue
 
             if (quotechar != NO_QUOTE_CHARACTER) {
                 sb.append(quotechar)
             }
 
-            for (j in 0 until nextElement.length) {
-                val nextChar = nextElement[j]
-                if (escapechar != NO_ESCAPE_CHARACTER && nextChar == quotechar) {
+            for (nextChar in nextElement) {
+                if ((escapechar != NO_ESCAPE_CHARACTER) && (nextChar == quotechar)) {
                     sb.append(escapechar).append(nextChar)
-                } else if (escapechar != NO_ESCAPE_CHARACTER && nextChar == escapechar) {
+                } else if ((escapechar != NO_ESCAPE_CHARACTER) && (nextChar == escapechar)) {
                     sb.append(escapechar).append(nextChar)
                 } else {
                     sb.append(nextChar)
@@ -86,6 +83,7 @@ class CSVWriter(
      * @throws IOException if bad things happen
      */
     @Throws(IOException::class)
+    @Suppress("unused")
     fun flush() {
         pw.flush()
     }
