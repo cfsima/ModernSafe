@@ -46,8 +46,10 @@ import javax.crypto.KeyGenerator
 import javax.crypto.NoSuchPaddingException
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.PBEParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 /**
  * Crypto helper class.
@@ -68,6 +70,11 @@ class CryptoHelper {
     var status: Boolean = false
         private set
 
+    private var v5Key: SecretKey? = null
+    var isV5: Boolean = false
+        private set
+    private var v5Salt: ByteArray? = null
+
     /**
      * Session key for content provider.
      */
@@ -85,6 +92,27 @@ class CryptoHelper {
     }
 
     /**
+     * Initialize using modern V5 specification (PBKDF2-HMAC-SHA256 with 32-byte salt).
+     */
+    @Throws(CryptoHelperException::class)
+    fun initV5(saltHex: String?) {
+        if (saltHex == null) {
+            throw CryptoHelperException("Salt must not be null.")
+        }
+        v5Salt = hexStringToBytes(saltHex)
+        isV5 = true
+    }
+
+    /**
+     * Initialize using modern V5 directly with a raw 256-bit Master Key (DEK).
+     */
+    fun initV5WithMasterKey(masterKeyHex: String) {
+        val keyBytes = hexStringToBytes(masterKeyHex)
+        v5Key = SecretKeySpec(keyBytes, "AES")
+        isV5 = true
+    }
+
+    /**
      * Constructor which allows the specification of the encryption level.
      *
      * @param strength encryption strength
@@ -93,8 +121,13 @@ class CryptoHelper {
     @Throws(CryptoHelperException::class)
     fun init(strength: Int, salt: String?) {
         try {
-            setSalt(salt)
-            initialize(strength)
+            if (strength == EncryptionV5) {
+                initV5(salt)
+            } else {
+                isV5 = false
+                setSalt(salt)
+                initialize(strength)
+            }
         } catch (e: CryptoHelperException) {
             Log.e(TAG, "init failed", e)
             throw e
@@ -137,6 +170,21 @@ class CryptoHelper {
             return
         }
         password = pass
+        if (isV5) {
+            val s = v5Salt ?: salt
+            if (s != null) {
+                try {
+                    val spec = PBEKeySpec(pass.toCharArray(), s, PBKDF2_ITERATIONS, KEY_LENGTH)
+                    val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+                    val keyBytes = factory.generateSecret(spec).encoded
+                    v5Key = SecretKeySpec(keyBytes, "AES")
+                } catch (e: Exception) {
+                    Log.e(TAG, "setPassword V5 derivation error: $e")
+                }
+            }
+            sessionKey = createNewSessionKey()
+            return
+        }
         pbeKeySpec = PBEKeySpec(password!!.toCharArray())
         try {
             val factory = keyFac ?: throw IllegalStateException("SecretKeyFactory not initialized")
@@ -190,6 +238,60 @@ class CryptoHelper {
     }
 
     /**
+     * Modern V5 AES-256-GCM encryption with 12-byte random IV and 128-bit authentication tag.
+     */
+    @Throws(CryptoHelperException::class)
+    fun encryptV5(plaintext: String): String {
+        status = false
+        val key = v5Key ?: throw CryptoHelperException("V5 key not initialized")
+        return try {
+            val iv = ByteArray(GCM_IV_LENGTH)
+            SecureRandom().nextBytes(iv)
+            val spec = GCMParameterSpec(GCM_TAG_LENGTH, iv)
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+            cipher.init(Cipher.ENCRYPT_MODE, key, spec)
+            val cipherBytes = cipher.doFinal(plaintext.toByteArray(Charsets.UTF_8))
+            val combined = ByteArray(iv.size + cipherBytes.size)
+            System.arraycopy(iv, 0, combined, 0, iv.size)
+            System.arraycopy(cipherBytes, 0, combined, iv.size, cipherBytes.size)
+            status = true
+            V5_PREFIX + toHexString(combined)
+        } catch (e: Exception) {
+            Log.e(TAG, "encryptV5 failed: $e")
+            throw CryptoHelperException("encryptV5 failed: ${e.message}")
+        }
+    }
+
+    /**
+     * Modern V5 AES-256-GCM decryption with 12-byte IV extraction and 128-bit authentication tag verification.
+     */
+    @Throws(CryptoHelperException::class)
+    fun decryptV5(ciphertext: String): String {
+        status = false
+        val key = v5Key ?: throw CryptoHelperException("V5 key not initialized")
+        val rawHex = ciphertext.removePrefix(V5_PREFIX)
+        val combined = hexStringToBytes(rawHex)
+        if (combined.size < GCM_IV_LENGTH + 16) {
+            Log.e(TAG, "decryptV5: invalid payload length")
+            return ""
+        }
+        return try {
+            val iv = combined.copyOfRange(0, GCM_IV_LENGTH)
+            val cipherBytes = combined.copyOfRange(GCM_IV_LENGTH, combined.size)
+            val spec = GCMParameterSpec(GCM_TAG_LENGTH, iv)
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+            cipher.init(Cipher.DECRYPT_MODE, key, spec)
+            val plainBytes = cipher.doFinal(cipherBytes)
+            status = true
+            String(plainBytes, Charsets.UTF_8)
+        } catch (e: Exception) {
+            Log.e(TAG, "decryptV5 failed: $e")
+            status = false
+            ""
+        }
+    }
+
+    /**
      * encrypt a string
      *
      * @param plaintext
@@ -198,6 +300,12 @@ class CryptoHelper {
      */
     @Throws(CryptoHelperException::class)
     fun encrypt(plaintext: String?): String {
+        if (plaintext == null) {
+            return ""
+        }
+        if (isV5) {
+            return encryptV5(plaintext)
+        }
         status = false // assume failure
         if (password == null) {
             val msg = "Must call setPassword before running encrypt."
@@ -208,9 +316,6 @@ class CryptoHelper {
             throw CryptoHelperException(msg)
         }
         var ciphertext = ByteArray(0)
-        if (plaintext == null) {
-            return ""
-        }
         try {
             val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
             cipher.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec)
@@ -237,6 +342,12 @@ class CryptoHelper {
      */
     @Throws(CryptoHelperException::class)
     fun decrypt(ciphertext: String?): String {
+        if (ciphertext.isNullOrEmpty()) {
+            return ""
+        }
+        if (ciphertext.startsWith(V5_PREFIX)) {
+            return decryptV5(ciphertext)
+        }
         status = false // assume failure
         if (password == null) {
             val msg = "Must call setPassword before running decrypt."
@@ -246,10 +357,7 @@ class CryptoHelper {
             val msg = "Must call setSalt before running decrypt."
             throw CryptoHelperException(msg)
         }
-        if (ciphertext.isNullOrEmpty()) {
-            return ""
-        }
-        val byteCiphertext = hexStringToBytes(ciphertext!!)
+        val byteCiphertext = hexStringToBytes(ciphertext)
         var plaintext = ByteArray(0)
         try {
             val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
@@ -849,6 +957,13 @@ class CryptoHelper {
         private var keyFac: SecretKeyFactory? = null
         const val EncryptionMedium = 1
         const val EncryptionStrong = 2
+        const val EncryptionV5 = 5
+        const val V5_PREFIX = "v5:"
+        const val PBKDF2_ITERATIONS = 120_000
+        const val GCM_TAG_LENGTH = 128
+        const val GCM_IV_LENGTH = 12
+        const val KEY_LENGTH = 256
+        const val SALT_LENGTH = 32
 
         @Volatile
         private var desAlgorithm = "DES"
@@ -869,24 +984,15 @@ class CryptoHelper {
         /**
          * Generate a random salt for use with the cipher.
          *
-         * @return String version of the 8 byte salt
-         * @author Randy McEoin
+         * @param lengthBytes number of salt bytes (default 32 for V5, 8 for legacy)
+         * @return String version in Hex format
          */
         @JvmStatic
-        @Throws(NoSuchAlgorithmException::class)
-        fun generateSalt(): String {
-            val salt = ByteArray(8)
-            val sr: SecureRandom
-            try {
-                sr = SecureRandom.getInstance("SHA1PRNG")
-                sr.nextBytes(salt)
-                if (debug) {
-                    Log.d(TAG, "generateSalt: salt=$salt")
-                }
-            } catch (e: NoSuchAlgorithmException) {
-                Log.e(TAG, "generateSalt failed", e)
-                throw e
-            }
+        @JvmOverloads
+        fun generateSalt(lengthBytes: Int = SALT_LENGTH): String {
+            val salt = ByteArray(lengthBytes)
+            val sr = SecureRandom()
+            sr.nextBytes(salt)
             return toHexString(salt)
         }
 

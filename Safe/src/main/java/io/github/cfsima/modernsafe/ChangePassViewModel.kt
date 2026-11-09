@@ -71,22 +71,42 @@ class ChangePassViewModel(application: Application) : AndroidViewModel(applicati
         try {
             val encryptedMasterKey = dbHelper.fetchMasterKey()
             val salt = dbHelper.fetchSalt()
+            val isV5 = encryptedMasterKey.startsWith(CryptoHelper.V5_PREFIX)
 
-            ch.init(CryptoHelper.EncryptionStrong, salt)
-            ch.setPassword(oldPass)
+            if (isV5) {
+                ch.initV5(salt)
+                ch.setPassword(oldPass)
+            } else {
+                ch.init(CryptoHelper.EncryptionStrong, salt)
+                ch.setPassword(oldPass)
+            }
 
-            val decryptedMasterKey = try {
+            var decryptedMasterKey = try {
                 ch.decrypt(encryptedMasterKey)
             } catch (e: Exception) {
                 null
             }
 
-            if (decryptedMasterKey == null || !ch.status) {
+            if (!ch.status || decryptedMasterKey.isNullOrEmpty()) {
+                if (!isV5) {
+                    val chMed = CryptoHelper()
+                    chMed.init(CryptoHelper.EncryptionMedium, salt)
+                    chMed.setPassword(oldPass)
+                    decryptedMasterKey = try { chMed.decrypt(encryptedMasterKey) } catch (e: Exception) { null }
+                    if (chMed.status && !decryptedMasterKey.isNullOrEmpty()) {
+                        ch.status = true
+                    }
+                }
+            }
+
+            if (decryptedMasterKey.isNullOrEmpty() || !ch.status) {
                 _uiState.update { it.copy(oldPasswordError = R.string.invalid_old_password) }
                 return false
             }
 
-            // Re-encrypt with new password
+            // Always upgrade/re-encrypt into V5 with a fresh 32-byte salt
+            val newSalt = CryptoHelper.generateSalt(CryptoHelper.SALT_LENGTH)
+            ch.initV5(newSalt)
             ch.setPassword(newPass)
             val newEncryptedMasterKey = ch.encrypt(decryptedMasterKey)
 
@@ -95,10 +115,13 @@ class ChangePassViewModel(application: Application) : AndroidViewModel(applicati
                 return false
             }
 
+            dbHelper.storeSalt(newSalt)
             dbHelper.storeMasterKey(newEncryptedMasterKey)
+            dbHelper.updateVersion(5)
+            Master.salt = newSalt
 
             // Re-initialize Passwords helper with the DEK (Decrypted Master Key)
-            Passwords.InitCrypto(CryptoHelper.EncryptionMedium, salt, decryptedMasterKey)
+            Passwords.InitCrypto(CryptoHelper.EncryptionV5, newSalt, decryptedMasterKey)
             Passwords.Reset()
 
             return true

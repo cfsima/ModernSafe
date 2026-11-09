@@ -65,13 +65,21 @@ object Passwords {
         if (ch == null) {
             ch = CryptoHelper()
         }
+        if (dbHelper == null) {
+            dbHelper = DBHelper(ctx)
+            if (!dbHelper!!.isDatabaseOpen()) {
+                return false
+            }
+        }
         if (!isCryptoInitialized &&
             Master.salt != null &&
             Master.masterKey != null
         ) {
             try {
+                val version = dbHelper?.fetchVersion() ?: 5
+                val strength = if (version >= 5) CryptoHelper.EncryptionV5 else CryptoHelper.EncryptionMedium
                 InitCrypto(
-                    CryptoHelper.EncryptionMedium,
+                    strength,
                     Master.salt!!, Master.masterKey!!
                 )
                 isCryptoInitialized = true
@@ -81,13 +89,6 @@ object Passwords {
                     ctx, "CategoryList: " + ctx.getString(R.string.crypto_error),
                     Toast.LENGTH_SHORT
                 ).show()
-            }
-        }
-
-        if (dbHelper == null) {
-            dbHelper = DBHelper(ctx)
-            if (!dbHelper!!.isDatabaseOpen()) {
-                return false
             }
         }
         if (passEntries == null) {
@@ -141,8 +142,12 @@ object Passwords {
             Log.d(TAG, "InitCrypto($strength,$salt,$masterKey)")
         }
         try {
-            ch?.init(strength, salt)
-            ch?.setPassword(masterKey)
+            if (strength == CryptoHelper.EncryptionV5) {
+                ch?.initV5WithMasterKey(masterKey)
+            } else {
+                ch?.init(strength, salt)
+                ch?.setPassword(masterKey)
+            }
         } catch (e1: CryptoHelperException) {
             Log.e(TAG, "InitCrypto failed", e1)
             throw Exception(
@@ -399,17 +404,11 @@ object Passwords {
 
     @Synchronized
     fun findPassWithUniqueName(plainUniqueName: String): PassEntry? {
-        val uniqueName: String
-        try {
-            uniqueName = ch?.encrypt(plainUniqueName) ?: ""
-        } catch (e: CryptoHelperException) {
-            Log.e(TAG, e.toString())
-            return null
-        }
         val passwords = passEntries?.values ?: return null
         for (passEntry in passwords) {
-            if (passEntry.uniqueName == uniqueName) {
-                return getPassEntry(passEntry.id, decrypt = true, descriptionOnly = false)
+            val decryptedEntry = getPassEntry(passEntry.id, decrypt = true, descriptionOnly = false)
+            if (decryptedEntry?.plainUniqueName == plainUniqueName) {
+                return decryptedEntry
             }
         }
         return null

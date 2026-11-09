@@ -109,11 +109,29 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
              var masterKey: String? = null
              try {
                  val ch = CryptoHelper()
-                 ch.init(CryptoHelper.EncryptionStrong, salt)
-                 ch.setPassword(password)
-                 masterKey = ch.decrypt(masterKeyEncrypted)
+                 val isV5 = masterKeyEncrypted.startsWith(CryptoHelper.V5_PREFIX)
+                 if (isV5) {
+                     ch.initV5(salt)
+                     ch.setPassword(password)
+                     masterKey = ch.decrypt(masterKeyEncrypted)
+                 } else {
+                     ch.init(CryptoHelper.EncryptionStrong, salt)
+                     ch.setPassword(password)
+                     masterKey = ch.decrypt(masterKeyEncrypted)
 
-                 if (!ch.status) {
+                     if (!ch.status || masterKey.isNullOrEmpty()) {
+                         val chMed = CryptoHelper()
+                         chMed.init(CryptoHelper.EncryptionMedium, salt)
+                         chMed.setPassword(password)
+                         val medDecrypted = try { chMed.decrypt(masterKeyEncrypted) } catch (e: Exception) { null }
+                         if (chMed.status && !medDecrypted.isNullOrEmpty()) {
+                             masterKey = medDecrypted
+                             ch.status = true
+                         }
+                     }
+                 }
+
+                 if (!ch.status || masterKey.isNullOrEmpty()) {
                      _uiState.value = _uiState.value.copy(status = RestoreStatus.PasswordRequired, error = "Incorrect password (decrypt failed)")
                      return@launch
                  }
@@ -122,8 +140,12 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
                  if (data.categories.isNotEmpty()) {
                      val firstCat = data.categories[0]
                      val ch2 = CryptoHelper()
-                     ch2.init(CryptoHelper.EncryptionMedium, salt)
-                     ch2.setPassword(masterKey)
+                     if (firstCat.name.startsWith(CryptoHelper.V5_PREFIX)) {
+                         ch2.initV5WithMasterKey(masterKey)
+                     } else {
+                         ch2.init(CryptoHelper.EncryptionMedium, salt)
+                         ch2.setPassword(masterKey)
+                     }
                      ch2.decrypt(firstCat.name)
                      if (!ch2.status) {
                           _uiState.value = _uiState.value.copy(status = RestoreStatus.PasswordRequired, error = "Incorrect password (category decrypt failed)")
@@ -158,6 +180,8 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
 
                 dbHelper.storeSalt(data.salt)
                 dbHelper.storeMasterKey(data.masterKeyEncrypted)
+                val version = if (data.masterKeyEncrypted.startsWith(CryptoHelper.V5_PREFIX)) 5 else 4
+                dbHelper.updateVersion(version)
                 Master.salt = data.salt
                 Master.masterKey = masterKey
 

@@ -57,7 +57,7 @@ class DBHelper(private val context: Context) {
         private const val TABLE_SALT = "salt"
         private const val TABLE_PACKAGE_ACCESS = "package_access"
         private const val TABLE_CIPHER_ACCESS = "cipher_access"
-        private const val DATABASE_VERSION = 4
+        private const val DATABASE_VERSION = 5
 
         private const val DBVERSION_CREATE =
             "create table $TABLE_DBVERSION (" +
@@ -152,8 +152,11 @@ class DBHelper(private val context: Context) {
                 vc?.close()
 
                 if (version != DATABASE_VERSION) {
-                    needsUpgrade = true
-                    Log.e(TAG, "database version mismatch")
+                    if (version < DATABASE_VERSION) {
+                        needsUpgrade = true
+                    } else {
+                        Log.e(TAG, "database version mismatch (db=$version, current=$DATABASE_VERSION)")
+                    }
                 }
             }
 
@@ -241,6 +244,21 @@ class DBHelper(private val context: Context) {
             Log.d(TAG, "SQLite exception: " + e.localizedMessage)
         }
         return version
+    }
+
+    /**
+     * Update the database schema version.
+     */
+    fun updateVersion(version: Int) {
+        val args = ContentValues()
+        try {
+            db?.delete(TABLE_DBVERSION, "1=1", null)
+            args.put("version", version)
+            db?.insert(TABLE_DBVERSION, null, args)
+            needsUpgrade = false
+        } catch (e: SQLException) {
+            Log.d(TAG, "SQLite exception: " + e.localizedMessage)
+        }
     }
 
     // //////// Salt Functions ////////////////
