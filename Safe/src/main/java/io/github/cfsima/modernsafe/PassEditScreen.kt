@@ -1,12 +1,19 @@
 package io.github.cfsima.modernsafe
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Visibility
@@ -16,7 +23,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,11 +56,12 @@ fun PassEditScreen(
     onGeneratePassword: () -> Unit,
     onBack: () -> Unit,
     onConsumeSave: () -> Unit,
-    onConsumeDelete: () -> Unit
+    onConsumeDelete: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    var showDiscardDialog by remember { mutableStateOf(false) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
-    var passwordVisible by remember { mutableStateOf(false) }
+    var showDiscardDialog by remember { mutableStateOf(value = false) }
+    var showDeleteDialog by remember { mutableStateOf(value = false) }
+    var passwordVisible by remember { mutableStateOf(value = false) }
 
     // Handle back press interception
     BackHandler(enabled = uiState.isModified) {
@@ -80,18 +87,22 @@ fun PassEditScreen(
             title = { Text(stringResource(R.string.discard_changes)) },
             text = { Text(stringResource(R.string.discard_changes_msg)) },
             confirmButton = {
-                TextButton(onClick = {
-                    showDiscardDialog = false
-                    onBack()
-                }) {
+                TextButton(
+                    onClick = {
+                        showDiscardDialog = false
+                        onBack()
+                    },
+                ) {
                     Text(stringResource(R.string.yes))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDiscardDialog = false }) {
+                TextButton(
+                    onClick = { showDiscardDialog = false },
+                ) {
                     Text(stringResource(R.string.no))
                 }
-            }
+            },
         )
     }
 
@@ -101,22 +112,27 @@ fun PassEditScreen(
             title = { Text(stringResource(R.string.dialog_delete_password_title)) },
             text = { Text(stringResource(R.string.dialog_delete_password_msg)) },
             confirmButton = {
-                TextButton(onClick = {
-                    showDeleteDialog = false
-                    onDelete()
-                }) {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        onDelete()
+                    },
+                ) {
                     Text(stringResource(R.string.yes))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
+                TextButton(
+                    onClick = { showDeleteDialog = false },
+                ) {
                     Text(stringResource(R.string.no))
                 }
-            }
+            },
         )
     }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(if (uiState.id <= 0) stringResource(R.string.password_add) else stringResource(R.string.edit_entry)) },
@@ -128,7 +144,7 @@ fun PassEditScreen(
                             onBack()
                         }
                     }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
