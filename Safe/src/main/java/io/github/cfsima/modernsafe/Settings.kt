@@ -3,6 +3,7 @@ package io.github.cfsima.modernsafe
 import android.content.Context
 import java.io.File
 
+@Suppress("unused")
 object Settings {
 
     const val IO_METHOD_DOCUMENT_PROVIDER = "document_provider"
