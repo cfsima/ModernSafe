@@ -37,7 +37,9 @@ object SecureDelete {
                 RandomAccessFile(file, "rw").use { raf ->
                     val channel = raf.channel
                     val buffer = channel.map(
-                        FileChannel.MapMode.READ_WRITE, 0, raf.length()
+                        FileChannel.MapMode.READ_WRITE,
+                        0,
+                        raf.length(),
                     )
 
                     val key = ByteArray(10)
@@ -47,7 +49,8 @@ object SecureDelete {
 
                     tri.setupKey(
                         ICipher.MODE_DECRYPT,
-                        key, 0
+                        key,
+                        0,
                     )
                     tri.setupNonce(nonce, 0)
 
@@ -63,8 +66,11 @@ object SecureDelete {
                         //random.nextBytes(bytes);
 
                         tri.process(
-                            bytes, 0,
-                            bytes, 0, max
+                            bytes,
+                            0,
+                            bytes,
+                            0,
+                            max,
                         )
 
                         buffer.put(bytes, 0, max)
