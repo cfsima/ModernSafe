@@ -21,13 +21,13 @@ object Export {
                 context.getString(R.string.username),
                 context.getString(R.string.password),
                 context.getString(R.string.notes),
-                context.getString(R.string.last_edited)
+                context.getString(R.string.last_edited),
             )
             writer.writeNext(header)
 
             val categories: HashMap<Long, String> = Passwords.getCategoryIdToName()
 
-            val rows: List<PassEntry> = Passwords.getPassEntries(0L, true, false)
+            val rows: List<PassEntry> = Passwords.getPassEntries(0L, decrypt = true, descriptionOnly = false)
 
             for (row in rows) {
                 val rowEntries = arrayOf(
@@ -37,7 +37,7 @@ object Export {
                     row.plainUsername,
                     row.plainPassword,
                     row.plainNote,
-                    row.lastEdited
+                    row.lastEdited,
                 )
                 writer.writeNext(rowEntries)
             }
