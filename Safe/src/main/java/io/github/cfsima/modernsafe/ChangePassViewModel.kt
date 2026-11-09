@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.cfsima.modernsafe.model.Passwords
+import io.github.cfsima.modernsafe.password.Master
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -120,6 +121,7 @@ class ChangePassViewModel(application: Application) : AndroidViewModel(applicati
             dbHelper.storeMasterKey(newEncryptedMasterKey)
             dbHelper.updateVersion(5)
             Master.salt = newSalt
+            Master.masterKey = decryptedMasterKey
 
             // Re-initialize Passwords helper with the DEK (Decrypted Master Key)
             Passwords.InitCrypto(CryptoHelper.EncryptionV5, newSalt, decryptedMasterKey)

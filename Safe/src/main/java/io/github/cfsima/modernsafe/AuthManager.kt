@@ -1,6 +1,7 @@
 package io.github.cfsima.modernsafe
 
 import android.util.Log
+import io.github.cfsima.modernsafe.model.Passwords
 import io.github.cfsima.modernsafe.password.Master
 
 /**
@@ -88,6 +89,6 @@ object AuthManager {
         cryptoHelper = null
         timeRemaining = 0
         lastActiveTimestamp = 0L
-        io.github.cfsima.modernsafe.model.Passwords.tearDown()
+        Passwords.tearDown()
     }
 }

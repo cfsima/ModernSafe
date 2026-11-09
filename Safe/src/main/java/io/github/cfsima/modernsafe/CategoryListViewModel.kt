@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.cfsima.modernsafe.model.CategoryEntry
+import io.github.cfsima.modernsafe.model.PassEntry
 import io.github.cfsima.modernsafe.model.Passwords
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -210,7 +211,7 @@ class CategoryListViewModel(application: Application) : AndroidViewModel(applica
                     val categoryName = line[0]
                     val catId = categoryToIdNew[categoryName] ?: continue
 
-                    val entry = io.github.cfsima.modernsafe.model.PassEntry()
+                    val entry = PassEntry()
                     entry.category = catId
                     entry.plainDescription = line[1]
                     entry.plainWebsite = if (line.size > 2) line[2] else ""
