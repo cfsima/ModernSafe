@@ -71,7 +71,7 @@ interface ICipher {
         inOfs: Int,
         outbuf: ByteArray,
         outOfs: Int,
-        len: Int
+        len: Int,
     )
 
     companion object {
