@@ -6,9 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -268,19 +265,30 @@ fun KeypadContent(
             textAlign = TextAlign.Center
         )
 
-        val keys = listOf('1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#')
+        val keys = listOf(
+            listOf('1', '2', '3'),
+            listOf('4', '5', '6'),
+            listOf('7', '8', '9'),
+            listOf('*', '0', '#')
+        )
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(keys) { key ->
-                KeypadButton(
-                    text = key.toString(),
-                    onClick = { onDigit(key) }
-                )
+            keys.forEach { rowKeys ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    rowKeys.forEach { key ->
+                        KeypadButton(
+                            text = key.toString(),
+                            onClick = { onDigit(key) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
             }
         }
 
@@ -311,11 +319,12 @@ fun KeypadContent(
 @Composable
 fun KeypadButton(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .aspectRatio(1.5f),
         shape = MaterialTheme.shapes.medium
     ) {
