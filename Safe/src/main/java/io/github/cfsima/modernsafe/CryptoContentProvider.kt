@@ -23,6 +23,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import androidx.core.net.toUri
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -48,8 +49,11 @@ class CryptoContentProvider : ContentProvider() {
     }
 
     override fun query(
-        uri: Uri, as1: Array<String>?, s: String?, as2: Array<String>?,
-        s1: String?
+        uri: Uri,
+        as1: Array<String>?,
+        s: String?,
+        as2: Array<String>?,
+        s1: String?,
     ): Cursor? {
         /*
         if (uri.toString().startsWith(
@@ -75,24 +79,23 @@ class CryptoContentProvider : ContentProvider() {
 
     @Throws(FileNotFoundException::class)
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "openFile(,)")
         }
 
-        var pfd: ParcelFileDescriptor? = null
-        try {
+        return try {
             val context = context ?: throw FileNotFoundException("Context is null")
 
             // get the /files/ directory for our application
             val filesDir = context.filesDir.toString()
             var path = filesDir
             val cryptSession: String?
-            var sessionFile: String
+            val sessionFile: String
             val modeBits: Int
 
             when (sUriMatcher.match(uri)) {
                 ENCRYPT_ID -> {
-                    if (debug) {
+                    if (DEBUG) {
                         Log.d(TAG, "openFile: ENCRYPT")
                     }
                     modeBits = ParcelFileDescriptor.MODE_WRITE_ONLY or
@@ -102,7 +105,7 @@ class CryptoContentProvider : ContentProvider() {
                     path += "/$sessionFile"
                 }
                 DECRYPT_ID -> {
-                    if (debug) {
+                    if (DEBUG) {
                         Log.d(TAG, "openFile: DECRYPT")
                     }
                     modeBits = ParcelFileDescriptor.MODE_READ_ONLY
@@ -111,31 +114,30 @@ class CryptoContentProvider : ContentProvider() {
                     path += "/$sessionFile"
                 }
                 DECRYPT_FILE_ID -> {
-                    if (debug) {
+                    if (DEBUG) {
                         Log.d(TAG, "openFile: DECRYPT_FILE")
                     }
                     modeBits = ParcelFileDescriptor.MODE_READ_ONLY
                     val originalFile = "file://" + uri.getQueryParameter("file")
                     val sessionKey = uri.getQueryParameter("sessionkey")
-                    // TODO: Check that sessionKey is valid.
 
                     // Decrypt file
                     val crypto = AuthManager.cryptoHelper
                     if (crypto == null) {
-                        if (debug) {
+                        if (DEBUG) {
                             Log.d(TAG, "Modern Safe currently logged out.")
                         }
                         return null
                     }
 
                     if (sessionKey != crypto.currentSessionKey) {
-                        if (debug) {
-                            Log.d(TAG, "Session keys do not match! " + sessionKey + " != " + crypto.currentSessionKey)
+                        if (DEBUG) {
+                            Log.d(TAG, "Session keys do not match! $sessionKey != ${crypto.currentSessionKey}")
                         }
                         return null
                     }
 
-                    if (debug) {
+                    if (DEBUG) {
                         Log.d(TAG, "Original file path: ")
                     }
                     if (!AuthManager.isSignedIn()) {
@@ -145,62 +147,57 @@ class CryptoContentProvider : ContentProvider() {
                         throw CryptoHelperException("Not logged in.")
                     }
 
-                    if (debug) {
+                    if (DEBUG) {
                         Log.d(TAG, "Decrypt..")
                     }
 
-                    val newUri = crypto.decryptFileWithSessionKeyThroughContentProvider(context, Uri.parse(originalFile))
-
-                    if (newUri == null) {
-                         throw FileNotFoundException("Decryption failed")
-                    }
+                    val newUri = crypto.decryptFileWithSessionKeyThroughContentProvider(context, originalFile.toUri())
+                        ?: throw FileNotFoundException("Decryption failed")
 
                     cryptSession = newUri.pathSegments[1]
                     sessionFile = "$SESSION_FILE.$cryptSession"
                     path += "/$sessionFile"
-                    if (debug) {
+                    if (DEBUG) {
                         Log.d(TAG, "New path: ")
                     }
                 }
                 else -> throw IllegalArgumentException("Unknown URI ")
             }
 
-            if (debug) {
+            if (DEBUG) {
                 Log.d(TAG, "openFile: path=")
             }
-            pfd = ParcelFileDescriptor.open(File(path), modeBits)
+            val pfd = ParcelFileDescriptor.open(File(path), modeBits)
 
             // Delete the file immediately so it disappears when closed
             if (!context.deleteFile(sessionFile)) {
-                if (debug) {
+                if (DEBUG) {
                     Log.e(TAG, "openFile: unable to delete: ")
                 }
             }
+            pfd
         } catch (e: FileNotFoundException) {
-            if (debug) {
+            if (DEBUG) {
                 Log.d(TAG, "openFile: FileNotFound")
             }
             throw e
         } catch (e: IllegalArgumentException) {
             throw e
         } catch (e: CryptoHelperException) {
-            if (debug) {
+            if (DEBUG) {
                 Log.d(TAG, "openFile: CryptoHelperException:" + e.message)
             }
-            pfd = null
-            //throw e;
+            null
         }
-
-        return pfd
     }
 
     companion object {
-        private const val debug = false
+        private const val DEBUG = false
         private const val TAG = "CryptoContentProvider"
 
         const val AUTHORITY = "io.github.cfsima.modernsafe"
         @JvmField
-        val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY")
+        val CONTENT_URI: Uri = "content://$AUTHORITY".toUri()
 
         const val SESSION_FILE = "session"
 
