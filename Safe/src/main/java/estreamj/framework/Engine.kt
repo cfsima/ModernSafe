@@ -1,13 +1,12 @@
 package estreamj.framework
 
 import estreamj.ciphers.trivium.Trivium
-import java.util.Collections
-import java.util.Vector
 
 /**
  * The engine accumulates all the stream ciphers available. All implementations
  * register with the engine by themselves.
  */
+@Suppress("unused")
 object Engine {
     private val _cphMks = HashMap<String, ICipherMaker>()
 
