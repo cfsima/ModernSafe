@@ -31,12 +31,13 @@ data class SettingsUiState(
     val biometricEnabled: Boolean = false,
     val biometricStatus: BiometricHelper.BiometricStatus = BiometricHelper.BiometricStatus.UNAVAILABLE,
     val themePalette: String = "dynamic",
-    val darkMode: String = "system"
+    val darkMode: String = "system",
 )
 
+@Suppress("DestructuringDeclaration", "unused")
 class SettingsViewModel @JvmOverloads constructor(
     application: Application,
-    private val settingsRepository: SettingsRepository = SettingsRepository.getInstance(application)
+    private val settingsRepository: SettingsRepository = SettingsRepository.getInstance(application),
 ) : AndroidViewModel(application) {
 
     private val _currentLanguage = MutableStateFlow(LanguageManager.getCurrentLanguageTag())
@@ -52,7 +53,7 @@ class SettingsViewModel @JvmOverloads constructor(
     val uiState: StateFlow<SettingsUiState> = combine(
         settingsRepository.settingsFlow,
         _currentLanguage,
-        _biometricStatus
+        _biometricStatus,
     ) { settings, lang, bioStatus ->
         SettingsUiState(
             externalAccess = settings.externalAccess,
@@ -68,12 +69,12 @@ class SettingsViewModel @JvmOverloads constructor(
             biometricEnabled = settings.biometricEnabled,
             biometricStatus = bioStatus,
             themePalette = settings.themePalette,
-            darkMode = settings.darkMode
+            darkMode = settings.darkMode,
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = SettingsUiState()
+        initialValue = SettingsUiState(),
     )
 
     val externalAccess: StateFlow<Boolean> = settingsRepository.settingsFlow
@@ -81,7 +82,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.externalAccess
+            initialValue = settingsRepository.userSettings.value.externalAccess,
         )
 
     val lockTimeout: StateFlow<String> = settingsRepository.settingsFlow
@@ -89,7 +90,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.lockTimeout
+            initialValue = settingsRepository.userSettings.value.lockTimeout,
         )
 
     val lockOnScreenLock: StateFlow<Boolean> = settingsRepository.settingsFlow
@@ -97,7 +98,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.lockOnScreenLock
+            initialValue = settingsRepository.userSettings.value.lockOnScreenLock,
         )
 
     val keypad: StateFlow<Boolean> = settingsRepository.settingsFlow
@@ -105,7 +106,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.keypad
+            initialValue = settingsRepository.userSettings.value.keypad,
         )
 
     val keypadMute: StateFlow<Boolean> = settingsRepository.settingsFlow
@@ -113,7 +114,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.keypadMute
+            initialValue = settingsRepository.userSettings.value.keypadMute,
         )
 
     val autoBackup: StateFlow<Boolean> = settingsRepository.settingsFlow
@@ -121,7 +122,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.autoBackup
+            initialValue = settingsRepository.userSettings.value.autoBackup,
         )
 
     val autoBackupDays: StateFlow<String> = settingsRepository.settingsFlow
@@ -129,7 +130,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.autoBackupDays
+            initialValue = settingsRepository.userSettings.value.autoBackupDays,
         )
 
     val backupPath: StateFlow<String> = settingsRepository.settingsFlow
@@ -137,7 +138,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.displayBackupPath
+            initialValue = settingsRepository.userSettings.value.displayBackupPath,
         )
 
     val exportPath: StateFlow<String> = settingsRepository.settingsFlow
@@ -145,7 +146,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.displayExportPath
+            initialValue = settingsRepository.userSettings.value.displayExportPath,
         )
 
     val biometricEnabled: StateFlow<Boolean> = settingsRepository.settingsFlow
@@ -153,7 +154,7 @@ class SettingsViewModel @JvmOverloads constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = settingsRepository.userSettings.value.biometricEnabled
+            initialValue = settingsRepository.userSettings.value.biometricEnabled,
         )
 
     val isBiometricAvailable: Boolean
@@ -242,7 +243,7 @@ class SettingsViewModel @JvmOverloads constructor(
         if (!enabled) {
             BiometricHelper.deleteKey()
             viewModelScope.launch {
-                settingsRepository.setBiometricEnabled(false)
+                settingsRepository.setBiometricEnabled(enabled = false)
             }
             return
         }
@@ -263,7 +264,7 @@ class SettingsViewModel @JvmOverloads constructor(
                 try {
                     val payload = BiometricHelper.encryptMasterKey(authCipher, masterKey)
                     viewModelScope.launch {
-                        settingsRepository.setBiometricEnabled(true, payload)
+                        settingsRepository.setBiometricEnabled(enabled = true, payload = payload)
                     }
                 } catch (e: Exception) {
                     Log.e("SettingsViewModel", "Biometric enrollment encryption failed", e)
@@ -272,8 +273,7 @@ class SettingsViewModel @JvmOverloads constructor(
             onError = { err ->
                 Log.d("SettingsViewModel", "Biometric enroll error: $err")
             },
-            onCancel = {}
-        )
+        ) {}
     }
 
     fun refreshPaths() {
