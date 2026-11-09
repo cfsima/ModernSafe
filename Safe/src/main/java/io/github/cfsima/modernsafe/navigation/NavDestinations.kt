@@ -16,13 +16,13 @@ data class PassViewRoute(
     val id: Long,
     val categoryId: Long,
     val rowIds: List<Long> = emptyList(),
-    val position: Int = -1
+    val position: Int = -1,
 )
 
 @Serializable
 data class PassEditRoute(
     val id: Long = -1L,
-    val categoryId: Long = -1L
+    val categoryId: Long = -1L,
 )
 
 @Serializable
@@ -40,7 +40,7 @@ data object SettingsRoute
 @Serializable
 data class RestoreRoute(
     val filePath: String? = null,
-    val isFirstTime: Boolean = false
+    val isFirstTime: Boolean = false,
 )
 
 @Serializable
