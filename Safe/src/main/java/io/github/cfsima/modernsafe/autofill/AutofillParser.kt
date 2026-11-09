@@ -9,7 +9,7 @@ data class AutofillTarget(
     val usernameId: AutofillId? = null,
     val passwordId: AutofillId? = null,
     val webDomain: String? = null,
-    val packageName: String? = null
+    val packageName: String? = null,
 )
 
 object AutofillParser {
@@ -21,13 +21,13 @@ object AutofillParser {
         var webDomain: String? = null
 
         fun traverse(node: ViewNode) {
-            if (node.webDomain != null && webDomain == null) {
+            if ((node.webDomain != null) && (webDomain == null)) {
                 webDomain = node.webDomain
             }
 
             val hints = node.autofillHints?.map { it.lowercase() } ?: emptyList()
             val idEntry = node.idEntry?.lowercase() ?: ""
-            val hint = node.hint?.toString()?.lowercase() ?: ""
+            val hint = node.hint?.lowercase() ?: ""
 
             val isPassword = hints.contains(View.AUTOFILL_HINT_PASSWORD) ||
                     idEntry.contains("password") || idEntry.contains("pwd") || idEntry.contains("pass") ||
@@ -38,9 +38,9 @@ object AutofillParser {
                     idEntry.contains("user") || idEntry.contains("login") || idEntry.contains("email") || idEntry.contains("account") ||
                     hint.contains("username") || hint.contains("email") || hint.contains("user")
 
-            if (isPassword && passwordId == null && node.autofillId != null) {
+            if (isPassword && (passwordId == null) && (node.autofillId != null)) {
                 passwordId = node.autofillId
-            } else if (isUsername && usernameId == null && node.autofillId != null) {
+            } else if (isUsername && (usernameId == null) && (node.autofillId != null)) {
                 usernameId = node.autofillId
             }
 
@@ -58,7 +58,7 @@ object AutofillParser {
             usernameId = usernameId,
             passwordId = passwordId,
             webDomain = webDomain,
-            packageName = packageName
+            packageName = packageName,
         )
     }
 }
