@@ -1,3 +1,5 @@
+@file:Suppress("DestructuringDeclaration")
+
 package io.github.cfsima.modernsafe.service
 
 import android.app.Service
@@ -34,13 +36,13 @@ class AutoLockService : Service() {
     private var timeoutMinutes: Int = 5
 
     override fun onCreate() {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "onCreate")
         }
         mIntentReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == Intent.ACTION_SCREEN_OFF) {
-                    if (debug) {
+                    if (DEBUG) {
                         Log.d(TAG, "caught ACTION_SCREEN_OFF")
                     }
                     if (lockOnScreenLock) {
@@ -74,14 +76,14 @@ class AutoLockService : Service() {
 
     @Deprecated("Deprecated in Java")
     override fun onStart(intent: Intent?, startid: Int) {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "onStart")
         }
         startTimer()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "Received start id : : ")
         }
         startTimer()
@@ -91,7 +93,7 @@ class AutoLockService : Service() {
     }
 
     override fun onDestroy() {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "onDestroy")
         }
         try {
@@ -141,7 +143,7 @@ class AutoLockService : Service() {
         serviceNotification.setNotification(this@AutoLockService)
         val timeoutUntilStop = (timeoutMinutes * 60000).toLong()
 
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "startTimer with timeoutUntilStop=")
         }
 
@@ -151,28 +153,28 @@ class AutoLockService : Service() {
 
             override fun onTick(millisUntilFinished: Long) {
                 // doing nothing.
-                if (debug) {
+                if (DEBUG) {
                     Log.d(TAG, "tick:  this=")
                 }
                 AuthManager.timeRemaining = millisUntilFinished
                 if (Master.masterKey == null) {
-                    if (debug) {
+                    if (DEBUG) {
                         Log.d(TAG, "detected masterKey=null")
                     }
                     lockOut()
                 } else {
                     // Update notification progress periodically (every 15s) to avoid NotificationManager spam
-                    if (millisUntilFinished % 15000 < 1000) {
+                    if ((millisUntilFinished % 15000) < 1000) {
                         serviceNotification.updateProgress(
                             timeoutUntilStop.toInt(),
-                            AuthManager.timeRemaining.toInt()
+                            AuthManager.timeRemaining.toInt(),
                         )
                     }
                 }
             }
 
             override fun onFinish() {
-                if (debug) {
+                if (DEBUG) {
                     Log.d(TAG, "onFinish()")
                 }
                 AuthManager.timeRemaining = 0
@@ -189,7 +191,7 @@ class AutoLockService : Service() {
      * Cancel any existing timers, and call [.startTimer].
      */
     private fun restartTimer() {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "restartTimer")
         }
         t?.cancel()
@@ -198,7 +200,7 @@ class AutoLockService : Service() {
     }
 
     companion object {
-        private const val debug = false
+        private const val DEBUG = false
         private const val TAG = "AutoLockService"
     }
 }
