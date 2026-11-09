@@ -15,7 +15,6 @@
  */
 package io.github.cfsima.modernsafe
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -23,7 +22,6 @@ import estreamj.ciphers.trivium.Trivium
 import estreamj.framework.ICipher
 import estreamj.framework.ESJException
 import io.github.cfsima.modernsafe.util.SecureDelete
-import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -31,12 +29,9 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.security.DigestInputStream
 import java.security.InvalidAlgorithmParameterException
 import java.security.InvalidKeyException
-import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.security.NoSuchProviderException
 import java.security.SecureRandom
 import java.security.spec.InvalidKeySpecException
 import javax.crypto.BadPaddingException
@@ -82,13 +77,6 @@ class CryptoHelper {
         get() = AuthManager.cryptoHelper?.sessionKey
 
     internal var sessionKey: String? = null
-
-    /**
-     * Constructor which defaults to a medium encryption level.
-     */
-    init {
-        // initialize(EncryptionMedium)
-    }
 
     /**
      * Initialize using modern V5 specification (PBKDF2-HMAC-SHA256 with 32-byte salt).
@@ -145,12 +133,10 @@ class CryptoHelper {
             EncryptionStrong -> algorithmStrong
             else -> algorithmMedium
         }
-        pbeParamSpec = PBEParameterSpec(salt, count)
+        pbeParamSpec = PBEParameterSpec(salt, COUNT)
         try {
-            keyFac = SecretKeyFactory.getInstance(algorithm, "BC")
+            keyFac = SecretKeyFactory.getInstance(algorithm)
         } catch (e: NoSuchAlgorithmException) {
-            Log.e(TAG, "CryptoHelper(): $e")
-        } catch (e: NoSuchProviderException) {
             Log.e(TAG, "CryptoHelper(): $e")
         }
     }
@@ -162,7 +148,7 @@ class CryptoHelper {
      * @throws Exception
      */
     fun setPassword(pass: String?) {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "setPassword called")
         }
         if (pass == null) {
@@ -188,14 +174,12 @@ class CryptoHelper {
         try {
             val factory = keyFac ?: throw IllegalStateException("SecretKeyFactory not initialized")
             pbeKey = factory.generateSecret(pbeKeySpec)
-            pbeCipher = Cipher.getInstance(algorithm, "BC")
+            pbeCipher = Cipher.getInstance(algorithm)
         } catch (e: InvalidKeySpecException) {
             Log.e(TAG, "setPassword(): $e")
         } catch (e: NoSuchAlgorithmException) {
             Log.e(TAG, "setPassword(): $e")
         } catch (e: NoSuchPaddingException) {
-            Log.e(TAG, "setPassword(): $e")
-        } catch (e: NoSuchProviderException) {
             Log.e(TAG, "setPassword(): $e")
         }
 
@@ -215,7 +199,7 @@ class CryptoHelper {
             throw CryptoHelperException(msg)
         }
         salt = byteSaltIn
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "setSalt: salt=" + toHexString(salt!!))
         }
     }
@@ -270,7 +254,7 @@ class CryptoHelper {
         val key = v5Key ?: throw CryptoHelperException("V5 key not initialized")
         val rawHex = ciphertext.removePrefix(V5_PREFIX)
         val combined = hexStringToBytes(rawHex)
-        if (combined.size < GCM_IV_LENGTH + 16) {
+        if (combined.size < (GCM_IV_LENGTH + 16)) {
             Log.e(TAG, "decryptV5: invalid payload length")
             return ""
         }
@@ -385,7 +369,7 @@ class CryptoHelper {
      */
     @Throws(CryptoHelperException::class)
     fun encryptWithSessionKey(plaintext: String): String {
-        if (debug) {
+        if (DEBUG) {
             Log.i(TAG, "Encrypt with session key")
         }
         status = false // assume failure
@@ -397,14 +381,13 @@ class CryptoHelper {
         var ciphertext = ByteArray(0)
 
         // First create a session key
-        var sessionKey: SecretKey? = null
         var sessionKeyEncoded: ByteArray? = null
         var sessionKeyString: String? = null
         try {
             val keygen = KeyGenerator.getInstance("AES")
             keygen.init(256) // needs 96 bytes
             //keygen.init(128); // needs 64 bytes
-            sessionKey = keygen.generateKey()
+            val sessionKey = keygen.generateKey()
             sessionKeyEncoded = sessionKey.encoded
             sessionKeyString = String(sessionKeyEncoded)
         } catch (e: NoSuchAlgorithmException) {
@@ -478,12 +461,11 @@ class CryptoHelper {
         if (ciphertext.isNullOrEmpty()) {
             return ""
         }
-        var cipherVersion: String? = null
-        var cipherSessionKey: String? = null
+        val cipherSessionKey: String
 
         // Split cipher into session key and text
         try {
-            cipherVersion = ciphertext!!.substring(0, 1)
+            val cipherVersion = ciphertext.substring(0, 1)
             if (cipherVersion == "A") {
                 cipherSessionKey = ciphertext.substring(1, 97) // 64 if init(128) had been chosen
                 ciphertext = ciphertext.substring(97)
@@ -492,12 +474,12 @@ class CryptoHelper {
                 return ""
             }
         } catch (e: IndexOutOfBoundsException) {
-            Log.e(TAG, "Invalid ciphertext (with session key)")
+            Log.e(TAG, "Invalid ciphertext (with session key)", e)
             return ""
         }
 
         // Decrypt the session key
-        val byteCipherSessionKey = hexStringToBytes(cipherSessionKey!!)
+        val byteCipherSessionKey = hexStringToBytes(cipherSessionKey)
         var byteSessionKey = ByteArray(0)
         try {
             val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
@@ -526,7 +508,7 @@ class CryptoHelper {
         }
 
         // Use the session key to decrypt the text
-        val byteCiphertext = hexStringToBytes(ciphertext!!)
+        val byteCiphertext = hexStringToBytes(ciphertext)
         var plaintext = ByteArray(0)
         try {
             val cipher = pbeCipher ?: throw IllegalStateException("Cipher not initialized")
@@ -557,7 +539,7 @@ class CryptoHelper {
     @Throws(CryptoHelperException::class)
     fun encryptFileWithSessionKey(context: Context, fileUri: Uri): Uri? {
         val contentResolver = context.contentResolver
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "Encrypt with session key")
         }
         status = false // assume failure
@@ -579,13 +561,12 @@ class CryptoHelper {
             var cipherSessionKey = ByteArray(0)
 
             // First create a session key
-            var sessionKey: SecretKey? = null
-            var sessionKeyEncoded: ByteArray? = null
+            val sessionKeyEncoded: ByteArray?
             try {
                 val keygen = KeyGenerator.getInstance("AES")
                 keygen.init(256) // needs 96 bytes
                 //keygen.init(128); // needs 64 bytes
-                sessionKey = keygen.generateKey()
+                val sessionKey = keygen.generateKey()
                 sessionKeyEncoded = sessionKey.encoded
             } catch (e: NoSuchAlgorithmException) {
                 Log.e(TAG, "generateMasterKey(): $e")
@@ -615,10 +596,10 @@ class CryptoHelper {
             val bytesCipherVersion = stringCipherVersion.toByteArray()
             os.write(bytesCipherVersion, 0, bytesCipherVersion.size)
             os.write(cipherSessionKey, 0, cipherSessionKey.size)
-            if (debug) {
+            if (DEBUG) {
                 Log.d(TAG, "bytesCipherVersion.length: " + bytesCipherVersion.size)
             }
-            if (debug) {
+            if (DEBUG) {
                 Log.d(TAG, "cipherSessionKey.length: " + cipherSessionKey.size)
             }
             val tri = Trivium()
@@ -663,10 +644,9 @@ class CryptoHelper {
      */
     @Throws(CryptoHelperException::class)
     private fun getTemporaryFileName(context: Context): String {
-        val randomPart: String
-        try {
+        val randomPart = try {
             // create a random session name
-            randomPart = generateSalt()
+            generateSalt()
         } catch (e1: NoSuchAlgorithmException) {
             Log.e(TAG, "Decrypt error", e1)
             val msg = "Decrypt error: " + e1.localizedMessage
@@ -674,9 +654,7 @@ class CryptoHelper {
         }
         // Use external files dir for temporary files
         val dir = context.getExternalFilesDir(null)
-        if (dir == null) {
-             throw CryptoHelperException("Could not access external files directory")
-        }
+            ?: throw CryptoHelperException("Could not access external files directory")
         return dir.absolutePath + "/tmp-" + randomPart
     }
 
@@ -696,7 +674,7 @@ class CryptoHelper {
      */
     @Throws(CryptoHelperException::class)
     fun decryptFileWithSessionKey(ctx: Context, fileUri: Uri): Uri? {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "fileUri=$fileUri")
         }
         val contentResolver = ctx.contentResolver
@@ -709,7 +687,7 @@ class CryptoHelper {
             if (fileUri.scheme == "file") {
                 inputPath = fileUri.path
                 `is` = FileInputStream(inputPath)
-                if (debug) {
+                if (DEBUG) {
                     Log.d(TAG, "Decrypt: Input from $inputPath")
                 }
                 if (inputPath!!.endsWith(OISAFE_EXTENSION)) {
@@ -717,7 +695,7 @@ class CryptoHelper {
                 }
             } else {
                 `is` = contentResolver.openInputStream(fileUri)!!
-                if (debug) {
+                if (DEBUG) {
                     Log.d(TAG, "Decrypt: Input from $fileUri")
                 }
             }
@@ -744,9 +722,7 @@ class CryptoHelper {
         if (result) {
             // Successful
             // Securely delete the original file:
-            if (inputPath != null) {
-                SecureDelete.delete(File(inputPath!!))
-            }
+            inputPath?.let { SecureDelete.delete(File(it)) }
         } else {
             resultUri = null
             // Unsuccessful. Clean up
@@ -770,7 +746,7 @@ class CryptoHelper {
      */
     @Throws(CryptoHelperException::class)
     fun decryptFileWithSessionKeyThroughContentProvider(ctx: Context, fileUri: Uri): Uri? {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "fileUri=$fileUri")
         }
         val contentResolver = ctx.contentResolver
@@ -781,32 +757,30 @@ class CryptoHelper {
             val `is`: InputStream
             if (fileUri.scheme == "file") {
                 `is` = FileInputStream(fileUri.path)
-                if (debug) {
+                if (DEBUG) {
                     Log.d(TAG, "Decrypt: Input from " + fileUri.path)
                 }
             } else {
                 `is` = contentResolver.openInputStream(fileUri)!!
-                if (debug) {
+                if (DEBUG) {
                     Log.d(TAG, "Decrypt: Input from $fileUri")
                 }
             }
-            val os: FileOutputStream
-            val decryptSession: String
-            try {
+            val decryptSession = try {
                 // create a random session name
-                decryptSession = generateSalt()
+                generateSalt()
             } catch (e1: NoSuchAlgorithmException) {
                 Log.e(TAG, "Decrypt error", e1)
                 val msg = "Decrypt error: " + e1.localizedMessage
                 throw CryptoHelperException(msg)
             }
             sessionFile = CryptoContentProvider.SESSION_FILE + "." + decryptSession
-            if (debug) {
+            if (DEBUG) {
                 Log.d(TAG, "Decrypt: Output to $sessionFile")
             }
 
             // openFileOutput creates a file in /data/data/{packagename}/files/
-            os = ctx.openFileOutput(sessionFile, Context.MODE_PRIVATE)
+            val os = ctx.openFileOutput(sessionFile, Context.MODE_PRIVATE)
 
             // after writing the decrypted content to a temporary file,
             // pass back a Uri that can be used to read back the contents
@@ -842,7 +816,7 @@ class CryptoHelper {
      */
     @Throws(CryptoHelperException::class)
     fun decryptStreamWithSessionKey(`is`: InputStream, os: OutputStream): Boolean {
-        if (debug) {
+        if (DEBUG) {
             Log.d(TAG, "decryptStreamWithSessionKey")
         }
         status = false // assume failure
@@ -856,33 +830,34 @@ class CryptoHelper {
             val byteCipherVersion = ByteArray(1)
             while (`is`.read(
                     byteCipherVersion, numRead,
-                    byteCipherVersion.size - numRead
+                    byteCipherVersion.size - numRead,
                 ).also { numRead = it } >= 0 && numReadTotal < byteCipherVersion.size
             ) {
-                if (debug) {
+                if (DEBUG) {
                     Log.d(TAG, "read bytes: $numRead")
                 }
                 numReadTotal += numRead
             }
             val cipherVersion = String(byteCipherVersion)
-            var byteCipherSessionKey: ByteArray? = null
+            val byteCipherSessionKey: ByteArray
 
             // Split cipher into session key and text
             try {
-                if (debug) {
+                if (DEBUG) {
                     Log.d(TAG, "cipherVersion : $cipherVersion")
                 }
                 if (cipherVersion == "A") {
                     numRead = 0
                     numReadTotal = 0
-                    byteCipherSessionKey = ByteArray(48)
+                    val keyBuf = ByteArray(48)
+                    byteCipherSessionKey = keyBuf
                     // Read the first few bytes that contain the encrypted key
                     while (`is`.read(
-                            byteCipherSessionKey, numRead,
-                            byteCipherSessionKey!!.size - numRead
-                        ).also { numRead = it } >= 0 && numReadTotal < byteCipherSessionKey!!.size
+                            keyBuf, numRead,
+                            keyBuf.size - numRead,
+                        ).also { numRead = it } >= 0 && numReadTotal < keyBuf.size
                     ) {
-                        if (debug) {
+                        if (DEBUG) {
                             Log.d(TAG, "read bytes sessionKey: $numRead")
                         }
                         numReadTotal += numRead
@@ -892,7 +867,7 @@ class CryptoHelper {
                     return false
                 }
             } catch (e: IndexOutOfBoundsException) {
-                Log.e(TAG, "Invalid ciphertext (with session key)")
+                Log.e(TAG, "Invalid ciphertext (with session key)", e)
                 return false
             }
 
@@ -942,7 +917,7 @@ class CryptoHelper {
     }
 
     companion object {
-        private const val debug = false
+        private const val DEBUG = false
         private const val TAG = "CryptoHelper"
         const val OISAFE_EXTENSION = ".oisafe"
 
@@ -954,18 +929,24 @@ class CryptoHelper {
 
         @Volatile
         private var keyFac: SecretKeyFactory? = null
-        const val EncryptionMedium = 1
-        const val EncryptionStrong = 2
-        const val EncryptionV5 = 5
+
+        const val ENCRYPTION_MEDIUM = 1
+        const val ENCRYPTION_STRONG = 2
+        const val ENCRYPTION_V5 = 5
+
+        @Suppress("ConstPropertyName")
+        const val EncryptionMedium = ENCRYPTION_MEDIUM
+        @Suppress("ConstPropertyName")
+        const val EncryptionStrong = ENCRYPTION_STRONG
+        @Suppress("ConstPropertyName")
+        const val EncryptionV5 = ENCRYPTION_V5
+
         const val V5_PREFIX = "v5:"
         const val PBKDF2_ITERATIONS = 120_000
         const val GCM_TAG_LENGTH = 128
         const val GCM_IV_LENGTH = 12
         const val KEY_LENGTH = 256
         const val SALT_LENGTH = 32
-
-        @Volatile
-        private var desAlgorithm = "DES"
 
         @Volatile
         private var password: String? = null
@@ -978,7 +959,7 @@ class CryptoHelper {
 
         @Volatile
         private var salt: ByteArray? = null
-        private const val count = 20
+        private const val COUNT = 20
 
         /**
          * Generate a random salt for use with the cipher.
@@ -1002,45 +983,10 @@ class CryptoHelper {
         @JvmStatic
         @Throws(NoSuchAlgorithmException::class)
         fun generateMasterKey(): String {
-            try {
-                val keygen: KeyGenerator
-                keygen = KeyGenerator.getInstance("AES")
-                keygen.init(256)
-                val genDesKey = keygen.generateKey()
-                return toHexString(genDesKey.encoded)
-            } catch (e: NoSuchAlgorithmException) {
-                Log.e(TAG, "generateMasterKey(): $e")
-                throw e
-            }
-        }
-
-        /**
-         * @param message
-         * @return MD5 digest of message in a byte array
-         * @throws NoSuchAlgorithmException
-         * @throws IOException
-         */
-        @JvmStatic
-        fun md5String(message: String): ByteArray? {
-            val input = message.toByteArray()
-            var hash: MessageDigest?
-            var bIn: ByteArrayInputStream? = null
-            var dIn: DigestInputStream? = null
-            try {
-                hash = MessageDigest.getInstance("MD5")
-                bIn = ByteArrayInputStream(input)
-                dIn = DigestInputStream(bIn, hash)
-                for (i in input.indices) {
-                    dIn.read()
-                }
-            } catch (e: NoSuchAlgorithmException) {
-                Log.e(TAG, "md5String(): $e")
-                return null
-            } catch (e: IOException) {
-                Log.e(TAG, "md5String(): $e")
-                return null
-            }
-            return dIn!!.messageDigest.digest()
+            val keygen = KeyGenerator.getInstance("AES")
+            keygen.init(256)
+            val genDesKey = keygen.generateKey()
+            return toHexString(genDesKey.encoded)
         }
 
         /**
@@ -1074,7 +1020,7 @@ class CryptoHelper {
                     Log.i(TAG, e.localizedMessage!!)
                     return bytes
                 } catch (e: StringIndexOutOfBoundsException) {
-                    Log.i(TAG, "StringIndexOutOfBoundsException")
+                    Log.i(TAG, "StringIndexOutOfBoundsException", e)
                     return bytes
                 }
                 i += 2
