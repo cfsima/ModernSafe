@@ -1,5 +1,6 @@
 package estreamj.framework
 
+@Suppress("unused")
 class ESJException : Exception {
     constructor() : super()
 
