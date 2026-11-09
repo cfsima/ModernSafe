@@ -324,4 +324,13 @@
   <string name="pref_summary_language">Choose interface language</string>
   <string name="pref_dialog_title_language">Choose Language</string>
   <string name="pref_language_system_default">System default</string>
+  <string name="pref_title_biometrics">Biometric Unlock</string>
+  <string name="pref_summary_biometrics">Use fingerprint or face recognition to unlock your vault</string>
+  <string name="pref_summary_biometrics_unavailable">Biometric authentication is not supported or not set up on this device</string>
+  <string name="biometric_unlock">Biometric Unlock</string>
+  <string name="biometric_prompt_title">Unlock ModernSafe</string>
+  <string name="biometric_prompt_subtitle">Confirm your biometric credential to unlock your safe</string>
+  <string name="biometric_prompt_enroll_title">Enable Biometric Unlock</string>
+  <string name="biometric_prompt_enroll_subtitle">Touch your biometric sensor to authorize biometric unlock</string>
+  <string name="use_password">Use Password</string>
 </resources>

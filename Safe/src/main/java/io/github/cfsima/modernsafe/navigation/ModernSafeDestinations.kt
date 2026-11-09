@@ -195,7 +195,8 @@ fun NavGraphBuilder.askPasswordDestination(
             onKeypadInput = { viewModel.onKeypadInput(it) },
             onKeypadDelete = { viewModel.onKeypadDelete() },
             onKeypadEnter = { viewModel.onKeypadEnter() },
-            onRestoreClicked = { viewModel.onRestoreClicked() }
+            onRestoreClicked = { viewModel.onRestoreClicked() },
+            onBiometricUnlock = { activity -> viewModel.onBiometricUnlock(activity) }
         )
     }
 }
@@ -656,6 +657,8 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
             backupPath = uiState.backupPath,
             exportPath = uiState.exportPath,
             currentLanguage = uiState.currentLanguage,
+            biometricEnabled = uiState.biometricEnabled,
+            isBiometricAvailable = viewModel.isBiometricAvailable,
             onExternalAccessChange = viewModel::setExternalAccess,
             onLockTimeoutChange = viewModel::setLockTimeout,
             onLockOnScreenLockChange = viewModel::setLockOnScreenLock,
@@ -664,6 +667,11 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
             onAutoBackupChange = viewModel::setAutoBackup,
             onAutoBackupDaysChange = viewModel::setAutoBackupDays,
             onLanguageChange = viewModel::setLanguage,
+            onBiometricChange = { enabled ->
+                (context as? Activity)?.let { activity ->
+                    viewModel.onBiometricChange(activity, enabled)
+                }
+            },
             onBackupPathClick = {
                 val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_BACKUP, Settings.OISAFE_XML)
                 try {

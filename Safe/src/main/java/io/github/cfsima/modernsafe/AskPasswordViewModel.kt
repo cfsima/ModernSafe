@@ -1,9 +1,11 @@
 package io.github.cfsima.modernsafe
 
+import android.app.Activity
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.cfsima.modernsafe.biometric.BiometricHelper
 import io.github.cfsima.modernsafe.password.Master
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +22,8 @@ data class AskPasswordUiState(
     val isMuted: Boolean = false,
     val keypadInput: String = "",
     val showDatabaseError: Boolean = false,
-    val showVersionError: Boolean = false
+    val showVersionError: Boolean = false,
+    val isBiometricAvailable: Boolean = false
 )
 
 sealed class AskPasswordEffect {
@@ -67,10 +70,14 @@ class AskPasswordViewModel @JvmOverloads constructor(
     private fun observeSettings() {
         viewModelScope.launch {
             settingsRepository.settingsFlow.collect { settings ->
+                val canBiometric = BiometricHelper.isBiometricAvailable(getApplication()) &&
+                        settings.biometricEnabled &&
+                        !settings.biometricPayload.isNullOrEmpty()
                 _uiState.update {
                     it.copy(
                         isKeypadMode = settings.keypad,
-                        isMuted = settings.keypadMute
+                        isMuted = settings.keypadMute,
+                        isBiometricAvailable = canBiometric
                     )
                 }
             }
@@ -104,11 +111,15 @@ class AskPasswordViewModel @JvmOverloads constructor(
         cachedEncryptedMasterKey = dbHelper?.fetchMasterKey() ?: ""
 
         val userSettings = settingsRepository.userSettings.value
+        val canBiometric = BiometricHelper.isBiometricAvailable(context) &&
+                userSettings.biometricEnabled &&
+                !userSettings.biometricPayload.isNullOrEmpty()
         _uiState.update {
             it.copy(
                 isFirstTime = cachedEncryptedMasterKey.isEmpty(),
                 isKeypadMode = userSettings.keypad,
-                isMuted = userSettings.keypadMute
+                isMuted = userSettings.keypadMute,
+                isBiometricAvailable = canBiometric
             )
         }
     }
@@ -375,8 +386,43 @@ class AskPasswordViewModel @JvmOverloads constructor(
         }
     }
 
-    fun onRestoreClicked() {
-        viewModelScope.launch { _effects.emit(AskPasswordEffect.NavigateToRestoreFirstTime) }
+    fun onBiometricUnlock(activity: Activity) {
+        val payload = settingsRepository.getBiometricPayload() ?: return
+        val cipher = BiometricHelper.initDecryptCipher(payload)
+        if (cipher == null) {
+            viewModelScope.launch {
+                settingsRepository.setBiometricEnabled(false)
+                _uiState.update { it.copy(isBiometricAvailable = false) }
+                _effects.emit(AskPasswordEffect.ShowToast(R.string.invalid_password))
+            }
+            return
+        }
+
+        BiometricHelper.showBiometricPrompt(
+            activity = activity,
+            cipher = cipher,
+            onSuccess = { authCipher ->
+                try {
+                    val decryptedMasterKey = BiometricHelper.decryptMasterKey(authCipher, payload)
+                    if (decryptedMasterKey.isNotEmpty()) {
+                        sessionMasterKey = decryptedMasterKey
+                        onUnlockSuccess()
+                        viewModelScope.launch {
+                            _effects.emit(AskPasswordEffect.UnlockSuccess)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Biometric decryption failed", e)
+                    viewModelScope.launch {
+                        _effects.emit(AskPasswordEffect.ShakeError)
+                    }
+                }
+            },
+            onError = { err ->
+                Log.d(TAG, "Biometric prompt error: $err")
+            },
+            onCancel = {}
+        )
     }
 
     override fun onCleared() {

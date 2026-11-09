@@ -49,6 +49,8 @@ fun SettingsScreen(
     backupPath: String,
     exportPath: String,
     currentLanguage: String = "",
+    biometricEnabled: Boolean = false,
+    isBiometricAvailable: Boolean = false,
     onExternalAccessChange: (Boolean) -> Unit,
     onLockTimeoutChange: (String) -> Unit,
     onLockOnScreenLockChange: (Boolean) -> Unit,
@@ -59,6 +61,7 @@ fun SettingsScreen(
     onBackupPathClick: () -> Unit,
     onExportPathClick: () -> Unit,
     onLanguageChange: (String) -> Unit = {},
+    onBiometricChange: (Boolean) -> Unit = {},
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -130,6 +133,17 @@ fun SettingsScreen(
                     summary = stringResource(R.string.pref_summary_lock_on_screen_lock),
                     checked = lockOnScreenLock,
                     onCheckedChange = onLockOnScreenLockChange
+                )
+                HorizontalDivider()
+            }
+
+            item {
+                SwitchPreference(
+                    title = stringResource(R.string.pref_title_biometrics),
+                    summary = stringResource(if (isBiometricAvailable) R.string.pref_summary_biometrics else R.string.pref_summary_biometrics_unavailable),
+                    checked = biometricEnabled,
+                    onCheckedChange = onBiometricChange,
+                    enabled = isBiometricAvailable
                 )
                 HorizontalDivider()
             }

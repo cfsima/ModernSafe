@@ -55,7 +55,9 @@ data class UserSettings(
     val backupMethod: String = Settings.IO_METHOD_FILE,
     val exportPath: String = "",
     val exportDocument: String? = null,
-    val exportMethod: String = Settings.IO_METHOD_FILE
+    val exportMethod: String = Settings.IO_METHOD_FILE,
+    val biometricEnabled: Boolean = false,
+    val biometricPayload: String? = null
 ) {
     val displayBackupPath: String
         get() = if (backupMethod == Settings.IO_METHOD_DOCUMENT_PROVIDER) {
@@ -105,6 +107,8 @@ class SettingsRepository(
         val EXPORT_PATH = stringPreferencesKey(Settings.PREFERENCE_EXPORT_PATH)
         val EXPORT_DOCUMENT = stringPreferencesKey(Settings.PREFERENCE_EXPORT_DOCUMENT)
         val EXPORT_METHOD = stringPreferencesKey(Settings.PREFERENCE_EXPORT_METHOD)
+        val BIOMETRIC_ENABLED = booleanPreferencesKey("biometric_enabled")
+        val BIOMETRIC_PAYLOAD = stringPreferencesKey("biometric_payload")
     }
 
     val settingsFlow: Flow<UserSettings> = dataStore.data
@@ -137,6 +141,7 @@ class SettingsRepository(
     val autoBackupDaysFlow: Flow<String> = settingsFlow.map { it.autoBackupDays }.distinctUntilChanged()
     val displayBackupPathFlow: Flow<String> = settingsFlow.map { it.displayBackupPath }.distinctUntilChanged()
     val displayExportPathFlow: Flow<String> = settingsFlow.map { it.displayExportPath }.distinctUntilChanged()
+    val biometricEnabledFlow: Flow<Boolean> = settingsFlow.map { it.biometricEnabled }.distinctUntilChanged()
 
     private fun mapPreferences(preferences: Preferences): UserSettings {
         val defaultBackup = Settings.getDefaultBackupPath(appContext)
@@ -158,7 +163,9 @@ class SettingsRepository(
             backupMethod = preferences[PreferencesKeys.BACKUP_METHOD] ?: Settings.IO_METHOD_FILE,
             exportPath = preferences[PreferencesKeys.EXPORT_PATH] ?: defaultExport,
             exportDocument = preferences[PreferencesKeys.EXPORT_DOCUMENT],
-            exportMethod = preferences[PreferencesKeys.EXPORT_METHOD] ?: Settings.IO_METHOD_FILE
+            exportMethod = preferences[PreferencesKeys.EXPORT_METHOD] ?: Settings.IO_METHOD_FILE,
+            biometricEnabled = preferences[PreferencesKeys.BIOMETRIC_ENABLED] ?: false,
+            biometricPayload = preferences[PreferencesKeys.BIOMETRIC_PAYLOAD]
         )
     }
 
@@ -267,6 +274,20 @@ class SettingsRepository(
             setLastBackupJulian(julianDay)
         }
     }
+
+    suspend fun setBiometricEnabled(enabled: Boolean, payload: String? = null) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.BIOMETRIC_ENABLED] = enabled
+            if (payload != null) {
+                preferences[PreferencesKeys.BIOMETRIC_PAYLOAD] = payload
+            } else if (!enabled) {
+                preferences.remove(PreferencesKeys.BIOMETRIC_PAYLOAD)
+            }
+        }
+    }
+
+    fun isBiometricEnabled(): Boolean = userSettings.value.biometricEnabled
+    fun getBiometricPayload(): String? = userSettings.value.biometricPayload
 
     fun getBackupPath(): String = userSettings.value.backupPath
     fun getBackupDocument(): String? = userSettings.value.backupDocument
