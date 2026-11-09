@@ -102,26 +102,26 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
              val salt = data.salt
              val masterKeyEncrypted = data.masterKeyEncrypted
 
-             if (salt.isNullOrEmpty() || masterKeyEncrypted.isNullOrEmpty()) {
+             if (salt.isEmpty() || masterKeyEncrypted.isEmpty()) {
                   _uiState.value = RestoreUiState(status = RestoreStatus.Error, error = "Invalid backup data (missing salt or master key)")
                   return@launch
              }
 
-             var masterKey: String? = null
+             var masterKey: String?
              try {
                  val ch = CryptoHelper()
                  val isV5 = masterKeyEncrypted.startsWith(CryptoHelper.V5_PREFIX)
-                 var unlockSuccess = false
+                 var unlockSuccess: Boolean
                  if (isV5) {
                      ch.initV5(salt)
                      ch.setPassword(password)
                      masterKey = ch.decrypt(masterKeyEncrypted)
-                     unlockSuccess = ch.status && !masterKey.isNullOrEmpty()
+                     unlockSuccess = ch.status && masterKey.isNotEmpty()
                  } else {
                      ch.init(CryptoHelper.EncryptionStrong, salt)
                      ch.setPassword(password)
                      masterKey = ch.decrypt(masterKeyEncrypted)
-                     unlockSuccess = ch.status && !masterKey.isNullOrEmpty()
+                     unlockSuccess = ch.status && masterKey.isNotEmpty()
 
                      if (!unlockSuccess) {
                          val chMed = CryptoHelper()
@@ -135,7 +135,7 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
                      }
                  }
 
-                 if (!unlockSuccess || masterKey.isNullOrEmpty()) {
+                 if (!unlockSuccess || masterKey.isEmpty()) {
                      _uiState.value = _uiState.value.copy(status = RestoreStatus.PasswordRequired, error = "Incorrect password (decrypt failed)")
                      return@launch
                  }
