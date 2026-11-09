@@ -17,7 +17,7 @@ data class PassGenState(
     val includeSymbols: Boolean = true,
     val generatedPassword: String = "",
     val strengthScore: Float = 0f,
-    val strengthLabel: String = ""
+    val strengthLabel: String = "",
 )
 
 class PassGenViewModel : ViewModel() {
@@ -45,61 +45,55 @@ class PassGenViewModel : ViewModel() {
     }
 
     fun toggleUpper(enabled: Boolean) {
-        if (!enabled && activeCategoryCount() <= 1) return
+        if (!enabled && (activeCategoryCount() <= 1)) return
         _uiState.update { it.copy(includeUpper = enabled) }
         generatePassword()
     }
 
     fun toggleLower(enabled: Boolean) {
-        if (!enabled && activeCategoryCount() <= 1) return
+        if (!enabled && (activeCategoryCount() <= 1)) return
         _uiState.update { it.copy(includeLower = enabled) }
         generatePassword()
     }
 
     fun toggleDigits(enabled: Boolean) {
-        if (!enabled && activeCategoryCount() <= 1) return
+        if (!enabled && (activeCategoryCount() <= 1)) return
         _uiState.update { it.copy(includeDigits = enabled) }
         generatePassword()
     }
 
     fun toggleSymbols(enabled: Boolean) {
-        if (!enabled && activeCategoryCount() <= 1) return
+        if (!enabled && (activeCategoryCount() <= 1)) return
         _uiState.update { it.copy(includeSymbols = enabled) }
         generatePassword()
     }
 
-    fun activeCategoryCount(): Int {
-        val s = _uiState.value
-        var count = 0
-        if (s.includeUpper) count++
-        if (s.includeLower) count++
-        if (s.includeDigits) count++
-        if (s.includeSymbols) count++
-        return count
+    fun activeCategoryCount(): Int = with(_uiState.value) {
+        listOf(includeUpper, includeLower, includeDigits, includeSymbols).count { it }
     }
 
     fun generatePassword() {
         val state = _uiState.value
-        val length = state.length
-
         val pool = StringBuilder()
         val guaranteed = mutableListOf<Char>()
 
-        if (state.includeUpper) {
-            pool.append(UPPER)
-            guaranteed.add(UPPER[secureRandom.nextInt(UPPER.length)])
-        }
-        if (state.includeLower) {
-            pool.append(LOWER)
-            guaranteed.add(LOWER[secureRandom.nextInt(LOWER.length)])
-        }
-        if (state.includeDigits) {
-            pool.append(DIGITS)
-            guaranteed.add(DIGITS[secureRandom.nextInt(DIGITS.length)])
-        }
-        if (state.includeSymbols) {
-            pool.append(SYMBOLS)
-            guaranteed.add(SYMBOLS[secureRandom.nextInt(SYMBOLS.length)])
+        with(state) {
+            if (includeUpper) {
+                pool.append(UPPER)
+                guaranteed.add(UPPER[secureRandom.nextInt(UPPER.length)])
+            }
+            if (includeLower) {
+                pool.append(LOWER)
+                guaranteed.add(LOWER[secureRandom.nextInt(LOWER.length)])
+            }
+            if (includeDigits) {
+                pool.append(DIGITS)
+                guaranteed.add(DIGITS[secureRandom.nextInt(DIGITS.length)])
+            }
+            if (includeSymbols) {
+                pool.append(SYMBOLS)
+                guaranteed.add(SYMBOLS[secureRandom.nextInt(SYMBOLS.length)])
+            }
         }
 
         if (pool.isEmpty()) {
@@ -109,7 +103,7 @@ class PassGenViewModel : ViewModel() {
 
         val chars = guaranteed.toMutableList()
         val poolStr = pool.toString()
-        val remaining = (length - guaranteed.size).coerceAtLeast(0)
+        val remaining = (state.length - guaranteed.size).coerceAtLeast(0)
         repeat(remaining) {
             chars.add(poolStr[secureRandom.nextInt(poolStr.length)])
         }
@@ -117,7 +111,7 @@ class PassGenViewModel : ViewModel() {
 
         val password = chars.joinToString("")
         val poolSize = poolStr.toSet().size
-        val entropy = length * log2(poolSize.toDouble().coerceAtLeast(1.0))
+        val entropy = state.length * log2(poolSize.toDouble().coerceAtLeast(1.0))
 
         val (score, label) = when {
             entropy < 45.0 -> 0.25f to "Weak"
@@ -130,7 +124,7 @@ class PassGenViewModel : ViewModel() {
             it.copy(
                 generatedPassword = password,
                 strengthScore = score,
-                strengthLabel = label
+                strengthLabel = label,
             )
         }
     }
