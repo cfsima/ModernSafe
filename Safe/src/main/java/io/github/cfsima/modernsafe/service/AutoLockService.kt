@@ -123,6 +123,7 @@ class AutoLockService : Service() {
 
         val intent = Intent(CryptoIntents.ACTION_CRYPTO_LOGGED_OUT)
         sendBroadcast(intent)
+        stopSelf()
     }
 
     /**
@@ -136,6 +137,7 @@ class AutoLockService : Service() {
             t?.cancel()
             return
         }
+        AuthManager.updateLastActiveTime()
         serviceNotification.setNotification(this@AutoLockService)
         val timeoutUntilStop = (timeoutMinutes * 60000).toLong()
 
@@ -188,6 +190,7 @@ class AutoLockService : Service() {
             Log.d(TAG, "restartTimer")
         }
         t?.cancel()
+        AuthManager.updateLastActiveTime()
         startTimer()
     }
 

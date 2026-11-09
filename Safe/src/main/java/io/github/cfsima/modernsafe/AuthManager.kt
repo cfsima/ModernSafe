@@ -31,6 +31,33 @@ object AuthManager {
     @Volatile
     var timeRemaining: Long = 0
 
+    /**
+     * Timestamp of last user interaction, using monotonic elapsedRealtime.
+     */
+    @Volatile
+    var lastActiveTimestamp: Long = 0L
+
+    var timeProvider: () -> Long = {
+        try {
+            android.os.SystemClock.elapsedRealtime()
+        } catch (_: Exception) {
+            System.currentTimeMillis()
+        }
+    }
+
+    @JvmStatic
+    fun updateLastActiveTime() {
+        lastActiveTimestamp = timeProvider()
+    }
+
+    @JvmStatic
+    fun isSessionTimedOut(timeoutMinutes: Int): Boolean {
+        if (!isSignedIn()) return true
+        if (lastActiveTimestamp == 0L) return false
+        val timeoutMillis = timeoutMinutes * 60 * 1000L
+        return (timeProvider() - lastActiveTimestamp) >= timeoutMillis
+    }
+
     @JvmStatic
     fun isSignedIn(): Boolean {
         if ((Master.salt != null) && (Master.masterKey != null)) {
@@ -51,5 +78,6 @@ object AuthManager {
         lastUsedPassword = null
         cryptoHelper = null
         timeRemaining = 0
+        lastActiveTimestamp = 0L
     }
 }

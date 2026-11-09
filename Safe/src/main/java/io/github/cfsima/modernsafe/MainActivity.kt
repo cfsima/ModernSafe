@@ -1,15 +1,18 @@
 package io.github.cfsima.modernsafe
 
+import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.os.PowerManager
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import io.github.cfsima.modernsafe.intents.CryptoIntents
@@ -17,6 +20,7 @@ import io.github.cfsima.modernsafe.navigation.AskPasswordRoute
 import io.github.cfsima.modernsafe.navigation.CategoryListRoute
 import io.github.cfsima.modernsafe.navigation.LogOffRoute
 import io.github.cfsima.modernsafe.navigation.ModernSafeNavHost
+import io.github.cfsima.modernsafe.service.AutoLockService
 import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
 
 class MainActivity : AppCompatActivity() {
@@ -87,8 +91,24 @@ class MainActivity : AppCompatActivity() {
         val filter = IntentFilter(CryptoIntents.ACTION_CRYPTO_LOGGED_OUT)
         ContextCompat.registerReceiver(this, logoutReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
 
+        val settings = (application as SafeApplication).settingsRepository.userSettings.value
+        val timeoutMinutes = settings.lockTimeout.toIntOrNull() ?: 5
+        val keyguardManager = getSystemService(KEYGUARD_SERVICE) as? KeyguardManager
+
+        val isKeyguardLocked = keyguardManager?.isKeyguardLocked == true
+        if (settings.lockOnScreenLock && isKeyguardLocked) {
+            AuthManager.setSignedOut()
+            stopService(Intent(applicationContext, AutoLockService::class.java))
+        } else if (AuthManager.isSessionTimedOut(timeoutMinutes)) {
+            AuthManager.setSignedOut()
+            stopService(Intent(applicationContext, AutoLockService::class.java))
+        }
+
         if (AuthManager.isSignedIn()) {
+            AuthManager.updateLastActiveTime()
             sendBroadcast(Intent(CryptoIntents.ACTION_RESTART_TIMER))
+        } else {
+            onLoggedOut()
         }
     }
 
@@ -96,19 +116,42 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         try {
             unregisterReceiver(logoutReceiver)
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // Receiver not registered
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (!isChangingConfigurations) {
+            val powerManager = getSystemService(POWER_SERVICE) as? PowerManager
+            val keyguardManager = getSystemService(KEYGUARD_SERVICE) as? KeyguardManager
+            val isScreenOff = powerManager?.isInteractive == false
+            val isKeyguardLocked = keyguardManager?.isKeyguardLocked == true
+
+            val settings = (application as SafeApplication).settingsRepository.userSettings.value
+            if (settings.lockOnScreenLock && (isScreenOff || isKeyguardLocked)) {
+                if (AuthManager.isSignedIn()) {
+                    AuthManager.setSignedOut()
+                    stopService(Intent(applicationContext, AutoLockService::class.java))
+                }
+            }
         }
     }
 
     override fun onUserInteraction() {
         super.onUserInteraction()
         if (AuthManager.isSignedIn()) {
+            AuthManager.updateLastActiveTime()
             sendBroadcast(Intent(CryptoIntents.ACTION_RESTART_TIMER))
         }
     }
 
     private fun onLoggedOut() {
+        val currentDest = navController?.currentDestination
+        if (currentDest == null || currentDest.hasRoute<AskPasswordRoute>()) {
+            return
+        }
         navController?.navigate(AskPasswordRoute(isLocal = true)) {
             popUpTo(0) { inclusive = true }
         }

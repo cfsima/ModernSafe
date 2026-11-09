@@ -210,6 +210,7 @@ class AskPasswordViewModel @JvmOverloads constructor(
         Master.masterKey = sessionMasterKey
         Master.salt = dbSalt
         AuthManager.cryptoHelper = cryptoHelper
+        AuthManager.updateLastActiveTime()
     }
 
     fun toggleKeypadMode() {

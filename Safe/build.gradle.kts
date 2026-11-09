@@ -50,6 +50,10 @@ configure<ApplicationExtension> {
         abortOnError = false
     }
 
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
+
     buildTypes {
         getByName("debug") {
             signingConfig = signingConfigs.getByName("debug")

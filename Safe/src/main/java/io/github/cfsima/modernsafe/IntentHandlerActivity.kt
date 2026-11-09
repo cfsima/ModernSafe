@@ -201,7 +201,7 @@ class IntentHandlerActivity : AppCompatActivity() {
 
         if (!AuthManager.isSignedIn()) {
             if (debug) Log.d(TAG, "not signed in")
-            // onCreate already handles redirection to FrontDoor
+            finish()
             return
         }
 
