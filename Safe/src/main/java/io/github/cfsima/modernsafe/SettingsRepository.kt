@@ -1,3 +1,5 @@
+@file:Suppress("DestructuringDeclaration")
+
 package io.github.cfsima.modernsafe
 
 import android.content.Context
@@ -33,10 +35,10 @@ val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(
         listOf(
             SharedPreferencesMigration(
                 context = context,
-                sharedPreferencesName = "${context.packageName}_preferences"
-            )
+                sharedPreferencesName = "${context.packageName}_preferences",
+            ),
         )
-    }
+    },
 )
 
 data class UserSettings(
@@ -59,7 +61,7 @@ data class UserSettings(
     val biometricEnabled: Boolean = false,
     val biometricPayload: String? = null,
     val themePalette: String = "dynamic",
-    val darkMode: String = "system"
+    val darkMode: String = "system",
 ) {
     val displayBackupPath: String
         get() = if (backupMethod == Settings.IO_METHOD_DOCUMENT_PROVIDER) {
@@ -79,16 +81,17 @@ data class UserSettings(
         fun createDefault(context: Context): UserSettings {
             return UserSettings(
                 backupPath = Settings.getDefaultBackupPath(context),
-                exportPath = Settings.getDefaultExportPath(context)
+                exportPath = Settings.getDefaultExportPath(context),
             )
         }
     }
 }
 
+@Suppress("unused")
 class SettingsRepository(
     context: Context,
     private val dataStore: DataStore<Preferences> = context.applicationContext.settingsDataStore,
-    private val externalScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val externalScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
     private val appContext: Context = context.applicationContext
 
@@ -133,7 +136,7 @@ class SettingsRepository(
         .stateIn(
             scope = externalScope,
             started = SharingStarted.Eagerly,
-            initialValue = UserSettings.createDefault(appContext)
+            initialValue = UserSettings.createDefault(appContext),
         )
 
     val externalAccessFlow: Flow<Boolean> = settingsFlow.map { it.externalAccess }.distinctUntilChanged()
@@ -173,7 +176,7 @@ class SettingsRepository(
             biometricEnabled = preferences[PreferencesKeys.BIOMETRIC_ENABLED] ?: false,
             biometricPayload = preferences[PreferencesKeys.BIOMETRIC_PAYLOAD],
             themePalette = preferences[PreferencesKeys.THEME_PALETTE] ?: "dynamic",
-            darkMode = preferences[PreferencesKeys.DARK_MODE] ?: "system"
+            darkMode = preferences[PreferencesKeys.DARK_MODE] ?: "system",
         )
     }
 
