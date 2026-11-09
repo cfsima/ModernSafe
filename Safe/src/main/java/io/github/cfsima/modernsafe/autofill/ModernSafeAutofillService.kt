@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "DestructuringDeclaration")
+
 package io.github.cfsima.modernsafe.autofill
 
 import android.app.PendingIntent
@@ -16,7 +18,6 @@ import android.widget.RemoteViews
 import io.github.cfsima.modernsafe.AuthManager
 import io.github.cfsima.modernsafe.FrontDoor
 import io.github.cfsima.modernsafe.R
-import io.github.cfsima.modernsafe.model.PassEntry
 import io.github.cfsima.modernsafe.model.Passwords
 
 /**
@@ -32,7 +33,7 @@ class ModernSafeAutofillService : AutofillService() {
     override fun onFillRequest(
         request: FillRequest,
         cancellationSignal: CancellationSignal,
-        callback: FillCallback
+        callback: FillCallback,
     ) {
         val structure = request.fillContexts.lastOrNull()?.structure
         if (structure == null) {
@@ -41,7 +42,7 @@ class ModernSafeAutofillService : AutofillService() {
         }
 
         val target = AutofillParser.parseStructure(structure)
-        if (target.usernameId == null && target.passwordId == null) {
+        if ((target.usernameId == null) && (target.passwordId == null)) {
             callback.onSuccess(null)
             return
         }
@@ -57,7 +58,7 @@ class ModernSafeAutofillService : AutofillService() {
                 this,
                 1001,
                 intent,
-                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
 
             val unlockViews = RemoteViews(packageName, R.layout.autofill_item).apply {
@@ -68,11 +69,11 @@ class ModernSafeAutofillService : AutofillService() {
             val authDataset = Dataset.Builder(unlockViews)
                 .setAuthentication(pendingIntent.intentSender)
 
-            if (target.usernameId != null) {
-                authDataset.setValue(target.usernameId, null, unlockViews)
+            target.usernameId?.let {
+                authDataset.setValue(it, null, unlockViews)
             }
-            if (target.passwordId != null) {
-                authDataset.setValue(target.passwordId, null, unlockViews)
+            target.passwordId?.let {
+                authDataset.setValue(it, null, unlockViews)
             }
 
             responseBuilder.addDataset(authDataset.build())
@@ -86,26 +87,26 @@ class ModernSafeAutofillService : AutofillService() {
             val allEntries = Passwords.getPassEntries(0L, decrypt = true, descriptionOnly = false)
 
             val domain = target.webDomain?.lowercase()
-                ?.removePrefix("https://")
-                ?.removePrefix("http://")
+                ?.removePrefix("${"https"}://")
+                ?.removePrefix("${"http"}://")
                 ?.removePrefix("www.")
             val targetPackage = target.packageName?.lowercase()
 
             val matchingEntries = allEntries.filter { entry ->
                 val entryDomain = entry.plainWebsite?.lowercase()
-                    ?.removePrefix("https://")
-                    ?.removePrefix("http://")
+                    ?.removePrefix("${"https"}://")
+                    ?.removePrefix("${"http"}://")
                     ?.removePrefix("www.")
-                val domainMatch = domain != null && entryDomain != null &&
-                        (entryDomain.contains(domain) || domain.contains(entryDomain))
+                val domainMatch = (domain != null) && (entryDomain != null) &&
+                        ((entryDomain.contains(domain)) || domain.contains(entryDomain))
 
-                val packageMatch = targetPackage != null && (
-                        entry.packageAccess?.any { it.equals(targetPackage, ignoreCase = true) } == true ||
+                val packageMatch = (targetPackage != null) && (
+                        (entry.packageAccess?.any { it.equals(targetPackage, ignoreCase = true) } == true) ||
                                 entry.plainDescription.lowercase().contains(targetPackage)
                         )
 
-                val descMatch = (domain != null && entry.plainDescription.lowercase().contains(domain)) ||
-                        (targetPackage != null && entry.plainDescription.lowercase().contains(targetPackage.substringAfterLast('.')))
+                val descMatch = ((domain != null) && entry.plainDescription.lowercase().contains(domain)) ||
+                        ((targetPackage != null) && entry.plainDescription.lowercase().contains(targetPackage.substringAfterLast('.')))
 
                 domainMatch || packageMatch || descMatch
             }.ifEmpty {
@@ -131,20 +132,20 @@ class ModernSafeAutofillService : AutofillService() {
                 val datasetBuilder = Dataset.Builder(itemViews)
                 var hasField = false
 
-                if (target.usernameId != null && !entry.plainUsername.isNullOrEmpty()) {
+                if ((target.usernameId != null) && !entry.plainUsername.isNullOrEmpty()) {
                     datasetBuilder.setValue(
                         target.usernameId,
                         AutofillValue.forText(entry.plainUsername),
-                        itemViews
+                        itemViews,
                     )
                     hasField = true
                 }
 
-                if (target.passwordId != null && !entry.plainPassword.isNullOrEmpty()) {
+                if ((target.passwordId != null) && !entry.plainPassword.isNullOrEmpty()) {
                     datasetBuilder.setValue(
                         target.passwordId,
                         AutofillValue.forText(entry.plainPassword),
-                        itemViews
+                        itemViews,
                     )
                     hasField = true
                 }
