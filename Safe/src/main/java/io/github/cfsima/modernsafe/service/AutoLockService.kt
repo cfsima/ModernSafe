@@ -161,10 +161,13 @@ class AutoLockService : Service() {
                     }
                     lockOut()
                 } else {
-                    serviceNotification.updateProgress(
-                        timeoutUntilStop.toInt(),
-                        AuthManager.timeRemaining.toInt()
-                    )
+                    // Update notification progress periodically (every 15s) to avoid NotificationManager spam
+                    if (millisUntilFinished % 15000 < 1000) {
+                        serviceNotification.updateProgress(
+                            timeoutUntilStop.toInt(),
+                            AuthManager.timeRemaining.toInt()
+                        )
+                    }
                 }
             }
 

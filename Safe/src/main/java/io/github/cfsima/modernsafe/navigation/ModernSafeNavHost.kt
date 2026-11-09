@@ -835,11 +835,21 @@ fun ModernSafeNavHost(
         // --- 13. LogOff ---
         composable<LogOffRoute> {
             val headerText = "${VersionUtils.getApplicationName(context)} ${VersionUtils.getVersionNumber(context)}"
-            var timeRemaining by remember { mutableLongStateOf(0L) }
+            val settings = (context.applicationContext as SafeApplication).settingsRepository.userSettings.collectAsState().value
+            val timeoutMinutes = settings.lockTimeout.toIntOrNull() ?: 5
+            var timeRemaining by remember { mutableLongStateOf(AuthManager.getTimeRemainingMillis(timeoutMinutes)) }
 
-            LaunchedEffect(Unit) {
+            LaunchedEffect(timeoutMinutes) {
                 while (true) {
-                    timeRemaining = AuthManager.timeRemaining
+                    val remaining = AuthManager.getTimeRemainingMillis(timeoutMinutes)
+                    timeRemaining = remaining
+                    if (remaining <= 0L && AuthManager.isSignedIn()) {
+                        AuthManager.setSignedOut()
+                        navController.navigate(AskPasswordRoute()) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                        break
+                    }
                     delay(1000)
                 }
             }

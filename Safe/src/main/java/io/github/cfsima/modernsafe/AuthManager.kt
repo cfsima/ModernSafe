@@ -59,6 +59,15 @@ object AuthManager {
     }
 
     @JvmStatic
+    fun getTimeRemainingMillis(timeoutMinutes: Int): Long {
+        if (!isSignedIn()) return 0L
+        if (lastActiveTimestamp == 0L) return timeoutMinutes * 60 * 1000L
+        val timeoutMillis = timeoutMinutes * 60 * 1000L
+        val elapsed = timeProvider() - lastActiveTimestamp
+        return (timeoutMillis - elapsed).coerceAtLeast(0L)
+    }
+
+    @JvmStatic
     fun isSignedIn(): Boolean {
         if ((Master.salt != null) && (Master.masterKey != null)) {
             if (BuildConfig.DEBUG) {
