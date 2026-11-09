@@ -1,3 +1,5 @@
+@file:Suppress("DestructuringDeclaration")
+
 package io.github.cfsima.modernsafe
 
 import android.app.Application
