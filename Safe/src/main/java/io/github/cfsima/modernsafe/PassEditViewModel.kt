@@ -23,7 +23,7 @@ data class PassEditUiState(
     val isSaved: Boolean = false,
     val isDeleted: Boolean = false,
     val isModified: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
 )
 
 class PassEditViewModel(application: Application) : AndroidViewModel(application) {
@@ -38,31 +38,31 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
             val currentState = _uiState.value
             _uiState.value = currentState.copy(isLoading = true, id = id, categoryId = categoryId)
 
-            if (id != -1L && id != 0L) {
+            if ((id != -1L) && (id != 0L)) {
                 // Load existing entry
-                val entry = Passwords.getPassEntry(id, true, false)
+                val entry = Passwords.getPassEntry(id, decrypt = true, descriptionOnly = false)
                 if (entry != null) {
                     initialEntry = entry
                     _uiState.value = _uiState.value.copy(
-                        description = entry.plainDescription ?: "",
+                        description = entry.plainDescription,
                         website = entry.plainWebsite ?: "",
                         username = entry.plainUsername ?: "",
                         password = entry.plainPassword ?: "",
                         note = entry.plainNote ?: "",
                         isLoading = false,
-                        isModified = false
+                        isModified = false,
                     )
                 } else {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        error = "Entry not found"
+                        error = "Entry not found",
                     )
                 }
             } else {
                 // New entry
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    isModified = false // Not modified initially
+                    isModified = false, // Not modified initially
                 )
             }
         }
@@ -75,20 +75,20 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun checkIfModified(state: PassEditUiState): Boolean {
-        if (initialEntry == null) {
+        val init = initialEntry
+        return if (init == null) {
             // New entry: modified if any field is not empty
-            return state.description.isNotEmpty() ||
-                   state.website.isNotEmpty() ||
-                   state.username.isNotEmpty() ||
-                   state.password.isNotEmpty() ||
-                   state.note.isNotEmpty()
+            state.description.isNotEmpty() ||
+                    state.website.isNotEmpty() ||
+                    state.username.isNotEmpty() ||
+                    state.password.isNotEmpty() ||
+                    state.note.isNotEmpty()
         } else {
-            val init = initialEntry!!
-            return state.description != (init.plainDescription ?: "") ||
-                   state.website != (init.plainWebsite ?: "") ||
-                   state.username != (init.plainUsername ?: "") ||
-                   state.password != (init.plainPassword ?: "") ||
-                   state.note != (init.plainNote ?: "")
+            state.description != init.plainDescription ||
+                    state.website != (init.plainWebsite ?: "") ||
+                    state.username != (init.plainUsername ?: "") ||
+                    state.password != (init.plainPassword ?: "") ||
+                    state.note != (init.plainNote ?: "")
         }
     }
 
@@ -130,24 +130,17 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
             entry.plainPassword = current.password
             entry.plainNote = current.note
 
-            var success = false
-            var newId = current.id
-
-            if (current.id == -1L || current.id == 0L) {
-                entry.id = 0
-                newId = Passwords.putPassEntry(entry)
-                if (newId != -1L) success = true
-            } else {
-                entry.id = current.id
+            val isNew = (current.id == -1L) || (current.id == 0L)
+            entry.id = if (isNew) 0L else current.id
+            if (!isNew) {
                 initialEntry?.let {
                     entry.uniqueName = it.uniqueName
                 }
-                val result = Passwords.putPassEntry(entry)
-                if (result != -1L) success = true
             }
 
-            if (success) {
-                _uiState.value = current.copy(isSaved = true, id = if(newId != -1L) newId else current.id)
+            val resultId = Passwords.putPassEntry(entry)
+            if (resultId != -1L) {
+                _uiState.value = current.copy(isSaved = true, id = resultId)
             } else {
                 _uiState.value = current.copy(error = "Failed to save entry")
             }
@@ -157,13 +150,14 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
     fun delete() {
         viewModelScope.launch(Dispatchers.IO) {
             val current = _uiState.value
-            if (current.id != -1L && current.id != 0L) {
+            if ((current.id != -1L) && (current.id != 0L)) {
                 Passwords.deletePassEntry(current.id)
             }
             _uiState.value = current.copy(isDeleted = true)
         }
     }
 
+    @Suppress("unused")
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }
