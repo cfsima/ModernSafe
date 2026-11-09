@@ -37,12 +37,12 @@ sealed class AskPasswordEffect {
     object CloseApp : AskPasswordEffect()
 }
 
+private const val TAG = "AskPasswordViewModel"
+
 class AskPasswordViewModel @JvmOverloads constructor(
     application: Application,
     private val settingsRepository: SettingsRepository = SettingsRepository.getInstance(application)
 ) : AndroidViewModel(application) {
-
-    private val TAG = "AskPasswordViewModel"
 
     private val _uiState = MutableStateFlow(AskPasswordUiState())
     val uiState: StateFlow<AskPasswordUiState> = _uiState.asStateFlow()
@@ -84,6 +84,7 @@ class AskPasswordViewModel @JvmOverloads constructor(
         }
     }
 
+    @Suppress("unused")
     fun checkSignedIn() {
         if (AuthManager.isSignedIn()) {
              viewModelScope.launch { _effects.emit(AskPasswordEffect.UnlockSuccess) }
@@ -189,9 +190,10 @@ class AskPasswordViewModel @JvmOverloads constructor(
                 _effects.emit(AskPasswordEffect.UnlockSuccess)
             }
         } catch (e: Exception) {
-             viewModelScope.launch {
-                 _effects.emit(AskPasswordEffect.ShowToast(R.string.crypto_error))
-             }
+            Log.e(TAG, "First time setup failed", e)
+            viewModelScope.launch {
+                _effects.emit(AskPasswordEffect.ShowToast(R.string.crypto_error))
+            }
         }
     }
 
@@ -220,8 +222,9 @@ class AskPasswordViewModel @JvmOverloads constructor(
                 cryptoHelper.init(CryptoHelper.EncryptionStrong, dbSalt)
                 cryptoHelper.setPassword(password)
                 var decryptedMasterKey = cryptoHelper.decrypt(cachedEncryptedMasterKey)
+                var unlockSuccess = cryptoHelper.status && decryptedMasterKey.isNotEmpty()
 
-                if (!cryptoHelper.status || decryptedMasterKey.isEmpty()) {
+                if (!unlockSuccess) {
                     // Try medium encryption fallback
                     val chMed = CryptoHelper()
                     chMed.init(CryptoHelper.EncryptionMedium, dbSalt)
@@ -229,11 +232,11 @@ class AskPasswordViewModel @JvmOverloads constructor(
                     val medDecrypted = chMed.decrypt(cachedEncryptedMasterKey)
                     if (chMed.status && medDecrypted.isNotEmpty()) {
                         decryptedMasterKey = medDecrypted
-                        cryptoHelper.status = true
+                        unlockSuccess = true
                     }
                 }
 
-                if (cryptoHelper.status && decryptedMasterKey.isNotEmpty()) {
+                if (unlockSuccess && decryptedMasterKey.isNotEmpty()) {
                     sessionMasterKey = decryptedMasterKey
                     // Transparently migrate database to V5
                     migrateToV5(password, decryptedMasterKey)
@@ -258,19 +261,31 @@ class AskPasswordViewModel @JvmOverloads constructor(
             // 1. Decrypt existing categories
             val categories = helper.fetchAllCategoryRows()
             val decryptedCategories = categories.map { cat ->
-                val plain = try { legacyDekCrypto.decrypt(cat.name) } catch (e: Exception) { cat.name }
+                val plain = try { legacyDekCrypto.decrypt(cat.name) } catch (_: Exception) { cat.name }
                 cat.id to plain
             }
 
             // 2. Decrypt existing passwords
             val passwords = helper.fetchAllRows(0)
             val decryptedPasswords = passwords.map { row ->
-                val plainDesc = try { legacyDekCrypto.decrypt(row.description) } catch (e: Exception) { row.description }
-                val plainWeb = if (!row.website.isNullOrEmpty()) try { legacyDekCrypto.decrypt(row.website) } catch (e: Exception) { row.website } else ""
-                val plainUser = if (!row.username.isNullOrEmpty()) try { legacyDekCrypto.decrypt(row.username) } catch (e: Exception) { row.username } else ""
-                val plainPass = try { legacyDekCrypto.decrypt(row.password) } catch (e: Exception) { row.password }
-                val plainNote = if (!row.note.isNullOrEmpty()) try { legacyDekCrypto.decrypt(row.note) } catch (e: Exception) { row.note } else ""
-                val plainUnique = if (!row.uniqueName.isNullOrEmpty()) try { legacyDekCrypto.decrypt(row.uniqueName) } catch (e: Exception) { row.uniqueName } else ""
+                val plainDesc = try { legacyDekCrypto.decrypt(row.description) } catch (_: Exception) { row.description }
+                val website = row.website
+                val plainWeb = if (!website.isNullOrEmpty()) {
+                    try { legacyDekCrypto.decrypt(website) } catch (_: Exception) { website }
+                } else ""
+                val username = row.username
+                val plainUser = if (!username.isNullOrEmpty()) {
+                    try { legacyDekCrypto.decrypt(username) } catch (_: Exception) { username }
+                } else ""
+                val plainPass = try { legacyDekCrypto.decrypt(row.password) } catch (_: Exception) { row.password }
+                val note = row.note
+                val plainNote = if (!note.isNullOrEmpty()) {
+                    try { legacyDekCrypto.decrypt(note) } catch (_: Exception) { note }
+                } else ""
+                val uniqueName = row.uniqueName
+                val plainUnique = if (!uniqueName.isNullOrEmpty()) {
+                    try { legacyDekCrypto.decrypt(uniqueName) } catch (_: Exception) { uniqueName }
+                } else ""
                 Triple(row, plainDesc to plainPass, listOf(plainWeb, plainUser, plainNote, plainUnique))
             }
 
@@ -356,8 +371,15 @@ class AskPasswordViewModel @JvmOverloads constructor(
         }
     }
 
+    @Suppress("unused")
     fun onKeypadClear() {
         _uiState.update { it.copy(keypadInput = "") }
+    }
+
+    fun onRestoreClicked() {
+        viewModelScope.launch {
+            _effects.emit(AskPasswordEffect.NavigateToRestoreFirstTime)
+        }
     }
 
     fun onKeypadEnter() {
@@ -426,7 +448,6 @@ class AskPasswordViewModel @JvmOverloads constructor(
     }
 
     override fun onCleared() {
-        super.onCleared()
         dbHelper?.close()
     }
 }
