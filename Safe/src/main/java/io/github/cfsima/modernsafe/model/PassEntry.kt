@@ -21,6 +21,7 @@ import java.util.ArrayList
 /**
  * @author Steven Osborn - http://steven.bitsetters.com
  */
+@Suppress("unused")
 class PassEntry {
     var id: Long = -1
     var needsDecryptDescription: Boolean = false
