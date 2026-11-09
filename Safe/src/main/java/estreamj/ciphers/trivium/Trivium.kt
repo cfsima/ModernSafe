@@ -1,3 +1,5 @@
+@file:Suppress("Precedence", "UnclearPrecedenceOfBinaryExpression", "JoinDeclarationAndAssignment")
+
 package estreamj.ciphers.trivium
 
 import estreamj.framework.ESJException
@@ -48,14 +50,10 @@ class Trivium : ICipher {
         var s33 = 0
         var s34 = 0x07000
 
-        for (i in 0 until 4 * 9) {
-            var t1: Int
-            var t2: Int
-            var t3: Int
-
-            t1 = ((s13 shl 96 - 66) or (s12 ushr 66 - 64)) xor ((s13 shl 96 - 93) or (s12 ushr 93 - 64))
-            t2 = ((s23 shl 96 - 69) or (s22 ushr 69 - 64)) xor ((s23 shl 96 - 84) or (s22 ushr 84 - 64))
-            t3 = ((s33 shl 96 - 66) or (s32 ushr 66 - 64)) xor ((s34 shl 128 - 111) or (s33 ushr 111 - 96))
+        repeat(4 * 9) {
+            var t1 = ((s13 shl 96 - 66) or (s12 ushr 66 - 64)) xor ((s13 shl 96 - 93) or (s12 ushr 93 - 64))
+            var t2 = ((s23 shl 96 - 69) or (s22 ushr 69 - 64)) xor ((s23 shl 96 - 84) or (s22 ushr 84 - 64))
+            var t3 = ((s33 shl 96 - 66) or (s32 ushr 66 - 64)) xor ((s34 shl 128 - 111) or (s33 ushr 111 - 96))
 
             t1 = t1 xor ((((s13 shl 96 - 91) or (s12 ushr 91 - 64)) and ((s13 shl 96 - 92) or (s12 ushr 92 - 64))) xor ((s23 shl 96 - 78) or (s22 ushr 78 - 64)))
             t2 = t2 xor ((((s23 shl 96 - 82) or (s22 ushr 82 - 64)) and ((s23 shl 96 - 83) or (s22 ushr 83 - 64))) xor ((s33 shl 96 - 87) or (s32 ushr 87 - 64)))
@@ -79,9 +77,9 @@ class Trivium : ICipher {
         s[3] = s21
         s[4] = s22
         s[5] = s23
-        s[6] = s31; 
-        s[7] = s32; 
-        s[8] = s33; 
+        s[6] = s31 
+        s[7] = s32 
+        s[8] = s33 
         s[9] = s34
     }
 
@@ -91,7 +89,7 @@ class Trivium : ICipher {
         inOfs: Int,
         outbuf: ByteArray,
         outOfs: Int,
-        len: Int
+        len: Int,
     ) {
         var s11 = s[0]
         var s12 = s[1]
