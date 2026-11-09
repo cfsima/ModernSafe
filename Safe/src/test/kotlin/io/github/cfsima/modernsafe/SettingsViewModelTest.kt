@@ -1,3 +1,5 @@
+@file:Suppress("DestructuringDeclaration", "MoveLambdaOutsideParentheses")
+
 package io.github.cfsima.modernsafe
 
 import android.app.Application
@@ -52,7 +54,7 @@ class SettingsViewModelTest {
         val testFile = tmpFolder.newFile("test_vm_${System.nanoTime()}.preferences_pb")
         val dataStore: DataStore<Preferences> = PreferenceDataStoreFactory.create(
             scope = repoScope,
-            produceFile = { testFile }
+            produceFile = { testFile },
         )
 
         val filesDir = tmpFolder.newFolder("files_vm_${System.nanoTime()}")
@@ -66,7 +68,7 @@ class SettingsViewModelTest {
         val repository = SettingsRepository(
             context = dummyContext,
             dataStore = dataStore,
-            externalScope = repoScope
+            externalScope = repoScope,
         )
 
         val dummyApp = object : Application() {
@@ -78,7 +80,7 @@ class SettingsViewModelTest {
 
         val viewModel = SettingsViewModel(
             application = dummyApp,
-            settingsRepository = repository
+            settingsRepository = repository,
         )
 
         return Pair(viewModel, repository)
@@ -101,15 +103,15 @@ class SettingsViewModelTest {
     fun testUpdatesReflectedInViewModel() = testScope.runTest {
         val (viewModel, repository) = createViewModel()
 
-        viewModel.setExternalAccess(true)
+        viewModel.setExternalAccess(enabled = true)
         viewModel.setLockTimeout("10")
-        viewModel.setLockOnScreenLock(false)
-        viewModel.setKeypad(true)
-        viewModel.setKeypadMute(true)
-        viewModel.setAutoBackup(false)
+        viewModel.setLockOnScreenLock(enabled = false)
+        viewModel.setKeypad(enabled = true)
+        viewModel.setKeypadMute(enabled = true)
+        viewModel.setAutoBackup(enabled = false)
         viewModel.setAutoBackupDays("14")
 
-        val settings = repository.settingsFlow.first { it.externalAccess && it.lockTimeout == "10" }
+        val settings = repository.settingsFlow.first { it.externalAccess && (it.lockTimeout == "10") }
         assertTrue(settings.externalAccess)
         assertEquals("10", settings.lockTimeout)
         assertFalse(settings.lockOnScreenLock)

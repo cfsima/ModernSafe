@@ -1,3 +1,5 @@
+@file:Suppress("DestructuringDeclaration", "MoveLambdaOutsideParentheses")
+
 package io.github.cfsima.modernsafe
 
 import android.content.Context
@@ -46,7 +48,7 @@ class SettingsRepositoryTest {
         val testFile = tmpFolder.newFile("test_settings_${System.nanoTime()}.preferences_pb")
         val dataStore: DataStore<Preferences> = PreferenceDataStoreFactory.create(
             scope = repoScope,
-            produceFile = { testFile }
+            produceFile = { testFile },
         )
 
         val filesDir = tmpFolder.newFolder("files_${System.nanoTime()}")
@@ -60,7 +62,7 @@ class SettingsRepositoryTest {
         val repository = SettingsRepository(
             context = dummyContext,
             dataStore = dataStore,
-            externalScope = repoScope
+            externalScope = repoScope,
         )
         return Pair(repository, testFile)
     }
@@ -85,7 +87,7 @@ class SettingsRepositoryTest {
     fun testUpdateExternalAccess() = testScope.runTest {
         val (repository, _) = createRepository()
 
-        repository.setExternalAccess(true)
+        repository.setExternalAccess(enabled = true)
         val settings = repository.settingsFlow.first()
 
         assertTrue(settings.externalAccess)
@@ -105,8 +107,8 @@ class SettingsRepositoryTest {
     fun testUpdateKeypadAndMute() = testScope.runTest {
         val (repository, _) = createRepository()
 
-        repository.setKeypad(true)
-        repository.setKeypadMute(true)
+        repository.setKeypad(enabled = true)
+        repository.setKeypadMute(enabled = true)
         val settings = repository.settingsFlow.first()
 
         assertTrue(settings.keypad)
