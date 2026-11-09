@@ -3,8 +3,6 @@ package io.github.cfsima.modernsafe
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.cfsima.modernsafe.model.CategoryEntry
-import io.github.cfsima.modernsafe.model.PassEntry
 import io.github.cfsima.modernsafe.model.Passwords
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,14 +15,14 @@ data class SearchResult(
     val id: Long,
     val name: String,
     val categoryName: String,
-    val categoryId: Long
+    val categoryId: Long,
 )
 
 data class SearchUiState(
     val query: String = "",
     val results: List<SearchResult> = emptyList(),
-    val resultIds: LongArray = LongArray(0),
-    val isLoading: Boolean = false
+    val resultIds: List<Long> = emptyList(),
+    val isLoading: Boolean = false,
 )
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
@@ -44,8 +42,8 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             _uiState.update {
                 it.copy(
                     results = emptyList(),
-                    resultIds = LongArray(0),
-                    isLoading = false
+                    resultIds = emptyList(),
+                    isLoading = false,
                 )
             }
         } else {
@@ -53,6 +51,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    @Suppress("DestructuringDeclaration")
     private fun performSearch(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(isLoading = true) }
@@ -64,10 +63,10 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             for (cat in categories) {
                 // Fetch and decrypt all password entries for this category
                 // decrypt=true, descriptionOnly=false (search all fields)
-                val passwords = Passwords.getPassEntries(cat.id, true, false)
+                val passwords = Passwords.getPassEntries(cat.id, decrypt = true, descriptionOnly = false)
 
                 for (pass in passwords) {
-                    val description = pass.plainDescription?.lowercase() ?: ""
+                    val description = pass.plainDescription.lowercase()
                     val website = pass.plainWebsite?.lowercase() ?: ""
                     val username = pass.plainUsername?.lowercase() ?: ""
                     val password = pass.plainPassword?.lowercase() ?: ""
@@ -82,10 +81,10 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
                         foundResults.add(
                             SearchResult(
                                 id = pass.id,
-                                name = pass.plainDescription ?: "",
+                                name = pass.plainDescription,
                                 categoryName = cat.plainName ?: "",
-                                categoryId = cat.id
-                            )
+                                categoryId = cat.id,
+                            ),
                         )
                     }
                 }
@@ -94,13 +93,13 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             // Sort results by name (case-insensitive) to match legacy behavior
             foundResults.sortBy { it.name.lowercase() }
 
-            val resultIds = foundResults.map { it.id }.toLongArray()
+            val resultIds = foundResults.map { it.id }
 
             _uiState.update {
                 it.copy(
                     results = foundResults,
                     resultIds = resultIds,
-                    isLoading = false
+                    isLoading = false,
                 )
             }
         }
