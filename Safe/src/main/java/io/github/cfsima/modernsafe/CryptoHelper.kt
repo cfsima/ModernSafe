@@ -68,7 +68,6 @@ class CryptoHelper {
 
     // Status of the last encrypt/decrypt
     var status: Boolean = false
-        private set
 
     private var v5Key: SecretKey? = null
     var isV5: Boolean = false

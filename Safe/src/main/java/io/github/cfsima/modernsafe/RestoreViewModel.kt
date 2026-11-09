@@ -110,28 +110,31 @@ class RestoreViewModel(application: Application) : AndroidViewModel(application)
              try {
                  val ch = CryptoHelper()
                  val isV5 = masterKeyEncrypted.startsWith(CryptoHelper.V5_PREFIX)
+                 var unlockSuccess = false
                  if (isV5) {
                      ch.initV5(salt)
                      ch.setPassword(password)
                      masterKey = ch.decrypt(masterKeyEncrypted)
+                     unlockSuccess = ch.status && !masterKey.isNullOrEmpty()
                  } else {
                      ch.init(CryptoHelper.EncryptionStrong, salt)
                      ch.setPassword(password)
                      masterKey = ch.decrypt(masterKeyEncrypted)
+                     unlockSuccess = ch.status && !masterKey.isNullOrEmpty()
 
-                     if (!ch.status || masterKey.isNullOrEmpty()) {
+                     if (!unlockSuccess) {
                          val chMed = CryptoHelper()
                          chMed.init(CryptoHelper.EncryptionMedium, salt)
                          chMed.setPassword(password)
-                         val medDecrypted = try { chMed.decrypt(masterKeyEncrypted) } catch (e: Exception) { null }
+                         val medDecrypted = try { chMed.decrypt(masterKeyEncrypted) } catch (_: Exception) { null }
                          if (chMed.status && !medDecrypted.isNullOrEmpty()) {
                              masterKey = medDecrypted
-                             ch.status = true
+                             unlockSuccess = true
                          }
                      }
                  }
 
-                 if (!ch.status || masterKey.isNullOrEmpty()) {
+                 if (!unlockSuccess || masterKey.isNullOrEmpty()) {
                      _uiState.value = _uiState.value.copy(status = RestoreStatus.PasswordRequired, error = "Incorrect password (decrypt failed)")
                      return@launch
                  }

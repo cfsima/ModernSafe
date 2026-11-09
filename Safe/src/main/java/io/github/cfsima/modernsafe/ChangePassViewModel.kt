@@ -83,23 +83,24 @@ class ChangePassViewModel(application: Application) : AndroidViewModel(applicati
 
             var decryptedMasterKey = try {
                 ch.decrypt(encryptedMasterKey)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             }
+            var unlockSuccess = ch.status && !decryptedMasterKey.isNullOrEmpty()
 
-            if (!ch.status || decryptedMasterKey.isNullOrEmpty()) {
+            if (!unlockSuccess) {
                 if (!isV5) {
                     val chMed = CryptoHelper()
                     chMed.init(CryptoHelper.EncryptionMedium, salt)
                     chMed.setPassword(oldPass)
-                    decryptedMasterKey = try { chMed.decrypt(encryptedMasterKey) } catch (e: Exception) { null }
+                    decryptedMasterKey = try { chMed.decrypt(encryptedMasterKey) } catch (_: Exception) { null }
                     if (chMed.status && !decryptedMasterKey.isNullOrEmpty()) {
-                        ch.status = true
+                        unlockSuccess = true
                     }
                 }
             }
 
-            if (decryptedMasterKey.isNullOrEmpty() || !ch.status) {
+            if (!unlockSuccess || decryptedMasterKey.isNullOrEmpty()) {
                 _uiState.update { it.copy(oldPasswordError = R.string.invalid_old_password) }
                 return false
             }
