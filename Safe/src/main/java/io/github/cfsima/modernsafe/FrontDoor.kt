@@ -19,9 +19,9 @@ class FrontDoor : AppCompatActivity() {
 
         val action = intent.action
 
-        if (action == null || action == Intent.ACTION_MAIN || action == CryptoIntents.ACTION_AUTOLOCK) {
+        if ((action == null) || (action == Intent.ACTION_MAIN) || (action == CryptoIntents.ACTION_AUTOLOCK)) {
             val i = Intent(this, MainActivity::class.java).apply {
-                if (action != null) this.action = action
+                action?.let { this.action = it }
                 data = intent.data
                 intent.extras?.let { putExtras(it) }
                 addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
