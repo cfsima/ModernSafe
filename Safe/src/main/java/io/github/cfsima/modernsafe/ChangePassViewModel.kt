@@ -19,7 +19,7 @@ data class ChangePassUiState(
     val confirmPasswordError: Int? = null,
     val generalError: String? = null,
     val isSuccess: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
 )
 
 class ChangePassViewModel(application: Application) : AndroidViewModel(application) {
@@ -33,7 +33,7 @@ class ChangePassViewModel(application: Application) : AndroidViewModel(applicati
                 oldPasswordError = null,
                 newPasswordError = null,
                 confirmPasswordError = null,
-                generalError = null
+                generalError = null,
             )
         }
     }
