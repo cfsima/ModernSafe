@@ -6,6 +6,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +44,10 @@ fun ChangePassScreen(
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+
+    var oldPasswordVisible by remember { mutableStateOf(false) }
+    var newPasswordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -77,8 +84,16 @@ fun ChangePassScreen(
                     onClearErrors()
                 },
                 label = { Text(stringResource(R.string.old_password)) },
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (oldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                trailingIcon = {
+                    IconButton(onClick = { oldPasswordVisible = !oldPasswordVisible }) {
+                        Icon(
+                            imageVector = if (oldPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = if (oldPasswordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                },
                 isError = uiState.oldPasswordError != null,
                 supportingText = {
                     uiState.oldPasswordError?.let {
@@ -97,8 +112,16 @@ fun ChangePassScreen(
                     onClearErrors()
                 },
                 label = { Text(stringResource(R.string.new_password)) },
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                trailingIcon = {
+                    IconButton(onClick = { newPasswordVisible = !newPasswordVisible }) {
+                        Icon(
+                            imageVector = if (newPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = if (newPasswordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                },
                 isError = uiState.newPasswordError != null,
                 supportingText = {
                     uiState.newPasswordError?.let {
@@ -117,8 +140,16 @@ fun ChangePassScreen(
                     onClearErrors()
                 },
                 label = { Text(stringResource(R.string.verify_password)) },
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                trailingIcon = {
+                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                        Icon(
+                            imageVector = if (confirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = if (confirmPasswordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                },
                 isError = uiState.confirmPasswordError != null,
                 supportingText = {
                     uiState.confirmPasswordError?.let {

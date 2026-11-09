@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -258,7 +259,7 @@ fun ModernSafeNavHost(
             if (showExportConfirmDialog) {
                 AlertDialog(
                     onDismissRequest = { showExportConfirmDialog = false },
-                    icon = { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null) },
+                    icon = { Icon(Icons.Default.Warning, contentDescription = null) },
                     title = { Text(stringResource(R.string.export_database)) },
                     text = { Text(stringResource(R.string.export_msg)) },
                     confirmButton = {

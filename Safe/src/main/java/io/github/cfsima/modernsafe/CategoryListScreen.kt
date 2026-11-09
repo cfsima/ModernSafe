@@ -51,12 +51,14 @@ fun CategoryListScreen(
     // Delete Dialog State
     var categoryToDelete by remember { mutableStateOf<CategoryEntry?>(null) }
 
-    if (uiState.userMessage != null) {
-        AlertDialog(
-            onDismissRequest = onUserMessageDismiss,
-            confirmButton = { TextButton(onClick = onUserMessageDismiss) { Text(stringResource(android.R.string.ok)) } },
-            text = { Text(uiState.userMessage) }
-        )
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(uiState.userMessage) {
+        val msg = uiState.userMessage
+        if (msg != null) {
+            snackbarHostState.showSnackbar(msg)
+            onUserMessageDismiss()
+        }
     }
 
     // Add Dialog
@@ -154,6 +156,7 @@ fun CategoryListScreen(
     }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
