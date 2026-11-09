@@ -23,7 +23,7 @@ data class AskPasswordUiState(
     val keypadInput: String = "",
     val showDatabaseError: Boolean = false,
     val showVersionError: Boolean = false,
-    val isBiometricAvailable: Boolean = false
+    val isBiometricAvailable: Boolean = false,
 )
 
 sealed class AskPasswordEffect {
@@ -41,7 +41,7 @@ private const val TAG = "AskPasswordViewModel"
 
 class AskPasswordViewModel @JvmOverloads constructor(
     application: Application,
-    private val settingsRepository: SettingsRepository = SettingsRepository.getInstance(application)
+    private val settingsRepository: SettingsRepository = SettingsRepository.getInstance(application),
 ) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(AskPasswordUiState())
@@ -69,18 +69,20 @@ class AskPasswordViewModel @JvmOverloads constructor(
 
     private fun observeSettings() {
         viewModelScope.launch {
-            settingsRepository.settingsFlow.collect { settings ->
-                val canBiometric = BiometricHelper.isBiometricAvailable(getApplication()) &&
-                        settings.biometricEnabled &&
-                        !settings.biometricPayload.isNullOrEmpty()
-                _uiState.update {
-                    it.copy(
-                        isKeypadMode = settings.keypad,
-                        isMuted = settings.keypadMute,
-                        isBiometricAvailable = canBiometric
-                    )
-                }
-            }
+            settingsRepository.settingsFlow.collect(::updateFromSettings)
+        }
+    }
+
+    private fun updateFromSettings(settings: UserSettings) {
+        val canBiometric = BiometricHelper.isBiometricAvailable(getApplication()) &&
+                settings.biometricEnabled &&
+                !settings.biometricPayload.isNullOrEmpty()
+        _uiState.update { state ->
+            state.copy(
+                isKeypadMode = settings.keypad,
+                isMuted = settings.keypadMute,
+                isBiometricAvailable = canBiometric,
+            )
         }
     }
 
@@ -110,19 +112,9 @@ class AskPasswordViewModel @JvmOverloads constructor(
         dbSalt = dbHelper?.fetchSalt() ?: ""
         // Note: fetchMasterKey returns encrypted key from DB
         cachedEncryptedMasterKey = dbHelper?.fetchMasterKey() ?: ""
+        _uiState.update { it.copy(isFirstTime = cachedEncryptedMasterKey.isEmpty()) }
 
-        val userSettings = settingsRepository.userSettings.value
-        val canBiometric = BiometricHelper.isBiometricAvailable(context) &&
-                userSettings.biometricEnabled &&
-                !userSettings.biometricPayload.isNullOrEmpty()
-        _uiState.update {
-            it.copy(
-                isFirstTime = cachedEncryptedMasterKey.isEmpty(),
-                isKeypadMode = userSettings.keypad,
-                isMuted = userSettings.keypadMute,
-                isBiometricAvailable = canBiometric
-            )
-        }
+        updateFromSettings(settingsRepository.userSettings.value)
     }
 
     fun onPasswordSubmit(password: String) {
@@ -413,13 +405,14 @@ class AskPasswordViewModel @JvmOverloads constructor(
         val cipher = BiometricHelper.initDecryptCipher(payload)
         if (cipher == null) {
             viewModelScope.launch {
-                settingsRepository.setBiometricEnabled(false)
+                settingsRepository.setBiometricEnabled(enabled = false)
                 _uiState.update { it.copy(isBiometricAvailable = false) }
                 _effects.emit(AskPasswordEffect.ShowToast(R.string.invalid_password))
             }
             return
         }
 
+        @Suppress("MoveLambdaOutsideParentheses")
         BiometricHelper.showBiometricPrompt(
             activity = activity,
             cipher = cipher,
@@ -443,7 +436,7 @@ class AskPasswordViewModel @JvmOverloads constructor(
             onError = { err ->
                 Log.d(TAG, "Biometric prompt error: $err")
             },
-            onCancel = {}
+            onCancel = {},
         )
     }
 
