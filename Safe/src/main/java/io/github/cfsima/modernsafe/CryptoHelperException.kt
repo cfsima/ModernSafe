@@ -20,6 +20,7 @@ package io.github.cfsima.modernsafe
  */
 class CryptoHelperException(message: String?) : Exception(message) {
     companion object {
+        @Suppress("unused")
         private const val serialVersionUID = 9198874648607918125L
     }
 }
