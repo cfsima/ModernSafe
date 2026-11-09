@@ -123,7 +123,7 @@ class CryptoContentProvider : ContentProvider() {
                     val crypto = AuthManager.cryptoHelper
                     if (crypto == null) {
                         if (debug) {
-                            Log.d(TAG, "OI Safe currently logged out.")
+                            Log.d(TAG, "Modern Safe currently logged out.")
                         }
                         return null
                     }

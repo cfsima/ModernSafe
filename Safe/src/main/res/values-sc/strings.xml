@@ -25,13 +25,13 @@
   Rex Sanna https://launchpad.net/~rex-sanna</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Store your private data with OI Safe.</string>
+  <string name="about_comments">Store your private data with Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Sarvu</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">Non b\'este una password pro custa categoria</string>
   <string name="empty_category">Non bi sunu categoriasa. Azzunghene una usande Menu-&gt;Azzunghe</string>
   <string name="password_lock">Blocca</string>
@@ -52,7 +52,7 @@
   <string name="notify_blank_desc">Description cannot be blank</string>
   <string name="notify_blank_name">Name cannot be blank</string>
   <string name="first_time">Please enter a password below, which will be used to keep your passwords safe.</string>
-  <string name="logoff_explanation">You are currently logged into OI Safe, meaning that other applications can request their passwords and decrypt/encrypt data. Lock to prevent further access until you type in your password again.</string>
+  <string name="logoff_explanation">You are currently logged into Modern Safe, meaning that other applications can request their passwords and decrypt/encrypt data. Lock to prevent further access until you type in your password again.</string>
   <string name="remote_ask">Another application is asking to use the master key. Please type in your password to unlock it.</string>
   <string name="categories">Categories</string>
   <string name="category">Category</string>
@@ -98,7 +98,7 @@
   <string name="dialog_delete_password_title">Delete Password</string>
   <string name="dialog_delete_password_msg">Are you sure you want to delete this password?</string>
   <string name="change_password">Change Master Password</string>
-  <string name="chg_pass_explaination">Use this to change the password you use to unlock OI Safe.   Your data will be re-encrypted with the new password.  The more complex your password is, the safer your data will be.</string>
+  <string name="chg_pass_explaination">Use this to change the password you use to unlock Modern Safe.   Your data will be re-encrypted with the new password.  The more complex your password is, the safer your data will be.</string>
   <string name="old_password">Old password</string>
   <string name="new_password">New password</string>
   <string name="verify_password">Verify password</string>
@@ -153,10 +153,10 @@
 
   <string name="preferences">Settings</string>
   <string name="pref_title_external_access">Allow external access</string>
-  <string name="pref_summary_external_access">Allow other applications to secure your data with OI Safe</string>
-  <string name="dialog_title_external_access">OI Safe: Another application requests access.</string>
-  <string name="dialog_summary_external_access">Allow other applications to secure your data with OI Safe.</string>
-  <string name="dialog_comment_external_access">This can also be set in OI Safe\'s Menu / Settings.</string>
+  <string name="pref_summary_external_access">Allow other applications to secure your data with Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe: Another application requests access.</string>
+  <string name="dialog_summary_external_access">Allow other applications to secure your data with Modern Safe.</string>
+  <string name="dialog_comment_external_access">This can also be set in Modern Safe\'s Menu / Settings.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Auto lock timeout</string>
@@ -196,12 +196,12 @@
   <string name="pref_title_export_path">Default export path</string>
 
 
-  <string name="intent_decrypt">Decrypt (OI Safe)</string>
-  <string name="intent_encrypt">Encrypt (OI Safe)</string>
-  <string name="intent_get_password">Get password (OI Safe)</string>
-  <string name="intent_set_password">Set password (OI Safe)</string>
-  <string name="intent_restart_timer">Restart timer (OI Safe)</string>
-  <string name="open_safe">Open OI Safe</string>
+  <string name="intent_decrypt">Decrypt (Modern Safe)</string>
+  <string name="intent_encrypt">Encrypt (Modern Safe)</string>
+  <string name="intent_get_password">Get password (Modern Safe)</string>
+  <string name="intent_set_password">Set password (Modern Safe)</string>
+  <string name="intent_restart_timer">Restart timer (Modern Safe)</string>
+  <string name="open_safe">Open Modern Safe</string>
   <string name="lock">Blocca</string>
   <string name="continue_text">Continue</string>
   <string name="generate_password">Generate Password</string>
@@ -263,10 +263,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">access the master password</string>
-  <string name="oi_safe_permission_service_descr">Allows the application to access the master key used for encryption and decryption. Should never be used except by OI Safe.</string>
+  <string name="oi_safe_permission_service_descr">Allows the application to access the master key used for encryption and decryption. Should never be used except by Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">encrypt and decrypt data</string>
-  <string name="oi_safe_permission_intents_descr">Allows the application to encrypt and decrypt text, and access the passwords they have stored in OI Safe.</string>
+  <string name="oi_safe_permission_intents_descr">Allows the application to encrypt and decrypt text, and access the passwords they have stored in Modern Safe.</string>
 
   <!-- ***************************
        Preferences

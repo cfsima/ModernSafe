@@ -25,13 +25,13 @@
   Sahran https://launchpad.net/~sahran</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">شەخسىي سانلىق مەلۇماتلىرىڭىزنى OI بىخەتەرلىك بىلەن ھەمبەھىرلەيدۇ.</string>
+  <string name="about_comments">شەخسىي سانلىق مەلۇماتلىرىڭىزنى Modern Safe بىلەن ھەمبەھىرلەيدۇ.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI بىخەتەرلىك</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">بۇ كاتېگورىيەگە ئىم بەلگىلەنمىگەن.</string>
   <string name="empty_category">تۈرگە ئايرىلمىغان، تىزىملىك -› قوش نى چېكىڭ.</string>
   <string name="password_lock">قۇلۇپلا</string>
@@ -52,7 +52,7 @@
   <string name="notify_blank_desc">چۈشەندۈرۈش بوش قالمايدۇ</string>
   <string name="notify_blank_name">ئات بوش قالمايدۇ</string>
   <string name="first_time">تۆۋەندە ئىم كىرگۈزۈڭ، بۇنداق بولغاندا ئىم بىخەتەرلىكىنى قوغدىغىلى بولىدۇ.</string>
-  <string name="logoff_explanation">نۆۋەتتە OI بىخەتەرلىككە تىزىمغا كىردىڭىز، باشقا ئەپلەر ئۆزلىرىنىڭ ئىم ۋە شىفىرلاش/شىفىر يېشىش سانلىق مەلۇماتلىرىنى ئىلتىماس قىلالايدۇ. ئىم قۇلۇپىنى كىرگۈزسىڭىز ئاندىن زىيارەت قىلالايسىز.</string>
+  <string name="logoff_explanation">نۆۋەتتە Modern Safe تىزىمغا كىردىڭىز، باشقا ئەپلەر ئۆزلىرىنىڭ ئىم ۋە شىفىرلاش/شىفىر يېشىش سانلىق مەلۇماتلىرىنى ئىلتىماس قىلالايدۇ. ئىم قۇلۇپىنى كىرگۈزسىڭىز ئاندىن زىيارەت قىلالايسىز.</string>
   <string name="remote_ask">باشقا بىر ئەپ ئاساسىي ئىم ئىشلىتىشنى ئىلتىماس قىلدى. ئىمنى كىرگۈزۈپ ئۇنىڭ قۇلۇپىنى ئېچىڭ.</string>
   <string name="categories">كاتېگورىيەلەر</string>
   <string name="category">كاتېگورىيە</string>
@@ -153,10 +153,10 @@
 
   <string name="preferences">تەڭشەكلەر</string>
   <string name="pref_title_external_access">سىرتقى زىيارەتكە يول قويىدۇ</string>
-  <string name="pref_summary_external_access">باشقا ئەپلەرنىڭ OI بىخەتەرلىكنى ئىشلىتىشىگە يول قوي</string>
-  <string name="dialog_title_external_access">OI بىخەتەرلىك: باشقا ئەپلەر زىيارەت ئىلتىماس قىلالايدۇ.</string>
-  <string name="dialog_summary_external_access">باشقا ئەپلەرنىڭ OI بىخەتەرلىكنى ئىشلىتىشىگە يول قويىدۇ.</string>
-  <string name="dialog_comment_external_access">OI بىخەتەرلىكنىڭ تىزىملىك/تەڭشەكلەردىن تەڭشىيەلەيسىز.</string>
+  <string name="pref_summary_external_access">باشقا ئەپلەرنىڭ Modern Safe ئىشلىتىشىگە يول قوي</string>
+  <string name="dialog_title_external_access">Modern Safe: باشقا ئەپلەر زىيارەت ئىلتىماس قىلالايدۇ.</string>
+  <string name="dialog_summary_external_access">باشقا ئەپلەرنىڭ Modern Safe ئىشلىتىشىگە يول قويىدۇ.</string>
+  <string name="dialog_comment_external_access">Modern Safe نىڭ تىزىملىك/تەڭشەكلەردىن تەڭشىيەلەيسىز.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">ئۆزلۈكىدىن قۇلۇپلاش مۆھلىتى</string>
@@ -196,12 +196,12 @@
   <string name="pref_title_export_path">كۆ◆ۈلدىكى چىقىرىش يولى</string>
 
 
-  <string name="intent_decrypt">شىفىر يەش (OI بىخەتەرلىك)</string>
-  <string name="intent_encrypt">شىفىرلاش (OI بىخەتەرلىك)</string>
-  <string name="intent_get_password">ئىم ئۇنتۇلغان (OI بىخەتەرلىك)</string>
-  <string name="intent_set_password">ئىم تەڭشەك  (OI بىخەتەرلىك)</string>
-  <string name="intent_restart_timer">قايتا قوزغىتىش ۋاقتى  (OI بىخەتەرلىك)</string>
-  <string name="open_safe">(OI بىخەتەرلىكنى ئاچ</string>
+  <string name="intent_decrypt">شىفىر يەش (Modern Safe)</string>
+  <string name="intent_encrypt">شىفىرلاش (Modern Safe)</string>
+  <string name="intent_get_password">ئىم ئۇنتۇلغان (Modern Safe)</string>
+  <string name="intent_set_password">ئىم تەڭشەك  (Modern Safe)</string>
+  <string name="intent_restart_timer">قايتا قوزغىتىش ۋاقتى  (Modern Safe)</string>
+  <string name="open_safe">Modern Safe ئاچ</string>
   <string name="lock">قۇلۇپلا</string>
   <string name="continue_text">داۋاملاشتۇر</string>
   <string name="generate_password">ئىم قۇر</string>
@@ -263,10 +263,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">ئاساسىي ئىم زىيارەت</string>
-  <string name="oi_safe_permission_service_descr">ئەپنىڭ ئاساسىي ئىم ئىشلىتىپ شىفىرلاش ۋە شىفىر يېشىشكە يول قويىدۇ. OI بىخەتەرلىك باشقىلارنىڭ ئىشلىتىشىگە يول قويماسلىق كېرەك.</string>
+  <string name="oi_safe_permission_service_descr">ئەپنىڭ ئاساسىي ئىم ئىشلىتىپ شىفىرلاش ۋە شىفىر يېشىشكە يول قويىدۇ. Modern Safe باشقىلارنىڭ ئىشلىتىشىگە يول قويماسلىق كېرەك.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">سانلىق مەلۇمات شىفىرلا ۋە يەش</string>
-  <string name="oi_safe_permission_intents_descr">ئەپنىڭ تېكىستنى شىفىرلىشى ۋە شىفىر يېشىشىگە يول قويىدۇ ھەمدە زىيارەت ئىمنى OI بىخەتەرلىككە ساقلايدۇ.</string>
+  <string name="oi_safe_permission_intents_descr">ئەپنىڭ تېكىستنى شىفىرلىشى ۋە شىفىر يېشىشىگە يول قويىدۇ ھەمدە زىيارەت ئىمنى Modern Safe كە ساقلايدۇ.</string>
 
   <!-- ***************************
        Preferences

@@ -25,13 +25,13 @@
   kenn dhia https://launchpad.net/~kendhia</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">خزن معلوماتك الشخصية مع  حماية OI.</string>
+  <string name="about_comments">خزن معلوماتك الشخصية مع  Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">حماية OI</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">لا توجد أي كلمة مرور حالية لهته الفئة.</string>
   <string name="empty_category">لا توجد أي فئة حالية .رجاءا أضف واحدة عبر القائمة -&gt;أضف</string>
   <string name="password_lock">أغلق</string>
@@ -52,7 +52,7 @@
   <string name="notify_blank_desc">لا يمكن ان تبقى خانة الوصف فارغة.</string>
   <string name="notify_blank_name">لا يمكن أي تبقى خانة الاسم فارغة.</string>
   <string name="first_time">رجاءا قم باخال كلمة سر في الأسفل ، كلمة السر هته تبقي كلمات السر الخاصة بك محمية.</string>
-  <string name="logoff_explanation">انت الان تهم بالدخول الى حماية OI، هذا يعني أن التطبيقات الأخرى بامكانها طلب كلمات السر الخاصة بها و تشفير/فك تفير البيانات. غلق لمنع الدخول الخارجي الى غاية تقوم بكتابة كلمة المرور مرة أخرى.</string>
+  <string name="logoff_explanation">انت الان تهم بالدخول الى Modern Safe، هذا يعني أن التطبيقات الأخرى بامكانها طلب كلمات السر الخاصة بها و تشفير/فك تفير البيانات. غلق لمنع الدخول الخارجي الى غاية تقوم بكتابة كلمة المرور مرة أخرى.</string>
   <string name="remote_ask">تطبيق آخر يطلب كلمة السر الرئيسية لاستعمالها. رجاءا أدخل كلمة السر لفتحها.</string>
   <string name="categories">الفئات</string>
   <string name="category">الفئة</string>
@@ -98,7 +98,7 @@
   <string name="dialog_delete_password_title">أحذف كلمة السر.</string>
   <string name="dialog_delete_password_msg">هل أنت متأكد أنك تود حذف كلمة السر هته ؟</string>
   <string name="change_password">تغيير كلمة السر الرئيسية</string>
-  <string name="chg_pass_explaination">استعمل هته لتغيير كلمة السر لفتح حماية OI .. بياناتك سيتم اعادة تشفيرها مع كلمة السر الجديدة. كلما تكون كلمة السر معقدة أكثر ، بياناتك تكون محمية أكثر.</string>
+  <string name="chg_pass_explaination">استعمل هته لتغيير كلمة السر لفتح Modern Safe .. بياناتك سيتم اعادة تشفيرها مع كلمة السر الجديدة. كلما تكون كلمة السر معقدة أكثر ، بياناتك تكون محمية أكثر.</string>
   <string name="old_password">كلمة المرور القديمة</string>
   <string name="new_password">كلمة مرور جديدة</string>
   <string name="verify_password">التحقق من كلمة المرور</string>
@@ -153,10 +153,10 @@
 
   <string name="preferences">الإعدادات</string>
   <string name="pref_title_external_access">السماح بالدخول الخارجي</string>
-  <string name="pref_summary_external_access">السماح للتطبيقات الأخرى بحماية بياناتك باستعمال حمياة OI</string>
-  <string name="dialog_title_external_access">حماية OI: تطبيق آخر يطلب الدخول.</string>
-  <string name="dialog_summary_external_access">السماح للتطبيقات الأخرى بحماية بياناتك باستعمال حماية OI.</string>
-  <string name="dialog_comment_external_access">يمكن ظبط هذه أيضامن قائمة حماية OI  قائمة/ الاعدادات.</string>
+  <string name="pref_summary_external_access">السماح للتطبيقات الأخرى بحماية بياناتك باستعمال Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe: تطبيق آخر يطلب الدخول.</string>
+  <string name="dialog_summary_external_access">السماح للتطبيقات الأخرى بحماية بياناتك باستعمال Modern Safe.</string>
+  <string name="dialog_comment_external_access">يمكن ظبط هذه أيضامن قائمة Modern Safe  قائمة/ الاعدادات.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">مهلة القفل التلقائي</string>
@@ -196,12 +196,12 @@
   <string name="pref_title_export_path">مسار التصدير الافتراضي</string>
 
 
-  <string name="intent_decrypt">فك التشفير(حماية OI)</string>
-  <string name="intent_encrypt">تشفير (حمياة OI)</string>
-  <string name="intent_get_password">الحصول على كلمة المرور (حماية OI)</string>
-  <string name="intent_set_password">ظبط كلمة المرور (حماية OI)</string>
-  <string name="intent_restart_timer">موقت اعادة التشغيل (حماية OI)</string>
-  <string name="open_safe">فتح حماية OI</string>
+  <string name="intent_decrypt">فك التشفير (Modern Safe)</string>
+  <string name="intent_encrypt">تشفير (Modern Safe)</string>
+  <string name="intent_get_password">الحصول على كلمة المرور (Modern Safe)</string>
+  <string name="intent_set_password">ظبط كلمة المرور (Modern Safe)</string>
+  <string name="intent_restart_timer">موقت اعادة التشغيل (Modern Safe)</string>
+  <string name="open_safe">فتح Modern Safe</string>
   <string name="lock">أغلق</string>
   <string name="continue_text">إستمرار</string>
   <string name="generate_password">توليد كلمة المرور</string>
@@ -263,10 +263,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">الدخول الى كلمة السر الرئيسية.</string>
-  <string name="oi_safe_permission_service_descr">السباح للتطبيق بالدخول االى كلمة المرور الرئيسية لتشفير وفك تشفير .يجب عدم استعمالها ماعدى من طرف حماية OI.</string>
+  <string name="oi_safe_permission_service_descr">السباح للتطبيق بالدخول االى كلمة المرور الرئيسية لتشفير وفك تشفير .يجب عدم استعمالها ماعدى من طرف Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">تشفير وفك تشفير البيانات</string>
-  <string name="oi_safe_permission_intents_descr">السماح للتطبيقات بالتشفير وفك تشفير النصوص، والدخول الى كلمات المرور المحفوظة من طرفهم في حماية OI.</string>
+  <string name="oi_safe_permission_intents_descr">السماح للتطبيقات بالتشفير وفك تشفير النصوص، والدخول الى كلمات المرور المحفوظة من طرفهم في Modern Safe.</string>
 
   <!-- ***************************
        Preferences

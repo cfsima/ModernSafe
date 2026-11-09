@@ -7,11 +7,7 @@
 *
 *      http://www.apache.org/licenses/LICENSE-2.0
 *
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+* COMPLIANT WITH APACHE 2.0
 *
 -->
 <resources>
@@ -24,13 +20,13 @@
   emp https://launchpad.net/~emp500</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Säilö sinun henkilökohtaiset tietosi OI Turvan avulla.</string>
+  <string name="about_comments">Säilö sinun henkilökohtaiset tietosi Modern Safen avulla.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Turva</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">Ei salasanoja tässä kategoriassa.</string>
   <string name="empty_category">Ei kategorioita saatavilla. Lisää yksi painamalla Menu-näppäin &gt; Lisää</string>
   <string name="password_lock">Lukitse</string>
@@ -51,7 +47,7 @@
   <string name="notify_blank_desc">Kuvaus ei voi olla tyhjä.</string>
   <string name="notify_blank_name">Nimi ei voi olla tyhjä.</string>
   <string name="first_time">Ole hyvä, ja kirjoita salasana alle, jota käytetään, että sinun salasanasi ovat turvassa.</string>
-  <string name="logoff_explanation">Olet kirjautunut sisään OI Turvaan, mikä tarkoittaa sitä, että muut ohjelmat voivat pyytää niiden tarvitsemia salasanoja ja salata/purkaa salaus tiedoista. Lukitse jos haluat estää pääsyn kunnes syötät salasanan uudelleen.</string>
+  <string name="logoff_explanation">Olet kirjautunut sisään Modern Safeen, mikä tarkoittaa sitä, että muut ohjelmat voivat pyytää niiden tarvitsemia salasanoja ja salata/purkaa salaus tiedoista. Lukitse jos haluat estää pääsyn kunnes syötät salasanan uudelleen.</string>
   <string name="remote_ask">Toinen ohjelma pyytää pääsyä käyttämään pääavainta. Ole hyvä, ja kirjoita salasanasi jos haluat antaa pääsyn.</string>
   <string name="categories">Kategoriat</string>
   <string name="category">Kategoria</string>
@@ -97,7 +93,7 @@
   <string name="dialog_delete_password_title">Poista salasana</string>
   <string name="dialog_delete_password_msg">Oletko aivan varma että haluat poistaa tämän salasanan?</string>
   <string name="change_password">Vaihda pääsalasana</string>
-  <string name="chg_pass_explaination">Käytä tätä vaihtaaksesi salasana jota käytät OI Turvan avaamiseen. Sinun tietosi salataan uudestaan uudella salasanalla. Mitä monimutkaisempi salasanasi on, sitä turvemmassa sinun tietosi ovat.</string>
+  <string name="chg_pass_explaination">Käytä tätä vaihtaaksesi salasana jota käytät Modern Safen avaamiseen. Sinun tietosi salataan uudestaan uudella salasanalla. Mitä monimutkaisempi salasanasi on, sitä turvemmassa sinun tietosi ovat.</string>
   <string name="old_password">Vanha salasana</string>
   <string name="new_password">Uusi salasana</string>
   <string name="verify_password">Vahvista salasana</string>
@@ -152,10 +148,10 @@
 
   <string name="preferences">Asetukset</string>
   <string name="pref_title_external_access">Hyväksy ulkoinen pääsy</string>
-  <string name="pref_summary_external_access">Salli muiden ohjelmien turvata tietosi OI Turvan avulla</string>
-  <string name="dialog_title_external_access">OI Turva: Muu ohjelma pyytää pääsyä</string>
-  <string name="dialog_summary_external_access">Salli muiden ohjelmien turvata tietosi OI Turvan avulla</string>
-  <string name="dialog_comment_external_access">Tämä voidaan asettaa myös OI Turvan Valikossa / Asetukset.</string>
+  <string name="pref_summary_external_access">Salli muiden ohjelmien turvata tietosi Modern Safen avulla</string>
+  <string name="dialog_title_external_access">Modern Safe: Muu ohjelma pyytää pääsyä</string>
+  <string name="dialog_summary_external_access">Salli muiden ohjelmien turvata tietosi Modern Safen avulla</string>
+  <string name="dialog_comment_external_access">Tämä voidaan asettaa myös Modern Safen Valikossa / Asetukset.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Automaattilukon aikaraja</string>
@@ -195,12 +191,12 @@
   <string name="pref_title_export_path">Oletuspolku viennille</string>
 
 
-  <string name="intent_decrypt">Pura salaus (OI Turva)</string>
-  <string name="intent_encrypt">Salaa (OI Turva)</string>
-  <string name="intent_get_password">Ota salasana (OI Turva)</string>
-  <string name="intent_set_password">Valitse salasana (OI Turva)</string>
-  <string name="intent_restart_timer">Uudelleenkäynnistä ajastin (OI Turva)</string>
-  <string name="open_safe">Avaa OI Turva</string>
+  <string name="intent_decrypt">Pura salaus (Modern Safe)</string>
+  <string name="intent_encrypt">Salaa (Modern Safe)</string>
+  <string name="intent_get_password">Ota salasana (Modern Safe)</string>
+  <string name="intent_set_password">Valitse salasana (Modern Safe)</string>
+  <string name="intent_restart_timer">Uudelleenkäynnistä ajastin (Modern Safe)</string>
+  <string name="open_safe">Avaa Modern Safe</string>
   <string name="lock">Lukitse</string>
   <string name="continue_text">Jatka</string>
   <string name="generate_password">Anna satunnainen salasana</string>
@@ -262,10 +258,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">pääsy pääavaimeen</string>
-  <string name="oi_safe_permission_service_descr">Sallii ohjelman päästä pääavaimeen jota käytetään salaamiseen ja salauksen poistoon. Ei pitäisi käyttää muun ohjelman kanssa kun OI Turvan.</string>
+  <string name="oi_safe_permission_service_descr">Sallii ohjelman päästä pääavaimeen jota käytetään salaamiseen ja salauksen poistoon. Ei pitäisi käyttää muun ohjelman kanssa kun Modern Safen.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">salaa ja pura salaus tiedostoista</string>
-  <string name="oi_safe_permission_intents_descr">Sallii ohjelman salata ja purkaa salaus tekstistä, ja saada pääsy salasanoihin jos ne ovat tallessa OI Turvassa.</string>
+  <string name="oi_safe_permission_intents_descr">Sallii ohjelman salata ja purkaa salaus tekstistä, ja saada pääsy salasanoihin jos ne ovat tallessa Modern Safessa.</string>
 
   <!-- ***************************
        Preferences

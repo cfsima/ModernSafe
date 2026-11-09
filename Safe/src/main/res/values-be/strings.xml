@@ -25,13 +25,13 @@
   OpenIntents devs https://launchpad.net/~openintents-devs</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Store your private data with OI Safe.</string>
+  <string name="about_comments">Store your private data with Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Safe</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">У гэтай катэгорыі няма пароляў.</string>
   <string name="empty_category">Няма ні адной катэгорыі. Дадайце катэгорыю праз Меню-&gt;Дадаць</string>
   <string name="password_lock">Заблакіраваць</string>
@@ -52,7 +52,7 @@
   <string name="notify_blank_desc">Апісанне не можа быць пустым</string>
   <string name="notify_blank_name">Імя не можа быць пустым</string>
   <string name="first_time">Калі ласка, увядзіце ніжэй пароль, які будзе выкарыстоўвацца для забеспячэння бяспекі вашых пароляў.</string>
-  <string name="logoff_explanation">Вы зайшлі ў OI Safe, іншыя прыкладанні могуць атрымліваць свае паролі і шыфраваць/дэшыфвраваць дадзеныя. Заблакіруйце каб пазбегнуць далейшы доступ, пакуль вы не ўвядзіце пароль яшчэ раз.</string>
+  <string name="logoff_explanation">Вы зайшлі ў Modern Safe, іншыя прыкладанні могуць атрымліваць свае паролі і шыфраваць/дэшыфвраваць дадзеныя. Заблакіруйце каб пазбегнуць далейшы доступ, пакуль вы не ўвядзіце пароль яшчэ раз.</string>
   <string name="remote_ask">Другое прыкладанне запрошвае Мастэр Ключ. Калі ласка, увядзіце пароль, каб даць доступ да яго.</string>
   <string name="categories">Катэгорыі</string>
   <string name="category">Катэгорыя</string>
@@ -98,7 +98,7 @@
   <string name="dialog_delete_password_title">Выдаліць пароль</string>
   <string name="dialog_delete_password_msg">Вы ўпэўнены, што жадаеце выдаліць гэты пароль?</string>
   <string name="change_password">Змяніць Мастэр Пароль</string>
-  <string name="chg_pass_explaination">Выкарыстоўвайце для змянення пароля, якім вы адкрываеце OI Safe. Вашы дадзеныя будуць зашыфраваны яшчэ раз новым паролем. Чым больш складаны ваш пароль, тым у большай бяспецы будуць знаходзіцца вашы дадзеныя.</string>
+  <string name="chg_pass_explaination">Выкарыстоўвайце для змянення пароля, якім вы адкрываеце Modern Safe. Вашы дадзеныя будуць зашыфраваны яшчэ раз новым паролем. Чым больш складаны ваш пароль, тым у большай бяспецы будуць знаходзіцца вашы дадзеныя.</string>
   <string name="old_password">Стары пароль</string>
   <string name="new_password">Новы пароль</string>
   <string name="verify_password">Праверачны пароль</string>
@@ -153,10 +153,10 @@
 
   <string name="preferences">Наладкі</string>
   <string name="pref_title_external_access">Дазволіць знешні доступ</string>
-  <string name="pref_summary_external_access">Дазволіць іншым прыкладанням шыфраваць вашы дадзеныя з дапамогай OI Safe</string>
-  <string name="dialog_title_external_access">OI Safe: іншае прыкладанне запрошвае доступ.</string>
-  <string name="dialog_summary_external_access">Дазволіць іншым прыкладанням шыфраваць вашы дадзеныя з дапамогай OI Safe.</string>
-  <string name="dialog_comment_external_access">Гэта таксама магчыма усталяваць у OI Safe Меню / Наладкі</string>
+  <string name="pref_summary_external_access">Дазволіць іншым прыкладанням шыфраваць вашы дадзеныя з дапамогай Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe: іншае прыкладанне запрошвае доступ.</string>
+  <string name="dialog_summary_external_access">Дазволіць іншым прыкладанням шыфраваць вашы дадзеныя з дапамогай Modern Safe.</string>
+  <string name="dialog_comment_external_access">Гэта таксама магчыма усталяваць у Modern Safe Меню / Наладкі</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Час аўтаблакіроўкі</string>
@@ -196,12 +196,12 @@
   <string name="pref_title_export_path">Шлях экспарту па змаўчанні</string>
 
 
-  <string name="intent_decrypt">Дэшыфраваць (OI Safe)</string>
-  <string name="intent_encrypt">Зашыфраваць (OI Safe)</string>
-  <string name="intent_get_password">Атрымаць пароль (OI Safe)</string>
-  <string name="intent_set_password">Назначыць пароль (OI Safe)</string>
-  <string name="intent_restart_timer">Абнавіць таймер (OI Safe)</string>
-  <string name="open_safe">Адкрыць OI Safe</string>
+  <string name="intent_decrypt">Дэшыфраваць (Modern Safe)</string>
+  <string name="intent_encrypt">Зашыфраваць (Modern Safe)</string>
+  <string name="intent_get_password">Атрымаць пароль (Modern Safe)</string>
+  <string name="intent_set_password">Назначыць пароль (Modern Safe)</string>
+  <string name="intent_restart_timer">Абнавіць таймер (Modern Safe)</string>
+  <string name="open_safe">Адкрыць Modern Safe</string>
   <string name="lock">Заблакіраваць</string>
   <string name="continue_text">Працягнуць</string>
   <string name="generate_password">Згенераваць пароль</string>
@@ -263,10 +263,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">доступ да мастэр паролю</string>
-  <string name="oi_safe_permission_service_descr">Дазваляе прыкладанню атрымліваць доступ да Мастэр Ключу, выкарыстоўваемаму для шыфравання і дэшыфравання. Павінна выкарыстоўвацца толькі OI Safe.</string>
+  <string name="oi_safe_permission_service_descr">Дазваляе прыкладанню атрымліваць доступ да Мастэр Ключу, выкарыстоўваемаму для шыфравання і дэшыфравання. Павінна выкарыстоўвацца толькі Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">кадаваць і дэкадаваць дадзеныя</string>
-  <string name="oi_safe_permission_intents_descr">Дазваляе прыкладанню кадаваць, дэкадаваць тэкст, і атрымліваць доступ да пароляў, якія захоўваюцца ў OI Safe.</string>
+  <string name="oi_safe_permission_intents_descr">Дазваляе прыкладанню кадаваць, дэкадаваць тэкст, і атрымліваць доступ да пароляў, якія захоўваюцца ў Modern Safe.</string>
 
   <!-- ***************************
        Preferences

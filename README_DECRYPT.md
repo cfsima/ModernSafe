@@ -1,6 +1,6 @@
-# OI Safe Decryption Utility
+# ModernSafe Decryption Utility
 
-This utility allows you to decrypt OI Safe backup files (`.xml`) on your computer.
+This utility allows you to decrypt ModernSafe and legacy OI Safe backup files (`.xml`) on your computer.
 
 ## Requirements
 
@@ -23,7 +23,7 @@ This utility allows you to decrypt OI Safe backup files (`.xml`) on your compute
     ```bash
     python decrypt_gui.py
     ```
-2.  **Select Backup File**: Click "Browse..." and select your OI Safe XML backup file.
+2.  **Select Backup File**: Click "Browse..." and select your ModernSafe or OI Safe XML backup file.
 3.  **Enter Password**: Type your Master Password.
 4.  **Decrypt**: Click the "Decrypt" button.
 5.  **View Results**: The decrypted entries will appear in the text area below.
@@ -32,8 +32,8 @@ This utility allows you to decrypt OI Safe backup files (`.xml`) on your compute
 ## Troubleshooting
 
 *   **"ModuleNotFoundError: No module named 'Crypto'"**: Run `pip install pycryptodome`.
-*   **"Decryption Failed: Incorrect Password or Corrupted Data"**: Ensure you are using the correct Master Password. Also, ensure the backup file is a valid OI Safe XML export.
-*   **"Salt not found in XML"**: The selected file does not appear to be a valid OI Safe backup.
+*   **"Decryption Failed: Incorrect Password or Corrupted Data"**: Ensure you are using the correct Master Password. Also, ensure the backup file is a valid ModernSafe or OI Safe XML export.
+*   **"Salt not found in XML"**: The selected file does not appear to be a valid ModernSafe or OI Safe backup.
 
 ## Security Note
 

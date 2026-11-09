@@ -25,13 +25,13 @@
   OpenIntents devs https://launchpad.net/~openintents-devs</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Αποθηκέυστε τα προσωπικά σας δεδομένα με το OI Κιβώτιο.</string>
+  <string name="about_comments">Αποθηκέυστε τα προσωπικά σας δεδομένα με το Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Κιβώτιο</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">Κανένας παρεχόμενος κωδικός για αυτή την κατηγορία.</string>
   <string name="empty_category">Καμία παρεχόμενη κατηγορία.Παρακαλώ προσθέστε μια από το Μενού-&gt;Προσθήκη</string>
   <string name="password_lock">Κλείδωμα</string>
@@ -52,7 +52,7 @@
   <string name="notify_blank_desc">Η περιγραφή δε μπορεί να είναι κενή</string>
   <string name="notify_blank_name">Το όνομα δε μπορεί να είναι κενό</string>
   <string name="first_time">Παρακαλώ εισάγετε έναν κωδικό παρακάτω, που θα χρησιμοποιείται για να φυλά με ασφάλεια τους υπόλοιπους κωδικούς σας.</string>
-  <string name="logoff_explanation">Είστε αυτή τη στιγμή συνδεδεμένος στο OI Κιβώτιο. που σημαίνει οτι άλλες εφαρμογές μπορεί να ζητήσουν τους κωδικούς τους για την αποκρυπτογράφηση/κρυπτογράφηση δεδομένων. Κλειδώστε για να αποφύγετε επιπλέον προσβάσεις έως ότου πληκτρολογήσετε τον κωδικό σας ξανά.</string>
+  <string name="logoff_explanation">Είστε αυτή τη στιγμή συνδεδεμένος στο Modern Safe. που σημαίνει οτι άλλες εφαρμογές μπορεί να ζητήσουν τους κωδικούς τους για την αποκρυπτογράφηση/κρυπτογράφηση δεδομένων. Κλειδώστε για να αποφύγετε επιπλέον προσβάσεις έως ότου πληκτρολογήσετε τον κωδικό σας ξανά.</string>
   <string name="remote_ask">Ακόμα μια εφαρμογή ζητά τη χρήση του κυρίως κωδικού. Παρακαλώ εισάγετε τον κωδικό σας για να ξεκλειδωθεί.</string>
   <string name="categories">Κατηγορίες</string>
   <string name="category">Κατηγορία</string>
@@ -98,7 +98,7 @@
   <string name="dialog_delete_password_title">Διαγραφή Κωδικού</string>
   <string name="dialog_delete_password_msg">Είστε σίγουρος οτι θέλετε να διαγράωετε αυτό τον κωδικό;</string>
   <string name="change_password">Αλλαγή Κυρίως Κωδικού</string>
-  <string name="chg_pass_explaination">Χρησιμοποιήστε αυτό για να αλλάξετε τον κωδικό για το ξεκλείδωμα του OI Κιβώτιο. Τα δεδομένα σας θα επανακρυπτογραφηθούν με το νέο κωδικό. Όσο πιο σύνθετος είναι ο κωδικός σας, τόσο πιο ασφαλή θα είναι τα δεδομένα σας.</string>
+  <string name="chg_pass_explaination">Χρησιμοποιήστε αυτό για να αλλάξετε τον κωδικό για το ξεκλείδωμα του Modern Safe. Τα δεδομένα σας θα επανακρυπτογραφηθούν με το νέο κωδικό. Όσο πιο σύνθετος είναι ο κωδικός σας, τόσο πιο ασφαλή θα είναι τα δεδομένα σας.</string>
   <string name="old_password">Παλαιός κωδικός</string>
   <string name="new_password">Νέος κωδικός</string>
   <string name="verify_password">Επαλήθευση κωδικού</string>
@@ -153,10 +153,10 @@
 
   <string name="preferences">Ρυθμίσεις</string>
   <string name="pref_title_external_access">Να επιτρέπεται η εξωτερική πρόσβαση</string>
-  <string name="pref_summary_external_access">Να επιτρέπονται άλλες εφαρμογές να ασφαλίζουν τα δεδομένα σας με το OI Κιβώτιο</string>
-  <string name="dialog_title_external_access">ΟΙ Κιβώτιο: Ακόμα μια εφαρμογή ζητά πρόσβαση.</string>
-  <string name="dialog_summary_external_access">Να επιτρέπονται άλλες εφαρμογές να ασφαλίζουν τα δεδομένα σας με το OI Κιβώτιο.</string>
-  <string name="dialog_comment_external_access">Αυτό μπορεί επίσης να οριστεί στο Μενού / Ρυθμίσεις του OI Safe.</string>
+  <string name="pref_summary_external_access">Να επιτρέπονται άλλες εφαρμογές να ασφαλίζουν τα δεδομένα σας με το Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe: Ακόμα μια εφαρμογή ζητά πρόσβαση.</string>
+  <string name="dialog_summary_external_access">Να επιτρέπονται άλλες εφαρμογές να ασφαλίζουν τα δεδομένα σας με το Modern Safe.</string>
+  <string name="dialog_comment_external_access">Αυτό μπορεί επίσης να οριστεί στο Μενού / Ρυθμίσεις του Modern Safe.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Αυτόματο όριο χρόνου κλειδώματος</string>
@@ -196,12 +196,12 @@
   <string name="pref_title_export_path">Προεπιλεγμένη διαδρομή εξαγωγής</string>
 
 
-  <string name="intent_decrypt">Αποκρυπτογράφηση (OI Safe)</string>
-  <string name="intent_encrypt">Κρυπτογράφηση (OI Κιβώτιο)</string>
-  <string name="intent_get_password">Λήψη Κωδικού (OI Κιβώτιο)</string>
-  <string name="intent_set_password">Ορισμός Κωδικού (OI Κιβώτιο)</string>
-  <string name="intent_restart_timer">Επανεκκίνηση χρονομετρητή (OI Κιβώτιο)</string>
-  <string name="open_safe">Άνοιγμα OI Κιβώτιο</string>
+  <string name="intent_decrypt">Αποκρυπτογράφηση (Modern Safe)</string>
+  <string name="intent_encrypt">Κρυπτογράφηση (Modern Safe)</string>
+  <string name="intent_get_password">Λήψη Κωδικού (Modern Safe)</string>
+  <string name="intent_set_password">Ορισμός Κωδικού (Modern Safe)</string>
+  <string name="intent_restart_timer">Επανεκκίνηση χρονομετρητή (Modern Safe)</string>
+  <string name="open_safe">Άνοιγμα Modern Safe</string>
   <string name="lock">Κλείδωμα</string>
   <string name="continue_text">Συνέχεια</string>
   <string name="generate_password">Δημιουργία Κωδικού</string>
@@ -263,10 +263,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">πρόσβαση του κυρίως κωδικού</string>
-  <string name="oi_safe_permission_service_descr">Επιτρέπει στην εφαρμογή να έχει πρόσβαση στο κύριο κλειδί που χρησιμοποείται για κρυπτογράφηση και αποκρυπτογράφηση. Δεν πρέπει ποτέ να χρησιμοποιηθεί εκτός από το OI Κιβώτιο.</string>
+  <string name="oi_safe_permission_service_descr">Επιτρέπει στην εφαρμογή να έχει πρόσβαση στο κύριο κλειδί που χρησιμοποείται για κρυπτογράφηση και αποκρυπτογράφηση. Δεν πρέπει ποτέ να χρησιμοποιηθεί εκτός από το Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">κρυπτογράφηση και αποκρυπτογράφηση δεδομένων</string>
-  <string name="oi_safe_permission_intents_descr">Επιτρέπει την εφαρμογή να κρυπτογραφεί και να αποκρυπτογραφεί κείμενο και να αποκτά πρόσβαση στους κωδικούς που είναι αποθηκευμένοι στο OI Safe.</string>
+  <string name="oi_safe_permission_intents_descr">Επιτρέπει την εφαρμογή να κρυπτογραφεί και να αποκρυπτογραφεί κείμενο και να αποκτά πρόσβαση στους κωδικούς που είναι αποθηκευμένοι στο Modern Safe.</string>
 
   <!-- ***************************
        Preferences

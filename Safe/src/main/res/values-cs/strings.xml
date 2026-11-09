@@ -27,13 +27,13 @@
   clever_fox https://launchpad.net/~clever-fox</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Uložte si soukromá data s OI Sejf.</string>
+  <string name="about_comments">Uložte si soukromá data s Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Sejf</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">V této kategorii nejsou žádná hesla.</string>
   <string name="empty_category">Neexistují žádné kategorie. Přidejte prosím jednu pomocí Menu-&gt;Přidat</string>
   <string name="password_lock">Zamknout</string>
@@ -54,7 +54,7 @@
   <string name="notify_blank_desc">Popis nemůže být prázdný</string>
   <string name="notify_blank_name">Jméno nemůže být prázdné</string>
   <string name="first_time">Níže vložte prosím heslo, které bude použito na uchování vašich hesel v bezpečí.</string>
-  <string name="logoff_explanation">V současné době jste přihlášen/a do OI Sejfu, což znamená, že ostatní aplikace mohou požadovat jejich hesla nebo šifrovat/dešifrovat data. Zamkněte aplikaci pro znemožnění dalších přístupů, dokud znovu nevložíte své heslo.</string>
+  <string name="logoff_explanation">V současné době jste přihlášen/a do Modern Safe, což znamená, že ostatní aplikace mohou požadovat jejich hesla nebo šifrovat/dešifrovat data. Zamkněte aplikaci pro znemožnění dalších přístupů, dokud znovu nevložíte své heslo.</string>
   <string name="remote_ask">Jiná aplikace požaduje použít hlavní klíč. Vložte prosím své heslo pro jeho odemčení.</string>
   <string name="categories">Kategorie</string>
   <string name="category">Kategorie</string>
@@ -100,7 +100,7 @@
   <string name="dialog_delete_password_title">Odstranit heslo</string>
   <string name="dialog_delete_password_msg">Opravdu chcete odstranit toto heslo?</string>
   <string name="change_password">Změnit hlavní heslo</string>
-  <string name="chg_pass_explaination">Použijte toto pro změnu hesla, které používáte na odemčení OI Sejfu. Vaše data budou znovu zašifrována pomocí nového hesla. Čím složitější je nové heslo, tím bezpečnější budou data.</string>
+  <string name="chg_pass_explaination">Použijte toto pro změnu hesla, které používáte na odemčení Modern Safe. Vaše data budou znovu zašifrována pomocí nového hesla. Čím složitější je nové heslo, tím bezpečnější budou data.</string>
   <string name="old_password">Staré heslo</string>
   <string name="new_password">Nové heslo</string>
   <string name="verify_password">Oveřit heslo</string>
@@ -155,16 +155,16 @@
 
   <string name="preferences">Nastavení</string>
   <string name="pref_title_external_access">Povolit vnější přístup</string>
-  <string name="pref_summary_external_access">Povolit ostatním aplikacím zabezpečovat vaše data s OI Sejfem</string>
-  <string name="dialog_title_external_access">OI Sejf: Jiná aplikace požaduje přístup.</string>
-  <string name="dialog_summary_external_access">Povolit ostatním aplikacím uchovávat vaše data v OI Sejfu.</string>
-  <string name="dialog_comment_external_access">Toto může být nastaveno také v menu OI Sejfu / Nastavení.</string>
+  <string name="pref_summary_external_access">Povolit ostatním aplikacím zabezpečovat vaše data s Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe: Jiná aplikace požaduje přístup.</string>
+  <string name="dialog_summary_external_access">Povolit ostatním aplikacím uchovávat vaše data v Modern Safe.</string>
+  <string name="dialog_comment_external_access">Toto může být nastaveno také v menu Modern Safe / Nastavení.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Automaticky uzamknout za</string>
 
   <!-- Preference summary for auto lock timeout -->
-  <string name="pref_summary_lock_timeout">Počet minut, než je OI Sejf uzamčen</string>
+  <string name="pref_summary_lock_timeout">Počet minut, než je Modern Safe uzamčen</string>
 
   <string name="pref_dialog_title_lock_timeout">Automaticky uzamknout za</string>
 
@@ -198,12 +198,12 @@
   <string name="pref_title_export_path">Výchozí exportní soubor</string>
 
 
-  <string name="intent_decrypt">Dešifrovat (OI Sejf)</string>
-  <string name="intent_encrypt">Zašifrovat (OI Sejf)</string>
-  <string name="intent_get_password">Získat heslo (OI Sejf)</string>
-  <string name="intent_set_password">Nastavit heslo (OI Sejf)</string>
-  <string name="intent_restart_timer">Restartovat časovač (OI Sejf)</string>
-  <string name="open_safe">Otevřít OI Sejf</string>
+  <string name="intent_decrypt">Dešifrovat (Modern Safe)</string>
+  <string name="intent_encrypt">Zašifrovat (Modern Safe)</string>
+  <string name="intent_get_password">Získat heslo (Modern Safe)</string>
+  <string name="intent_set_password">Nastavit heslo (Modern Safe)</string>
+  <string name="intent_restart_timer">Restartovat časovač (Modern Safe)</string>
+  <string name="open_safe">Otevřít Modern Safe</string>
   <string name="lock">Zamknout</string>
   <string name="continue_text">Pokračovat</string>
   <string name="generate_password">Vygenerovat heslo</string>
@@ -265,10 +265,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">přistupovat ke hlavnímu heslu</string>
-  <string name="oi_safe_permission_service_descr">Povoluje aplikaci přistupovat k hlavnímu klíči použitému pro šifrování. Nemělo by být nikdy použito kromě OI Sejfu.</string>
+  <string name="oi_safe_permission_service_descr">Povoluje aplikaci přistupovat k hlavnímu klíči použitému pro šifrování. Nemělo by být nikdy použito kromě Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">šifrovat a dešifrovat data</string>
-  <string name="oi_safe_permission_intents_descr">Povoluje aplikaci šifrovat a dešifrovat text a přistupovat k heslům, které má uložené v OI Sejfu.</string>
+  <string name="oi_safe_permission_intents_descr">Povoluje aplikaci šifrovat a dešifrovat text a přistupovat k heslům, které má uložené v Modern Safe.</string>
 
   <!-- ***************************
        Preferences

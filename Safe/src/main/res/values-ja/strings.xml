@@ -27,13 +27,13 @@
   thebowseat https://launchpad.net/~takeshimochida</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">OI 金庫 でプライベートなデータを保管します。</string>
+  <string name="about_comments">Modern Safe でプライベートなデータを保管します。</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI 金庫</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">このカテゴリーのパスワードはありません。</string>
   <string name="empty_category">カテゴリーがありません。メニュー-&gt;追加 でカテゴリーを追加してください。</string>
   <string name="password_lock">ロック</string>
@@ -54,7 +54,7 @@
   <string name="notify_blank_desc">説明は空白にできません</string>
   <string name="notify_blank_name">名前は空白にできません</string>
   <string name="first_time">パスワードを安全にするために使用されるパスワードを下に入力してください。</string>
-  <string name="logoff_explanation">あなたは現在 OI 金庫 にログインしており、他のアプリケーションがパスワードをリクエストしてデータを暗号化・解読できるということです。サイドパスワードを入力するまでアクセスを防ぐためにはロックしてください。</string>
+  <string name="logoff_explanation">あなたは現在 Modern Safe にログインしており、他のアプリケーションがパスワードをリクエストしてデータを暗号化・解読できるということです。サイドパスワードを入力するまでアクセスを防ぐためにはロックしてください。</string>
   <string name="remote_ask">別のアプリケーションがマスターキーの使用をリクエストしています。アンロックするにはパスワードを入力してください。</string>
   <string name="categories">カテゴリー</string>
   <string name="category">カテゴリー</string>
@@ -100,7 +100,7 @@
   <string name="dialog_delete_password_title">パスワードを削除</string>
   <string name="dialog_delete_password_msg">このパスワードを削除してもいいですか？</string>
   <string name="change_password">マスターパスワードを変更</string>
-  <string name="chg_pass_explaination">これを使って OI 金庫 をアンロックするパスワードを変更してください。データは新しいパスワードで暗号化されます。パスワードが複雑なほど、データは安全になります。</string>
+  <string name="chg_pass_explaination">これを使って Modern Safe をアンロックするパスワードを変更してください。データは新しいパスワードで暗号化されます。パスワードが複雑なほど、データは安全になります。</string>
   <string name="old_password">今のパスワード</string>
   <string name="new_password">新しいパスワード</string>
   <string name="verify_password">確認用パスワード</string>
@@ -155,10 +155,10 @@
 
   <string name="preferences">設定</string>
   <string name="pref_title_external_access">外部からのアクセスを許可する</string>
-  <string name="pref_summary_external_access">他のアプリケーションが OI 金庫 でデータを保護するのを許可する</string>
-  <string name="dialog_title_external_access">OI 金庫： 別のアプリケーションがアクセスをリクエストしています。</string>
-  <string name="dialog_summary_external_access">他のアプリケーションが OI 金庫 でデータを保護するのを許可する。</string>
-  <string name="dialog_comment_external_access">これは OI 金庫 の メニュー/設定 でも設定できます。</string>
+  <string name="pref_summary_external_access">他のアプリケーションが Modern Safe でデータを保護するのを許可する</string>
+  <string name="dialog_title_external_access">Modern Safe： 別のアプリケーションがアクセスをリクエストしています。</string>
+  <string name="dialog_summary_external_access">他のアプリケーションが Modern Safe でデータを保護するのを許可する。</string>
+  <string name="dialog_comment_external_access">これは Modern Safe の メニュー/設定 でも設定できます。</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">オートロックのタイムアウト</string>
@@ -198,12 +198,12 @@
   <string name="pref_title_export_path">デフォルトエクスポート場所</string>
 
 
-  <string name="intent_decrypt">複合化 (OI Safe)</string>
-  <string name="intent_encrypt">暗号化 (OI Safe)</string>
-  <string name="intent_get_password">パスワードを取得 (OI Safe)</string>
-  <string name="intent_set_password">パスワードを設定 (OI Safe)</string>
-  <string name="intent_restart_timer">タイマーの再実行 (OI Safe)</string>
-  <string name="open_safe">OI Safeを開く</string>
+  <string name="intent_decrypt">複合化 (Modern Safe)</string>
+  <string name="intent_encrypt">暗号化 (Modern Safe)</string>
+  <string name="intent_get_password">パスワードを取得 (Modern Safe)</string>
+  <string name="intent_set_password">パスワードを設定 (Modern Safe)</string>
+  <string name="intent_restart_timer">タイマーの再実行 (Modern Safe)</string>
+  <string name="open_safe">Modern Safeを開く</string>
   <string name="lock">ロック</string>
   <string name="continue_text">続ける</string>
   <string name="generate_password">パスワードを生成</string>
@@ -265,10 +265,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">マスターパスワードへのアクセス</string>
-  <string name="oi_safe_permission_service_descr">アプリケーションが暗号化と解読に使用されるマスターキーをアクセスできるように、許可します。 OI 金庫 以外は絶対に使用しないでください。</string>
+  <string name="oi_safe_permission_service_descr">アプリケーションが暗号化と解読に使用されるマスターキーをアクセスできるように、許可します。 Modern Safe 以外は絶対に使用しないでください。</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">暗号化・複合化データ</string>
-  <string name="oi_safe_permission_intents_descr">他のアプリケーションがテキストを暗号化・複合化し、OI Safeにより保存されたパスワードにアクセスする事を許可する。</string>
+  <string name="oi_safe_permission_intents_descr">他のアプリケーションがテキストを暗号化・複合化し、Modern Safeにより保存されたパスワードにアクセスする事を許可する。</string>
 
   <!-- ***************************
        Preferences

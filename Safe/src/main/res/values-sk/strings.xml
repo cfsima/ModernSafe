@@ -26,13 +26,13 @@
   OpenIntents devs https://launchpad.net/~openintents-devs</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Uložte svoje osobné údaje s OI Trezor.</string>
+  <string name="about_comments">Uložte svoje osobné údaje s Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Trezor</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">V súčastnosti nie sú žiadne heslá pre túto kategóriu.</string>
   <string name="empty_category">Niesú žiadne kategórie. Prosím pridejte nejakú pomocou Menu-&gt;Pridať</string>
   <string name="password_lock">Uzamknúť</string>
@@ -53,7 +53,7 @@
   <string name="notify_blank_desc">Popis nesmie byť prázdny</string>
   <string name="notify_blank_name">Meno nesmie byť prázdne</string>
   <string name="first_time">Prosím dole vložte heslo, ktoré bude použité na uchovanie vašich hesiel v bezpečí.</string>
-  <string name="logoff_explanation">Práve ste prihlásení do OI Trezoru, to znamená že ostatné aplikácie môžu požiadať o svoje heslá a šifrovať/dešifrovať údaje. Uzamknite pre zabránenie ďalšieho prístupu, až kým nezadáte svoje heslo znovu.</string>
+  <string name="logoff_explanation">Práve ste prihlásení do Modern Safe, to znamená že ostatné aplikácie môžu požiadať o svoje heslá a šifrovať/dešifrovať údaje. Uzamknite pre zabránenie ďalšieho prístupu, až kým nezadáte svoje heslo znovu.</string>
   <string name="remote_ask">Iná aplikácia žiada o použitie hlavného kľúča. Prosím napíšte svoje heslo pre odomknutie.</string>
   <string name="categories">Kategórie</string>
   <string name="category">Kategória</string>
@@ -99,7 +99,7 @@
   <string name="dialog_delete_password_title">Zmazať Heslo</string>
   <string name="dialog_delete_password_msg">Naozaj chcete zmazať toto heslo?</string>
   <string name="change_password">Zmeniť Hlavné Heslo</string>
-  <string name="chg_pass_explaination">Použite toto pre zmenu hesla ktoré používate pre odomknute OI Trezoru. Vaše údaje budú znovu zašifrované s novým heslom. Čím zložitejšie je heslo, tým bezečnejšie sú vaše dáta uložené.</string>
+  <string name="chg_pass_explaination">Použite toto pre zmenu hesla ktoré používate pre odomknutie Modern Safe. Vaše údaje budú znovu zašifrované s novým heslom. Čím zložitejšie je heslo, tým bezečnejšie sú vaše dáta uložené.</string>
   <string name="old_password">Staré heslo</string>
   <string name="new_password">Nové heslo</string>
   <string name="verify_password">Overiť heslo</string>
@@ -154,10 +154,10 @@
 
   <string name="preferences">Nastavenia</string>
   <string name="pref_title_external_access">Povoliť externý prístup</string>
-  <string name="pref_summary_external_access">Povoliť ostatným aplikáciam zabezpečiť vaše údaje s OI Trezorom.</string>
-  <string name="dialog_title_external_access">OI Trezor: Ďalšia žiadosť o prístup aplikácie.</string>
-  <string name="dialog_summary_external_access">Povoliť ostatným aplikáciam zabezpečiť vaše údaje s OI Trezorom.</string>
-  <string name="dialog_comment_external_access">Toto môže byť taktiež nastavené v Menu OI Trezora / Nastavenia.</string>
+  <string name="pref_summary_external_access">Povoliť ostatným aplikáciam zabezpečiť vaše údaje s Modern Safe.</string>
+  <string name="dialog_title_external_access">Modern Safe: Ďalšia žiadosť o prístup aplikácie.</string>
+  <string name="dialog_summary_external_access">Povoliť ostatným aplikáciam zabezpečiť vaše údaje s Modern Safe.</string>
+  <string name="dialog_comment_external_access">Toto môže byť taktiež nastavené v Menu Modern Safe / Nastavenia.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Prestávka automatického uzamknutia</string>
@@ -197,12 +197,12 @@
   <string name="pref_title_export_path">Predvolená cesta exportu</string>
 
 
-  <string name="intent_decrypt">Dešifrovať (OI Trezor)</string>
-  <string name="intent_encrypt">Šifrovať (OI Trezor)</string>
-  <string name="intent_get_password">Získať heslo (OI Trezor)</string>
-  <string name="intent_set_password">Zvoliť heslo (OI Trezor)</string>
-  <string name="intent_restart_timer">Reštartovať časovač (OI Trezor)</string>
-  <string name="open_safe">Otvoriť OI Trezor</string>
+  <string name="intent_decrypt">Dešifrovať (Modern Safe)</string>
+  <string name="intent_encrypt">Šifrovať (Modern Safe)</string>
+  <string name="intent_get_password">Získať heslo (Modern Safe)</string>
+  <string name="intent_set_password">Zvoliť heslo (Modern Safe)</string>
+  <string name="intent_restart_timer">Reštartovať časovač (Modern Safe)</string>
+  <string name="open_safe">Otvoriť Modern Safe</string>
   <string name="lock">Uzamknúť</string>
   <string name="continue_text">Pokračovať</string>
   <string name="generate_password">Generovať Heslo</string>
@@ -264,10 +264,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">prístup k hlavnému heslu</string>
-  <string name="oi_safe_permission_service_descr">Povolí aplikácii pristupovať k hlavnému heslu použitému pre šifrovanie a dešifrovanie. Nemalo by byť nikdy použité okrem OI Trezoru.</string>
+  <string name="oi_safe_permission_service_descr">Povolí aplikácii pristupovať k hlavnému heslu použitému pre šifrovanie a dešifrovanie. Nemalo by byť nikdy použité okrem Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">šifrovať a dešifrovať údaje</string>
-  <string name="oi_safe_permission_intents_descr">Povolí aplikácii šifrovať a dešifrovať text, a pristupovať k heslám ktoré majú uložené v OI Trezore.</string>
+  <string name="oi_safe_permission_intents_descr">Povolí aplikácii šifrovať a dešifrovať text, a pristupovať k heslám ktoré majú uložené v Modern Safe.</string>
 
   <!-- ***************************
        Preferences

@@ -27,13 +27,13 @@
   happynawani https://launchpad.net/~happynawani</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">अपना निजी डाटा को रकें OI सेफ के साथ.</string>
+  <string name="about_comments">अपना निजी डाटा को रकें Modern Safe के साथ.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI सुरक्षित</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">इस श्रेणी के लिए कोई पासवर्ड उपलब्ध नहीं है</string>
   <string name="empty_category">कोई श्रेणी उपलब्ध नहीं| कृपया सूची द्वारा जोड़ें-&gt;Add</string>
   <string name="password_lock">बंद करें</string>
@@ -54,7 +54,7 @@
   <string name="notify_blank_desc">विवरण खाली नहीं हो सकता</string>
   <string name="notify_blank_name">नाम खाली नहीं हो सकता</string>
   <string name="first_time">कृपया नीचे एक पासवर्ड डालें, जो आपके पासवर्डों को सुरक्षित रखने के लिए प्रयोग होगा</string>
-  <string name="logoff_explanation">अभी आप ओअई सेफ में लोग इन हैं, अर्थात अन्य अनुप्रयोग अपने पासवर्ड मांग सकते हैं और डाटा को गूढ़/विगूढ़ कर सकते हैं| आप पासवर्ड फिर से टाइप ना करें तब तक आगे पहुँच रोकने के लिए लॉक करें</string>
+  <string name="logoff_explanation">अभी आप Modern Safe में लोग इन हैं, अर्थात अन्य अनुप्रयोग अपने पासवर्ड मांग सकते हैं और डाटा को गूढ़/विगूढ़ कर सकते हैं| आप पासवर्ड फिर से टाइप ना करें तब तक आगे पहुँच रोकने के लिए लॉक करें</string>
   <string name="remote_ask">दूसरा अनुप्रयोग मुख्या पासवर्ड को इस्तेमाल करने कि अनुमति मांग रहा है| कृपया अपना पासवर्ड लिखे</string>
   <string name="categories">श्रेणी</string>
   <string name="category">श्रेणी</string>
@@ -100,7 +100,7 @@
   <string name="dialog_delete_password_title">पासवर्ड हटाएँ</string>
   <string name="dialog_delete_password_msg">क्या आप सचमुच इस पासवर्ड को हटाना चाहते हैं?</string>
   <string name="change_password">मुख्य पासवर्ड बदलिए</string>
-  <string name="chg_pass_explaination">इसका इस्तेमाल आप ओई सेफ के पासवर्ड को बदलने के लिए कर सकते हैं| आपका डाटा फिरसे गोपनीय कर दिया जायगा| जितना जटिल आपका पासवर्ड होगा, उतना ही आपका सुरक्षित रहेगा</string>
+  <string name="chg_pass_explaination">इसका इस्तेमाल आप Modern Safe के पासवर्ड को बदलने के लिए कर सकते हैं| आपका डाटा फिरसे गोपनीय कर दिया जायगा| जितना जटिल आपका पासवर्ड होगा, उतना ही आपका सुरक्षित रहेगा</string>
   <string name="old_password">पुराना पासवर्ड</string>
   <string name="new_password">नया पासवर्ड</string>
   <string name="verify_password">पासवर्ड सत्यापित करे</string>
@@ -156,9 +156,9 @@
   <string name="preferences">सेटिंग्स</string>
   <string name="pref_title_external_access">बाहरी उपयोग प्रदान दे</string>
   <string name="pref_summary_external_access">दूसरे अनुप्रयोग को आपका डाटा सुरक्षित करने कि अनुमति दें</string>
-  <string name="dialog_title_external_access">ओई सेफ: दूसरा अनुप्रयोग पहुँचने कि अनुमति मांग रहा है</string>
+  <string name="dialog_title_external_access">Modern Safe: दूसरा अनुप्रयोग पहुँचने कि अनुमति मांग रहा है</string>
   <string name="dialog_summary_external_access">दूसरी अनुप्रयोग को आपका डाटा सुरक्षित करने कि अनुमति दें</string>
-  <string name="dialog_comment_external_access">यह ओई सेफ कि मेनू/सेत्तिंग्स से भी बदला जा सकता है</string>
+  <string name="dialog_comment_external_access">यह Modern Safe कि मेनू/सेत्तिंग्स से भी बदला जा सकता है</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">अपने आप लोकक करने का समये</string>
@@ -198,12 +198,12 @@
   <string name="pref_title_export_path">डिफ़ॉल्ट निर्यात पाथ</string>
 
 
-  <string name="intent_decrypt">विकोड (ओई सेफ)</string>
-  <string name="intent_encrypt">गोपनीय (ओई सेफ)</string>
-  <string name="intent_get_password">पासवर्ड लाए (ओई सेफ)</string>
-  <string name="intent_set_password">पासवर्ड रखें (ओई सेफ)</string>
-  <string name="intent_restart_timer">गाढ़ी फिरसे शुरू करें (ओई सेफ)</string>
-  <string name="open_safe">ओई सेफ खोलें</string>
+  <string name="intent_decrypt">विकोड (Modern Safe)</string>
+  <string name="intent_encrypt">गोपनीय (Modern Safe)</string>
+  <string name="intent_get_password">पासवर्ड लाए (Modern Safe)</string>
+  <string name="intent_set_password">पासवर्ड रखें (Modern Safe)</string>
+  <string name="intent_restart_timer">गाढ़ी फिरसे शुरू करें (Modern Safe)</string>
+  <string name="open_safe">Modern Safe खोलें</string>
   <string name="lock">बंद करें</string>
   <string name="continue_text">आगे बढ़ें</string>
   <string name="generate_password">पासवर्ड बनायें</string>
@@ -265,10 +265,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">मुख्य पासवर्ड प्राप्त करें</string>
-  <string name="oi_safe_permission_service_descr">यह दूसरे अनुप्रयोग को गूढ़ और विगूढ़ करने के लिए मुख्य चाबी को प्राप्त करने देता है| यह ओआई सेफ के आलावा कभी भी इस्तेमाल नहीं होना चाहिए</string>
+  <string name="oi_safe_permission_service_descr">यह दूसरे अनुप्रयोग को गूढ़ और विगूढ़ करने के लिए मुख्य चाबी को प्राप्त करने देता है| यह Modern Safe के आलावा कभी भी इस्तेमाल नहीं होना चाहिए</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">डाटा गूढ़ तथा विगूढ़ करें</string>
-  <string name="oi_safe_permission_intents_descr">अनुप्रयोग को व्याख्या को  गूढ़ तथा विगूढ़ करने देता है तथा ओआई सुरक्षा में संचित पासवर्डों तक जाने देता है</string>
+  <string name="oi_safe_permission_intents_descr">अनुप्रयोग को व्याख्या को  गूढ़ तथा विगूढ़ करने देता है तथा Modern Safe में संचित पासवर्डों तक जाने देता है</string>
 
   <!-- ***************************
        Preferences

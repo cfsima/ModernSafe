@@ -32,13 +32,13 @@
   victor tejada yau https://launchpad.net/~victormtyau</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Proteja sus datos privados con OI Safe.</string>
+  <string name="about_comments">Proteja sus datos privados con Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Safe</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">No hay contraseñas presentes para esta categoría.</string>
   <string name="empty_category">No presenta categorias. Por favor agrega una via Menu-&gt; agregar</string>
   <string name="password_lock">Bloquear</string>
@@ -59,7 +59,7 @@
   <string name="notify_blank_desc">Descripción no se debe estar vacia.</string>
   <string name="notify_blank_name">Nombre no se debe estar vacio.</string>
   <string name="first_time">Por favor ingrese una contraseña debajo, el cual sera usado para mantener tus contraseña a salvo</string>
-  <string name="logoff_explanation">Está actualmente ingresado en OI Safe, esto significa que otras aplicaciones pueden requerir sus contraseñas y desencriptar/encriptar datos. Bloquee para prevenir mayores accesos hasta que ingrese su contraseña de nuevo.</string>
+  <string name="logoff_explanation">Está actualmente ingresado en Modern Safe, esto significa que otras aplicaciones pueden requerir sus contraseñas y desencriptar/encriptar datos. Bloquee para prevenir mayores accesos hasta que ingrese su contraseña de nuevo.</string>
   <string name="remote_ask">Otra aplicacion esta preguntando el uso de la llave maestra. Por favor escribe tu contraseña para desbloquearlo</string>
   <string name="categories">Categorías</string>
   <string name="category">Categoría</string>
@@ -105,7 +105,7 @@
   <string name="dialog_delete_password_title">Borrar contraseña</string>
   <string name="dialog_delete_password_msg">¿Está seguro de eliminar esta contraseña?</string>
   <string name="change_password">Cambiar contraseña maestra</string>
-  <string name="chg_pass_explaination">Use esto para cambiar la contraseña que usa para desbloquear OI Safe. Sus datos serán reencriptados con la nueva contraseña. Entre más compleja sea su contraseña, sus datos estarán más seguros.</string>
+  <string name="chg_pass_explaination">Use esto para cambiar la contraseña que usa para desbloquear Modern Safe. Sus datos serán reencriptados con la nueva contraseña. Entre más compleja sea su contraseña, sus datos estarán más seguros.</string>
   <string name="old_password">Contraseña anterior</string>
   <string name="new_password">Contraseña nueva</string>
   <string name="verify_password">Verificar contraseña</string>
@@ -160,10 +160,10 @@
 
   <string name="preferences">Preferencias</string>
   <string name="pref_title_external_access">Permitir acceso externo</string>
-  <string name="pref_summary_external_access">Permitir a otra aplicacion asegurar tus datos con OI safe</string>
-  <string name="dialog_title_external_access">OI Safe:  otra aplicacion hace una peticion de acceso</string>
-  <string name="dialog_summary_external_access">Permitir a otra aplicacion asegurar tus datos con OI safe</string>
-  <string name="dialog_comment_external_access">Esto podria ser establecida in OI safe´menu /</string>
+  <string name="pref_summary_external_access">Permitir a otra aplicacion asegurar tus datos con Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe:  otra aplicacion hace una peticion de acceso</string>
+  <string name="dialog_summary_external_access">Permitir a otra aplicacion asegurar tus datos con Modern Safe</string>
+  <string name="dialog_comment_external_access">Esto podria ser establecida in Modern Safe menú /</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Tiempo de espera de bloqueo automático</string>
@@ -203,12 +203,12 @@
   <string name="pref_title_export_path">Ruta de exportación por defecto</string>
 
 
-  <string name="intent_decrypt">Desencriptar (OI Safe)</string>
-  <string name="intent_encrypt">Encriptar (OI Safe)</string>
-  <string name="intent_get_password">Obtener contraseña (OI Safe)</string>
-  <string name="intent_set_password">Configurar contraseña (OI Safe)</string>
-  <string name="intent_restart_timer">Reiniciar temporizador (OI Safe)</string>
-  <string name="open_safe">Abrir OI Safe</string>
+  <string name="intent_decrypt">Desencriptar (Modern Safe)</string>
+  <string name="intent_encrypt">Encriptar (Modern Safe)</string>
+  <string name="intent_get_password">Obtener contraseña (Modern Safe)</string>
+  <string name="intent_set_password">Configurar contraseña (Modern Safe)</string>
+  <string name="intent_restart_timer">Reiniciar temporizador (Modern Safe)</string>
+  <string name="open_safe">Abrir Modern Safe</string>
   <string name="lock">Bloquear</string>
   <string name="continue_text">Continuar</string>
   <string name="generate_password">Generar contraseña</string>
@@ -270,10 +270,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">accese la contraseña maestra</string>
-  <string name="oi_safe_permission_service_descr">Permite a la aplicación accesar la contraseña maestra usada para encriptar y desencriptar. No debería ser usada nunca, a excepción de OI Safe.</string>
+  <string name="oi_safe_permission_service_descr">Permite a la aplicación accesar la contraseña maestra usada para encriptar y desencriptar. No debería ser usada nunca, a excepción de Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">cifrar y descifrar datos</string>
-  <string name="oi_safe_permission_intents_descr">Permitir a la aplicación encriptar y desencriptar texto, y acceder a las contraseñas que se han almacenado en OI Safe.</string>
+  <string name="oi_safe_permission_intents_descr">Permitir a la aplicación encriptar y desencriptar texto, y acceder a las contraseñas que se han almacenado en Modern Safe.</string>
 
   <!-- ***************************
        Preferences

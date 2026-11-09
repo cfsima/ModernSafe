@@ -25,13 +25,13 @@
   OpenIntents devs https://launchpad.net/~openintents-devs</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Store your private data with OI Safe.</string>
+  <string name="about_comments">Store your private data with Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI 금고</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">이 카테고리에 대한 비밀번호가 없습니다.</string>
   <string name="empty_category">카테고리가 아직 없습니다. 메뉴-&gt;추가 에서 카테고리를 만드세요.</string>
   <string name="password_lock">잠그기</string>
@@ -52,7 +52,7 @@
   <string name="notify_blank_desc">설명에 내용을 입력해 주세요.</string>
   <string name="notify_blank_name">이름에 내용을 입력해 주세요.</string>
   <string name="first_time">아래에 비밀번호를 입력해 주세요. 이 비밀번호는 다른 비밀번호들을 보호하는 데 쓰입니다.</string>
-  <string name="logoff_explanation">당신은 OI 금고에 로그인 되어 있습니다. 다시 비밀번호를 입력하여 금고를 잠그기 전까지는 다른 앱들이 비밀번호를 사용하고 데이터를 암호화 및 복호화 할 수 있습니다.</string>
+  <string name="logoff_explanation">당신은 Modern Safe에 로그인 되어 있습니다. 다시 비밀번호를 입력하여 금고를 잠그기 전까지는 다른 앱들이 비밀번호를 사용하고 데이터를 암호화 및 복호화 할 수 있습니다.</string>
   <string name="remote_ask">다른 앱이 마스터 비밀번호 사용 권한을 요청하고 있습니다. 허용하시려면 비밀번호를 입력해 주세요.</string>
   <string name="categories">카테고리</string>
   <string name="category">카테고리</string>
@@ -98,7 +98,7 @@
   <string name="dialog_delete_password_title">비밀번호 삭제</string>
   <string name="dialog_delete_password_msg">비밀번호를 삭제하시겠습니까?</string>
   <string name="change_password">마스터 비밀번호 바꾸기</string>
-  <string name="chg_pass_explaination">OI 금고를 여는데 사용하는 비밀번호를 바꿀 때 쓰세요. 바뀐 비밀번호로 데이터를 다시 암호화합니다. 비밀번호가 복잡할수록, 데이터는 더 안전해집니다.</string>
+  <string name="chg_pass_explaination">Modern Safe를 여는데 사용하는 비밀번호를 바꿀 때 쓰세요. 바뀐 비밀번호로 데이터를 다시 암호화합니다. 비밀번호가 복잡할수록, 데이터는 더 안전해집니다.</string>
   <string name="old_password">기존 비밀번호</string>
   <string name="new_password">새 비밀번호</string>
   <string name="verify_password">비밀번호 확인</string>
@@ -153,10 +153,10 @@
 
   <string name="preferences">설정</string>
   <string name="pref_title_external_access">외부 접근 허용하기</string>
-  <string name="pref_summary_external_access">다른 앱들이 데이터를 OI 금고에 안전하게 저장할 수 있게 합니다.</string>
-  <string name="dialog_title_external_access">OI 금고: 다른 앱이 접근을 요청합니다.</string>
-  <string name="dialog_summary_external_access">다른 앱들이 데이터를 OI 금고에 안전하게 저장할 수 있게 합니다.</string>
-  <string name="dialog_comment_external_access">OI 금고의 메뉴 / 설정 에서도 설정할 수 있습니다.</string>
+  <string name="pref_summary_external_access">다른 앱들이 데이터를 Modern Safe에 안전하게 저장할 수 있게 합니다.</string>
+  <string name="dialog_title_external_access">Modern Safe: 다른 앱이 접근을 요청합니다.</string>
+  <string name="dialog_summary_external_access">다른 앱들이 데이터를 Modern Safe에 안전하게 저장할 수 있게 합니다.</string>
+  <string name="dialog_comment_external_access">Modern Safe의 메뉴 / 설정 에서도 설정할 수 있습니다.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">자동 잠금 타임아웃</string>
@@ -196,12 +196,12 @@
   <string name="pref_title_export_path">Default export path</string>
 
 
-  <string name="intent_decrypt">복호화 (OI 금고)</string>
-  <string name="intent_encrypt">암호화 (OI 금고)</string>
-  <string name="intent_get_password">비밀번호 받기 (OI 금고)</string>
-  <string name="intent_set_password">비밀번호 설정 (OI 금고)</string>
-  <string name="intent_restart_timer">타이머 재시작 (OI 금고)</string>
-  <string name="open_safe">OI 금고 열기</string>
+  <string name="intent_decrypt">복호화 (Modern Safe)</string>
+  <string name="intent_encrypt">암호화 (Modern Safe)</string>
+  <string name="intent_get_password">비밀번호 받기 (Modern Safe)</string>
+  <string name="intent_set_password">비밀번호 설정 (Modern Safe)</string>
+  <string name="intent_restart_timer">타이머 재시작 (Modern Safe)</string>
+  <string name="open_safe">Modern Safe 열기</string>
   <string name="lock">잠그기</string>
   <string name="continue_text">계속</string>
   <string name="generate_password">비밀번호 생성하기</string>
@@ -263,10 +263,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">마스터 비밀번호 액세스</string>
-  <string name="oi_safe_permission_service_descr">앱이 암호화와 복호화에 사용되는 마스터 비밀번호에 접근하는 것을 허용합니다. OI 금고 외에는 사용하지 않아야 합니다.</string>
+  <string name="oi_safe_permission_service_descr">앱이 암호화와 복호화에 사용되는 마스터 비밀번호에 접근하는 것을 허용합니다. Modern Safe 외에는 사용하지 않아야 합니다.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">데이터 암호화 및 복호화</string>
-  <string name="oi_safe_permission_intents_descr">앱이 글을 암호화/복호화 하고 앱이 OI 금고에 저장한 비밀번호를 사용할 수 있게 합니다.</string>
+  <string name="oi_safe_permission_intents_descr">앱이 글을 암호화/복호화 하고 앱이 Modern Safe에 저장한 비밀번호를 사용할 수 있게 합니다.</string>
 
   <!-- ***************************
        Preferences

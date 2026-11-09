@@ -135,7 +135,7 @@ object CryptoIntents {
      * <p/>
      * Include this extra with non-empty value to the ENCRYPT or DECRYPT action,
      * and the resulting intent will contain the current session key, valid until
-     * OI Safe logs out, and the content URI as data.
+     * Modern Safe logs out, and the content URI as data.
      * <p/>
      * <p>Constant Value: "org.openintents.extra.SESSION_KEY"</p>
      */

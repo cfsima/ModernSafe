@@ -31,13 +31,13 @@
   friedger https://launchpad.net/~friedger</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Store your private data with OI Safe.</string>
+  <string name="about_comments">Store your private data with Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Safe</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">В этой категории нет паролей.</string>
   <string name="empty_category">Нет ни одной категоории. Добавьте категорию через Меню/Добавить</string>
   <string name="password_lock">Заблокировать</string>
@@ -58,7 +58,7 @@
   <string name="notify_blank_desc">Описание должно быть заполнено</string>
   <string name="notify_blank_name">Имя должно быть заполнено</string>
   <string name="first_time">Ниже введите пароль которым будет защищена ваша информация.</string>
-  <string name="logoff_explanation">Вы залогинены в OI Safe поэтому другие приложения могут получать свои пароли и расшифровывать/зашифровывать данные. Заблокируйте для предотвращения дальнейшего доступа до повторного ввода пароля.</string>
+  <string name="logoff_explanation">Вы залогинены в Modern Safe поэтому другие приложения могут получать свои пароли и расшифровывать/зашифровывать данные. Заблокируйте для предотвращения дальнейшего доступа до повторного ввода пароля.</string>
   <string name="remote_ask">Другое приложение запрашивает Мастер Ключ. Введите пароль что бы дать доступ к нему.</string>
   <string name="categories">Категории</string>
   <string name="category">Категория</string>
@@ -104,7 +104,7 @@
   <string name="dialog_delete_password_title">Удалить пароль</string>
   <string name="dialog_delete_password_msg">Вы уверены что хотите удалить этот пароль?</string>
   <string name="change_password">Изменить Мастер Пароль</string>
-  <string name="chg_pass_explaination">Используйте для изменения пароля которым Вы открываете OI Safe. Ваши данные будут зашифрованы заново новым паролем. Чем сложнее пароль тем в большей безопасности будут ваши данные.</string>
+  <string name="chg_pass_explaination">Используйте для изменения пароля которым Вы открываете Modern Safe. Ваши данные будут зашифрованы заново новым паролем. Чем сложнее пароль тем в большей безопасности будут ваши данные.</string>
   <string name="old_password">Старый пароль</string>
   <string name="new_password">Новый пароль</string>
   <string name="verify_password">Повторите пароль</string>
@@ -159,10 +159,10 @@
 
   <string name="preferences">Настройки</string>
   <string name="pref_title_external_access">Разрешить внешний доступ</string>
-  <string name="pref_summary_external_access">Разрешить другим приложениям шифровать ваши данные с помощью OI Safe</string>
-  <string name="dialog_title_external_access">OI Safe: Другое приложение запрашивает доступ.</string>
-  <string name="dialog_summary_external_access">Разрешить другим приложениям шифровать ваши данные с помощью OI Safe.</string>
-  <string name="dialog_comment_external_access">Это можно так же установить в OI Safe Меню / Настройки</string>
+  <string name="pref_summary_external_access">Разрешить другим приложениям шифровать ваши данные с помощью Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe: Другое приложение запрашивает доступ.</string>
+  <string name="dialog_summary_external_access">Разрешить другим приложениям шифровать ваши данные с помощью Modern Safe.</string>
+  <string name="dialog_comment_external_access">Это можно так же установить в Modern Safe Меню / Настройки</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Время автоблокировки</string>
@@ -179,10 +179,10 @@
   <string name="pref_summary_lock_on_screen_lock">Блокировать когда блокируется экран</string>
 
   <!-- Preference title: use a numeric keypad to enter the password -->
-  <string name="pref_title_keypad">Клавиатура OI Safe</string>
+  <string name="pref_title_keypad">Клавиатура Modern Safe</string>
 
   <!-- Preference summary: for a numeric keypad -->
-  <string name="pref_summary_keypad">Использовать клавиатуру OI Safe для ввода Мастер Пароля</string>
+  <string name="pref_summary_keypad">Использовать клавиатуру Modern Safe для ввода Мастер Пароля</string>
 
   <!-- Preference title for keypad mute -->
   <string name="pref_title_keypad_mute">Бесшумная клавиатура</string>
@@ -202,12 +202,12 @@
   <string name="pref_title_export_path">Default export path</string>
 
 
-  <string name="intent_decrypt">Расшифровать (OI Safe)</string>
-  <string name="intent_encrypt">Зашифровать (OI Safe)</string>
-  <string name="intent_get_password">Получить пароль (OI Safe)</string>
-  <string name="intent_set_password">Установить пароль (OI Safe)</string>
-  <string name="intent_restart_timer">Обновить таймер (OI Safe)</string>
-  <string name="open_safe">Открыть OI Safe</string>
+  <string name="intent_decrypt">Расшифровать (Modern Safe)</string>
+  <string name="intent_encrypt">Зашифровать (Modern Safe)</string>
+  <string name="intent_get_password">Получить пароль (Modern Safe)</string>
+  <string name="intent_set_password">Установить пароль (Modern Safe)</string>
+  <string name="intent_restart_timer">Обновить таймер (Modern Safe)</string>
+  <string name="open_safe">Открыть Modern Safe</string>
   <string name="lock">Заблокировать</string>
   <string name="continue_text">Продолжить</string>
   <string name="generate_password">Сгенерировать пароль</string>
@@ -269,10 +269,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">доступ к Мастер Паролю</string>
-  <string name="oi_safe_permission_service_descr">Даёт приложению доступ к Мастер Ключу используемому для шифрования и дешифрования. Не должно использоваться иначе как через OI Safe.</string>
+  <string name="oi_safe_permission_service_descr">Даёт приложению доступ к Мастер Ключу используемому для шифрования и дешифрования. Не должно использоваться иначе как через Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">шифровать и дешифровать данные</string>
-  <string name="oi_safe_permission_intents_descr">Позволяет приложениям шифровать и дешифровать текст, а так же получать доступ к паролям которые они сохранили в OI Safe.</string>
+  <string name="oi_safe_permission_intents_descr">Позволяет приложениям шифровать и дешифровать текст, а так же получать доступ к паролям которые они сохранили в Modern Safe.</string>
 
   <!-- ***************************
        Preferences

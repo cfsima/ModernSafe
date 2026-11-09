@@ -32,13 +32,13 @@
   iulargsb https://launchpad.net/~iulargsb</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Stochează datele personale cu OI Safe.</string>
+  <string name="about_comments">Stochează datele personale cu Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Safe</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">Nu există parole pentru această categorie.</string>
   <string name="empty_category">Nu există categorii. Vă rugăm adăugați una din Menu-&gt;Adaugă</string>
   <string name="password_lock">Blochează</string>
@@ -59,7 +59,7 @@
   <string name="notify_blank_desc">Descrierea nu poate fi goală</string>
   <string name="notify_blank_name">Numele nu poate fi gol</string>
   <string name="first_time">Introduceți parola mai jos, care va fi folosită pentru a vă păstra parolele în sigurață.</string>
-  <string name="logoff_explanation">În prezent sunteţi conectat în OI Safe, ceea ce înseamnă că alte aplicaţii pot solicita parolele lor şi pot decripta / cripta datele. Blocați pentru a preveni accesul în continuare până când tastaţi din nou parola.</string>
+  <string name="logoff_explanation">În prezent sunteţi conectat în Modern Safe, ceea ce înseamnă că alte aplicaţii pot solicita parolele lor şi pot decripta / cripta datele. Blocați pentru a preveni accesul în continuare până când tastaţi din nou parola.</string>
   <string name="remote_ask">O altă aplicație solicită folosirea cheii principale. Introduceți parola pentru a o debloca.</string>
   <string name="categories">Categorii</string>
   <string name="category">Categorie</string>
@@ -105,7 +105,7 @@
   <string name="dialog_delete_password_title">Șterge parola</string>
   <string name="dialog_delete_password_msg">Sunteți sigur că doriți să ștergeți această parolă?</string>
   <string name="change_password">Schimbă parola principală</string>
-  <string name="chg_pass_explaination">Folosiți aceasta pentru a schimba parola pe care o folosiți pentru a debloca OI Safe. Datele dumneavoastă vor fi recriptate cu noua parolă. Cu cat parola este mai complexă, cu atat datele vor fi mai securizate.</string>
+  <string name="chg_pass_explaination">Folosiți aceasta pentru a schimba parola pe care o folosiți pentru a debloca Modern Safe. Datele dumneavoastă vor fi recriptate cu noua parolă. Cu cat parola este mai complexă, cu atat datele vor fi mai securizate.</string>
   <string name="old_password">Parolă veche</string>
   <string name="new_password">Parolă nouă</string>
   <string name="verify_password">Verifică parola</string>
@@ -160,10 +160,10 @@
 
   <string name="preferences">Configurări</string>
   <string name="pref_title_external_access">Permite acces extern</string>
-  <string name="pref_summary_external_access">Permite altor aplicații să securizeze datele cu OI Safe</string>
-  <string name="dialog_title_external_access">OI Safe: Altă aplicație solicită acces.</string>
-  <string name="dialog_summary_external_access">Permite altor aplicații să securizeze datele cu OI Safe</string>
-  <string name="dialog_comment_external_access">Aceasta poate fi setată în meniul OI Safe / Configurări</string>
+  <string name="pref_summary_external_access">Permite altor aplicații să securizeze datele cu Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe: Altă aplicație solicită acces.</string>
+  <string name="dialog_summary_external_access">Permite altor aplicații să securizeze datele cu Modern Safe</string>
+  <string name="dialog_comment_external_access">Aceasta poate fi setată în meniul Modern Safe / Configurări</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Autoblocare la expirarea timpului</string>
@@ -203,12 +203,12 @@
   <string name="pref_title_export_path">Calea implicită pentru export</string>
 
 
-  <string name="intent_decrypt">Decriptează (OI Safe)</string>
-  <string name="intent_encrypt">Criptează (OI Safe)</string>
-  <string name="intent_get_password">Solicită parolă (OI Safe)</string>
-  <string name="intent_set_password">Setează parolă (OI Safe)</string>
-  <string name="intent_restart_timer">Cronometru de repornire (OI Safe)</string>
-  <string name="open_safe">Deschide OI Safe</string>
+  <string name="intent_decrypt">Decriptează (Modern Safe)</string>
+  <string name="intent_encrypt">Criptează (Modern Safe)</string>
+  <string name="intent_get_password">Solicită parolă (Modern Safe)</string>
+  <string name="intent_set_password">Setează parolă (Modern Safe)</string>
+  <string name="intent_restart_timer">Cronometru de repornire (Modern Safe)</string>
+  <string name="open_safe">Deschide Modern Safe</string>
   <string name="lock">Blochează</string>
   <string name="continue_text">Continuă</string>
   <string name="generate_password">Generează parolă</string>
@@ -270,10 +270,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">Accesează parola principală</string>
-  <string name="oi_safe_permission_service_descr">Permite aplicației să acceseze cheia principală folosită pentru criptare si decriptare. Nu ar trebui folosită niciodată cu excepția OI Safe.</string>
+  <string name="oi_safe_permission_service_descr">Permite aplicației să acceseze cheia principală folosită pentru criptare si decriptare. Nu ar trebui folosită niciodată cu excepția Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">criptează și decriptează date</string>
-  <string name="oi_safe_permission_intents_descr">Permite aplicațiilor să cripteze și să decripteze text, și să acceseze parolele pe care le-au salvat in OI Safe.</string>
+  <string name="oi_safe_permission_intents_descr">Permite aplicațiilor să cripteze și să decripteze text, și să acceseze parolele pe care le-au salvat in Modern Safe.</string>
 
   <!-- ***************************
        Preferences

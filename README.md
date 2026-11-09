@@ -1,6 +1,6 @@
-# Modern Safe
+# ModernSafe
 
-Updated OI Safe Password manager for newer Android.
+Modern Safe is an updated, open-source password manager for newer Android devices (originally OI Safe).
 Please see https://www.openintents.org/safe for description using Trivium streaming encryption.
 
 ## Build Instructions

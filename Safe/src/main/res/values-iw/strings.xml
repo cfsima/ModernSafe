@@ -27,13 +27,13 @@
   Yaron https://launchpad.net/~sh-yaron</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Store your private data with OI Safe.</string>
+  <string name="about_comments">Store your private data with Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">כספת OI</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">אין סיסמא נוכחת עבור קטגוריה זו</string>
   <string name="empty_category">אין קטגוריות נוכחות. אנא הוסף אחת דרך  Menu-&gt;Add</string>
   <string name="password_lock">נעילה</string>
@@ -54,7 +54,7 @@
   <string name="notify_blank_desc">תיאורים לא יכולים להיות ריקים.</string>
   <string name="notify_blank_name">שם לא יכול להיות ריק</string>
   <string name="first_time">אנא הכנס סיסמא למטה, שתשמור על הסיסמאות שלך בטוחות.</string>
-    <string name="logoff_explanation">אתה כרגע מחובר לכספת OI, מה שאומר שיישומים אחרים יכולים לבקש את הסיסמא שלהם לפענח/להצפין מידע.
+    <string name="logoff_explanation">אתה כרגע מחובר ל־Modern Safe, מה שאומר שיישומים אחרים יכולים לבקש את הסיסמא שלהם לפענח/להצפין מידע.
 בצע נעילה כדי למנוע כניסה עד שאתה כותב את סיסמתך שוב.</string>
   <string name="remote_ask">יישום אחר מבקש ממך רשות להשתמש במפתח הראשי. אנא כתוב את סיסמתך כדי לאשר זאת.</string>
   <string name="categories">קטגוריות</string>
@@ -102,7 +102,7 @@
   <string name="dialog_delete_password_title">מחק סיסמא.</string>
   <string name="dialog_delete_password_msg">האם אתה בטוח שברצונך למחוק סיסמא זו?</string>
   <string name="change_password">שנה סיסמא ראשית</string>
-	<string name="chg_pass_explaination">השתמש בזאת כדי לשנות את הסיסמא שלך לפתיחת כספת OI. המידע שלך יוצפן שוב עם הסיסמא החדשה.
+	<string name="chg_pass_explaination">השתמש בזאת כדי לשנות את הסיסמא שלך לפתיחת Modern Safe. המידע שלך יוצפן שוב עם הסיסמא החדשה.
 ככל שהסיסמא מורכבת יותר, כך המידע שלך יהיה יותר בטוח.</string>
   <string name="old_password">סיסמא ישנה</string>
   <string name="new_password">סיסמא חדשה</string>
@@ -158,10 +158,10 @@
 
   <string name="preferences">הגדרות</string>
   <string name="pref_title_external_access">הרשה גישה חיצונית</string>
-  <string name="pref_summary_external_access">הרשה ליישומים אחרים לאבטח את המידע שלך עם כספת OI</string>
-  <string name="dialog_title_external_access">כספת OI : יישום אחר מבקש גישה.</string>
-  <string name="dialog_summary_external_access">הרשה ליישומים אחרים לאבטח את המידע שלך עם כספת OI.</string>
-  <string name="dialog_comment_external_access">זה יכול להיקבע גם בתפריט כספת OI/ הגדרות.</string>
+  <string name="pref_summary_external_access">הרשה ליישומים אחרים לאבטח את המידע שלך עם Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe : יישום אחר מבקש גישה.</string>
+  <string name="dialog_summary_external_access">הרשה ליישומים אחרים לאבטח את המידע שלך עם Modern Safe.</string>
+  <string name="dialog_comment_external_access">זה יכול להיקבע גם בתפריט Modern Safe/ הגדרות.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">פסק זמן נעילה אוטומטית</string>
@@ -201,12 +201,12 @@
   <string name="pref_title_export_path">Default export path</string>
 
 
-  <string name="intent_decrypt">פענח (כספת OI)</string>
-  <string name="intent_encrypt">הצפן (כספת OI)</string>
-  <string name="intent_get_password">השג סיסמא (כספת OI)</string>
-  <string name="intent_set_password">קבע סיסמא (כספת OI)</string>
-  <string name="intent_restart_timer">הפעל מחדש טיימר (כספת OI)</string>
-  <string name="open_safe">פתח כספת OI</string>
+  <string name="intent_decrypt">פענח (Modern Safe)</string>
+  <string name="intent_encrypt">הצפן (Modern Safe)</string>
+  <string name="intent_get_password">השג סיסמא (Modern Safe)</string>
+  <string name="intent_set_password">קבע סיסמא (Modern Safe)</string>
+  <string name="intent_restart_timer">הפעל מחדש טיימר (Modern Safe)</string>
+  <string name="open_safe">פתח Modern Safe</string>
   <string name="lock">נעילה</string>
   <string name="continue_text">המשך</string>
   <string name="generate_password">יצר סיסמא</string>
@@ -268,7 +268,7 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">היכנס למפתח הראשי</string>
-  <string name="oi_safe_permission_service_descr">מאשר ליישום להיכנס למפתח הראשי ששומש להצפנה ולפענוח. אין להשתמש בו לעולם, אלא רק על ידי כספת OI.</string>
+  <string name="oi_safe_permission_service_descr">מאשר ליישום להיכנס למפתח הראשי ששומש להצפנה ולפענוח. אין להשתמש בו לעולם, אלא רק על ידי Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">הצפן ופענח מידע</string>
   <string name="oi_safe_permission_intents_descr">הרשה ליישום להצפין ולפענח טקסט, ולהיכנס לסיסמאות שהם אחסנו בכספת OI.</string>

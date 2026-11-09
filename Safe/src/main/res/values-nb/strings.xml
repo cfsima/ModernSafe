@@ -25,13 +25,13 @@
   OpenIntents devs https://launchpad.net/~openintents-devs</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Store your private data with OI Safe.</string>
+  <string name="about_comments">Store your private data with Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Safe</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">Ingen passord tilstedeværende for denne kategorien.</string>
   <string name="empty_category">Ingen kategorier tilstedeværende. Vennligst legg til en kategori gjennom meny-&gt;Legg til</string>
   <string name="password_lock">Lås</string>
@@ -52,7 +52,7 @@
   <string name="notify_blank_desc">Beskrivelse kan ikke være blank</string>
   <string name="notify_blank_name">Navn kan ikke være blank</string>
   <string name="first_time">Vennligst skriv inn et passord nedenfor, som vil bli brukt for å holde dine passord trygge.</string>
-  <string name="logoff_explanation">Du er nå logget inn i OI Safe, som betyr at andre applikasjoner kan be om deres passord og dekryptere/kryptere data. Lås for å hindre videre tilgang fram til du skriver in ditt passord igjen.</string>
+  <string name="logoff_explanation">Du er nå logget inn i Modern Safe, som betyr at andre applikasjoner kan be om deres passord og dekryptere/kryptere data. Lås for å hindre videre tilgang fram til du skriver in ditt passord igjen.</string>
   <string name="remote_ask">En annen applikasjon ber om å få bruke hovednøkkelen. Vennligst skriv ditt passord for å låse den opp.</string>
   <string name="categories">Kategorier</string>
   <string name="category">Kategori</string>
@@ -98,7 +98,7 @@
   <string name="dialog_delete_password_title">Slett passord</string>
   <string name="dialog_delete_password_msg">Er du sikker på at du vil slette dette passordet?</string>
   <string name="change_password">Endre hovedpassord</string>
-  <string name="chg_pass_explaination">Bruk dette for å endre passordet du bruker for å låse opp OI Safe. Din data vil bli re-kryptert med det nye passordet. Desto mer komplekst passordet ditt er, desto tryggere vil dine data bli.</string>
+  <string name="chg_pass_explaination">Bruk dette for å endre passordet du bruker for å låse opp Modern Safe. Din data vil bli re-kryptert med det nye passordet. Desto mer komplekst passordet ditt er, desto tryggere vil dine data bli.</string>
   <string name="old_password">Gammelt passord</string>
   <string name="new_password">Nytt passord</string>
   <string name="verify_password">Bekreft passord</string>
@@ -153,10 +153,10 @@
 
   <string name="preferences">Innstillinger</string>
   <string name="pref_title_external_access">Tillatt ekstern tilgang</string>
-  <string name="pref_summary_external_access">Tillat andre applikasjoner å sikre dine data med OI Safe</string>
-  <string name="dialog_title_external_access">OI Safe:</string>
-  <string name="dialog_summary_external_access">Tillat andre applikasjoner å sikre dine data med OI Safe</string>
-  <string name="dialog_comment_external_access">Dette kan også bli innstilt i menyen / innstillingene til OI Safe.</string>
+  <string name="pref_summary_external_access">Tillat andre applikasjoner å sikre dine data med Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe:</string>
+  <string name="dialog_summary_external_access">Tillat andre applikasjoner å sikre dine data med Modern Safe</string>
+  <string name="dialog_comment_external_access">Dette kan også bli innstilt i menyen / innstillingene til Modern Safe.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Automatisk tidslås</string>
@@ -196,12 +196,12 @@
   <string name="pref_title_export_path">Standard eksportsti</string>
 
 
-  <string name="intent_decrypt">Dekrypter (OI Safe)</string>
-  <string name="intent_encrypt">Dekrypter (OI Safe)</string>
-  <string name="intent_get_password">Hent passord (OI Safe)</string>
-  <string name="intent_set_password">Sett passord (OI Safe)</string>
-  <string name="intent_restart_timer">Restart tidtakeren (OI Safe)</string>
-  <string name="open_safe">Åpne OI Safe</string>
+  <string name="intent_decrypt">Dekrypter (Modern Safe)</string>
+  <string name="intent_encrypt">Dekrypter (Modern Safe)</string>
+  <string name="intent_get_password">Hent passord (Modern Safe)</string>
+  <string name="intent_set_password">Sett passord (Modern Safe)</string>
+  <string name="intent_restart_timer">Restart tidtakeren (Modern Safe)</string>
+  <string name="open_safe">Åpne Modern Safe</string>
   <string name="lock">Lås</string>
   <string name="continue_text">Fortsett</string>
   <string name="generate_password">Generer passord</string>
@@ -263,10 +263,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">få tilgang til hovedpassordet</string>
-  <string name="oi_safe_permission_service_descr">Tillater applikasjonen å få tilgang til hovednøkkelen brukt for kryptering og dekrypterting. Burde ikke bli brukt bortsett fra av OI Safe.</string>
+  <string name="oi_safe_permission_service_descr">Tillater applikasjonen å få tilgang til hovednøkkelen brukt for kryptering og dekrypterting. Burde ikke bli brukt bortsett fra av Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">krypter og dekrypter data</string>
-  <string name="oi_safe_permission_intents_descr">Tillater applikasjonen å kryptere og dekryptere tekst, og få tilgang til passordene de har lagret i OI Safe.</string>
+  <string name="oi_safe_permission_intents_descr">Tillater applikasjonen å kryptere og dekryptere tekst, og få tilgang til passordene de har lagret i Modern Safe.</string>
 
   <!-- ***************************
        Preferences

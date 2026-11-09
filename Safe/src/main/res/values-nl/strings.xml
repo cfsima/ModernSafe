@@ -30,13 +30,13 @@
   Sjoerd Hiemstra https://launchpad.net/~sjohie</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Beveilig je privé-data met OI Kluis.</string>
+  <string name="about_comments">Beveilig je privé-data met Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI kluis</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">Geen wachtwoorden aanwezig voor deze catagorie.</string>
   <string name="empty_category">Nog geen catagorieën aanwezig. Voeg er een toe via Menu-&gt;Add</string>
   <string name="password_lock">Vergrendel</string>
@@ -57,7 +57,7 @@
   <string name="notify_blank_desc">Beschrijving mag niet leeg zijn</string>
   <string name="notify_blank_name">Naam mag niet leeg zijn</string>
   <string name="first_time">Voer een wachtwoord in om je wachtwoorden veilig te stellen.</string>
-  <string name="logoff_explanation">Je bent ingelogged in OI Kluis, dit betekent dat andere applicaties hun wachtwoorden en encryptie data kunnen opvragen. Sluit om verdere toegang te voorkomen, totdat je je wachtwoord nogmaals typt.</string>
+  <string name="logoff_explanation">Je bent ingelogged in Modern Safe, dit betekent dat andere applicaties hun wachtwoorden en encryptie data kunnen opvragen. Sluit om verdere toegang te voorkomen, totdat je je wachtwoord nogmaals typt.</string>
   <string name="remote_ask">Een andere applicatie vraagt om het hoofd wachtwoord. Voer het wachtwoord nogmaals in om te ontgrendelen.</string>
   <string name="categories">Categorieën</string>
   <string name="category">Categorie</string>
@@ -103,7 +103,7 @@
   <string name="dialog_delete_password_title">Verwijder wachtwoord.</string>
   <string name="dialog_delete_password_msg">Weet jezeker dat je dit wachtwoord wilt verwijderen?</string>
   <string name="change_password">Wijzig hoofdwachtwoord</string>
-  <string name="chg_pass_explaination">Gebruik dit om het wachtwoord dat u gebruikt om OI Kluis te openen te wijzigen. Uw data zal opnieuw versteuleld worden met het nieuwe wachtwoord. Hoe ingewikkelder uw wachtwoord is, hoe veiliger uw data zal zijn.</string>
+  <string name="chg_pass_explaination">Gebruik dit om het wachtwoord dat u gebruikt om Modern Safe te openen te wijzigen. Uw data zal opnieuw versteuleld worden met het nieuwe wachtwoord. Hoe ingewikkelder uw wachtwoord is, hoe veiliger uw data zal zijn.</string>
   <string name="old_password">Oud wachtwoord</string>
   <string name="new_password">Nieuw wachtwoord</string>
   <string name="verify_password">Wachtwoord verifiëren</string>
@@ -158,10 +158,10 @@
 
   <string name="preferences">Instellingen</string>
   <string name="pref_title_external_access">Sta externe toegang toe</string>
-  <string name="pref_summary_external_access">Sta andere programma\'s toe om uw data te beveiligen met OI Kluis</string>
-  <string name="dialog_title_external_access">OI Kluis: Een ander programma vraagt toegang.</string>
-  <string name="dialog_summary_external_access">Sta andere programma\'s toe om uw data te beveiligen met OI Kluis.</string>
-  <string name="dialog_comment_external_access">Deze instelling is ook beschikbaar in Menu / Instellingen van OI Kluis.</string>
+  <string name="pref_summary_external_access">Sta andere programma\'s toe om uw data te beveiligen met Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe: Een ander programma vraagt toegang.</string>
+  <string name="dialog_summary_external_access">Sta andere programma\'s toe om uw data te beveiligen met Modern Safe.</string>
+  <string name="dialog_comment_external_access">Deze instelling is ook beschikbaar in Menu / Instellingen van Modern Safe.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Auto-lock time-out</string>
@@ -201,12 +201,12 @@
   <string name="pref_title_export_path">Standaard exporteer pad</string>
 
 
-  <string name="intent_decrypt">Ontsleutelen (OI Kluis)</string>
-  <string name="intent_encrypt">Versleutelen (OI Kluis)</string>
-  <string name="intent_get_password">Wachtwoord verkrijgen (OI Kluis)</string>
-  <string name="intent_set_password">Wachtwoord instellen (OI Kluis)</string>
-  <string name="intent_restart_timer">Timer herstarten (OI Kluis)</string>
-  <string name="open_safe">OI Kluis openen</string>
+  <string name="intent_decrypt">Ontsleutelen (Modern Safe)</string>
+  <string name="intent_encrypt">Versleutelen (Modern Safe)</string>
+  <string name="intent_get_password">Wachtwoord verkrijgen (Modern Safe)</string>
+  <string name="intent_set_password">Wachtwoord instellen (Modern Safe)</string>
+  <string name="intent_restart_timer">Timer herstarten (Modern Safe)</string>
+  <string name="open_safe">Modern Safe openen</string>
   <string name="lock">Vergrendel</string>
   <string name="continue_text">Verder</string>
   <string name="generate_password">Wachtwoord aanmaken</string>
@@ -268,10 +268,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">krijg toegang tot het hoofdwachtwoord</string>
-  <string name="oi_safe_permission_service_descr">Staat de app toe om de hoofdsleutel te gebruiken voor versleutelen en ontsleutelen. Nooit gebruiken, behalve voor OI Kluis.</string>
+  <string name="oi_safe_permission_service_descr">Staat de app toe om de hoofdsleutel te gebruiken voor versleutelen en ontsleutelen. Nooit gebruiken, behalve voor Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">data versleutelen en ontsleutelen</string>
-  <string name="oi_safe_permission_intents_descr">Laat de app tekst versleutelen en ontsleutelen, en geeft toegang tot de wachtwoorden in OI Kluis.</string>
+  <string name="oi_safe_permission_intents_descr">Laat de app tekst versleutelen en ontsleutelen, en geeft toegang tot de wachtwoorden in Modern Safe.</string>
 
   <!-- ***************************
        Preferences

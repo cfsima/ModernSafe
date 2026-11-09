@@ -29,13 +29,13 @@
   zielmicha https://launchpad.net/~michal-zielinscy</string>
 
   <!-- Short explanation of the application (max. 80 characters) -->
-  <string name="about_comments">Zapisuj swoje prywatne dane używając OI Sejf.</string>
+  <string name="about_comments">Zapisuj swoje prywatne dane używając Modern Safe.</string>
 
   <!-- ***************************
        Applicatio-specific strings
        *************************** -->
   <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-  <string name="app_name">OI Sejf</string>
+  <string name="app_name">Modern Safe</string>
   <string name="empty_safe">Brak haseł w kategorii</string>
   <string name="empty_category">Nie utworzono jeszcze kategorii. Dodaj nową przez Menu-&gt;Dodaj</string>
   <string name="password_lock">Zablokuj</string>
@@ -56,7 +56,7 @@
   <string name="notify_blank_desc">Opis nie może być pusty</string>
   <string name="notify_blank_name">Nazwa nie może być pusta</string>
   <string name="first_time">Proszę poniżej podać hasło, które będzie używane do bezpiecznego przychowywania twoich haseł.</string>
-  <string name="logoff_explanation">Jesteś obecnie zalogowany(a) do IO Sejf, co oznacza, że inne aplikacje mogą żądać swoich haseł i szyfrować/odszyfrowywać dane. Zablokuj by zapobiec następnym dostępom dopóki nie wpiszesz swojego hasła ponownie.</string>
+  <string name="logoff_explanation">Jesteś obecnie zalogowany(a) do Modern Safe, co oznacza, że inne aplikacje mogą żądać swoich haseł i szyfrować/odszyfrowywać dane. Zablokuj by zapobiec następnym dostępom dopóki nie wpiszesz swojego hasła ponownie.</string>
   <string name="remote_ask">Inna aplikacja prosi o użycie głównego klucza. Proszę wpisać swoje hasło by ją odblokować.</string>
   <string name="categories">Kategorie</string>
   <string name="category">Kategoria</string>
@@ -102,7 +102,7 @@
   <string name="dialog_delete_password_title">Usuń hasło</string>
   <string name="dialog_delete_password_msg">Czy na pewno chcesz usunąć to hasło?</string>
   <string name="change_password">Zmień Hasło Główne</string>
-  <string name="chg_pass_explaination">Użyj tego, aby zmienić hasło, którego używasz do odblokowania OI Sejf. Twoje dane zostaną zaszyfrowane ponownie z nowym hasłem. Im bardziej złożone będzie hasło, bym bezpieczniejsze będą dane.</string>
+  <string name="chg_pass_explaination">Użyj tego, aby zmienić hasło, którego używasz do odblokowania Modern Safe. Twoje dane zostaną zaszyfrowane ponownie z nowym hasłem. Im bardziej złożone będzie hasło, bym bezpieczniejsze będą dane.</string>
   <string name="old_password">Stare hasło</string>
   <string name="new_password">Nowe hasło</string>
   <string name="verify_password">Weryfikuj hasło</string>
@@ -157,10 +157,10 @@
 
   <string name="preferences">Ustawienia</string>
   <string name="pref_title_external_access">Pozwól na zewnętrzny dostęp</string>
-  <string name="pref_summary_external_access">Pozwól innym aplikacjom na zabezpieczenie twoich danych z OI Sejf</string>
-  <string name="dialog_title_external_access">OI Sejf: Inna aplikacja żąda dostępu.</string>
-  <string name="dialog_summary_external_access">Pozwól innym aplikacjom na zabezpieczenie twoich danych z OI Sejf.</string>
-  <string name="dialog_comment_external_access">Można to również zmienić w menu OI Sejf / Ustawienia.</string>
+  <string name="pref_summary_external_access">Pozwól innym aplikacjom na zabezpieczenie twoich danych z Modern Safe</string>
+  <string name="dialog_title_external_access">Modern Safe: Inna aplikacja żąda dostępu.</string>
+  <string name="dialog_summary_external_access">Pozwól innym aplikacjom na zabezpieczenie twoich danych z Modern Safe.</string>
+  <string name="dialog_comment_external_access">Można to również zmienić w menu Modern Safe / Ustawienia.</string>
 
   <!-- Preference title for auto lock timeout -->
   <string name="pref_title_lock_timeout">Limit czasu automatycznej blokady.</string>
@@ -200,12 +200,12 @@
   <string name="pref_title_export_path">Domyślna ścieżka eksportu</string>
 
 
-  <string name="intent_decrypt">Odszyfruj (OI Sejf)</string>
-  <string name="intent_encrypt">Szyfruj (OI Sejf)</string>
-  <string name="intent_get_password">Uzyskaj hasło (OI Sejf)</string>
-  <string name="intent_set_password">Ustaw hasło (OI Sejf)</string>
-  <string name="intent_restart_timer">Uruchom ponownie zegar (OI Sejf)</string>
-  <string name="open_safe">Otwórz OI Sejf</string>
+  <string name="intent_decrypt">Odszyfruj (Modern Safe)</string>
+  <string name="intent_encrypt">Szyfruj (Modern Safe)</string>
+  <string name="intent_get_password">Uzyskaj hasło (Modern Safe)</string>
+  <string name="intent_set_password">Ustaw hasło (Modern Safe)</string>
+  <string name="intent_restart_timer">Uruchom ponownie zegar (Modern Safe)</string>
+  <string name="open_safe">Otwórz Modern Safe</string>
   <string name="lock">Zablokuj</string>
   <string name="continue_text">Kontynuuj</string>
   <string name="generate_password">Generuj hasło</string>
@@ -267,10 +267,10 @@
   <!-- OI Safe -->
   <!-- Permission to access master password -->
   <string name="oi_safe_permission_service">dostęp do hasła głównego</string>
-  <string name="oi_safe_permission_service_descr">Pozwala aplikacji używać klucza głównego do szyfrowania i odszyfrowywania. Nie powinno być nigdy używane poza OI Sejf.</string>
+  <string name="oi_safe_permission_service_descr">Pozwala aplikacji używać klucza głównego do szyfrowania i odszyfrowywania. Nie powinno być nigdy używane poza Modern Safe.</string>
   <!-- Permission to encrypt and decrypt data -->
   <string name="oi_safe_permission_intents">szyfruj i odszyfrowuj dane</string>
-  <string name="oi_safe_permission_intents_descr">Pozwala aplikacji szyfrować i odszyfrowywać tekst, oraz mieć dostęp do haseł przechowywanych w OI Sejf.</string>
+  <string name="oi_safe_permission_intents_descr">Pozwala aplikacji szyfrować i odszyfrowywać tekst, oraz mieć dostęp do haseł przechowywanych w Modern Safe.</string>
 
   <!-- ***************************
        Preferences
