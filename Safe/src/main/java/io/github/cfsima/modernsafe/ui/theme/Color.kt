@@ -181,11 +181,3 @@ val DynamicLightSurfaceVariant = Color(0xFFF0F2F9)
 val DynamicLightOnSurfaceVariant = Color(0xFF74777F)
 val DynamicLightOutline = Color(0xFFC4C6CF)
 val DynamicLightOutlineVariant = Color(0xFFE0E2EC)
-
-// Legacy aliases for backwards compatibility
-val Purple80 = DynamicDarkTertiary
-val PurpleGrey80 = DynamicDarkSecondary
-val Pink80 = Color(0xFFEFB8C8)
-val Purple40 = DynamicLightTertiary
-val PurpleGrey40 = DynamicLightSecondary
-val Pink40 = Color(0xFF7D5260)
