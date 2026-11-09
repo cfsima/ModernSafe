@@ -5,7 +5,6 @@ import android.content.Context
 import android.hardware.biometrics.BiometricManager
 import android.hardware.biometrics.BiometricPrompt
 import android.content.Intent
-import android.os.Build
 import android.os.CancellationSignal
 import android.provider.Settings
 import android.security.keystore.KeyGenParameterSpec
@@ -53,15 +52,11 @@ object BiometricHelper {
     }
 
     fun createEnrollIntent(): Intent {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                putExtra(
-                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                    BiometricManager.Authenticators.BIOMETRIC_STRONG
-                )
-            }
-        } else {
-            Intent(Settings.ACTION_SECURITY_SETTINGS)
+        return Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+            putExtra(
+                Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                BiometricManager.Authenticators.BIOMETRIC_STRONG,
+            )
         }
     }
 
@@ -72,7 +67,7 @@ object BiometricHelper {
         val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
         val spec = KeyGenParameterSpec.Builder(
             KEY_ALIAS,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
         )
             .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
@@ -113,10 +108,10 @@ object BiometricHelper {
     fun initDecryptCipher(payload: String): Cipher? {
         return try {
             val combined = Base64.decode(payload, Base64.NO_WRAP)
-            if (combined.size < GCM_IV_LENGTH + 16) return null
+            if (combined.size < (GCM_IV_LENGTH + 16)) return null
             val iv = combined.copyOfRange(0, GCM_IV_LENGTH)
             val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
-            val key = keyStore.getKey(KEY_ALIAS, null) as? SecretKey ?: return null
+            val key = (keyStore.getKey(KEY_ALIAS, null) as? SecretKey) ?: return null
 
             val cipher = Cipher.getInstance("AES/GCM/NoPadding")
             cipher.init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(GCM_TAG_LENGTH, iv))
@@ -155,7 +150,7 @@ object BiometricHelper {
         negativeButtonText: String = activity.getString(R.string.use_password),
         onSuccess: (Cipher) -> Unit,
         onError: (String) -> Unit,
-        onCancel: () -> Unit
+        onCancel: () -> Unit,
     ) {
         val prompt = BiometricPrompt.Builder(activity)
             .setTitle(title)
@@ -182,8 +177,8 @@ object BiometricHelper {
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    if (errorCode == BiometricPrompt.BIOMETRIC_ERROR_USER_CANCELED ||
-                        errorCode == BiometricPrompt.BIOMETRIC_ERROR_CANCELED
+                    if ((errorCode == BiometricPrompt.BIOMETRIC_ERROR_USER_CANCELED) ||
+                        (errorCode == BiometricPrompt.BIOMETRIC_ERROR_CANCELED)
                     ) {
                         onCancel()
                     } else {
@@ -194,7 +189,7 @@ object BiometricHelper {
                 override fun onAuthenticationFailed() {
                     // Non-fatal: user can retry
                 }
-            }
+            },
         )
     }
 }
