@@ -1,3 +1,5 @@
+@file:Suppress("DestructuringDeclaration", "MoveLambdaOutsideParentheses")
+
 package io.github.cfsima.modernsafe.navigation
 
 import android.app.Activity
@@ -31,7 +33,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,11 +44,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import kotlin.time.Duration.Companion.milliseconds
 import io.github.cfsima.modernsafe.AskPasswordEffect
 import io.github.cfsima.modernsafe.AskPasswordScreen
 import io.github.cfsima.modernsafe.AskPasswordViewModel
@@ -93,7 +96,7 @@ private const val TAG = "ModernSafeDestinations"
 fun NavGraphBuilder.askPasswordDestination(
     navController: NavHostController,
     onFinishActivity: () -> Unit,
-    onSetResultOkAndFinish: () -> Unit
+    onSetResultOkAndFinish: () -> Unit,
 ) {
     composable<AskPasswordRoute> { backStackEntry ->
         val context = LocalContext.current
@@ -142,7 +145,7 @@ fun NavGraphBuilder.askPasswordDestination(
                         context.startService(Intent(context.applicationContext, AutoLockService::class.java))
                         if (route.isLocal) {
                             navController.navigate(CategoryListRoute) {
-                                popUpTo(AskPasswordRoute(isLocal = route.isLocal)) { inclusive = true }
+                                popUpTo<AskPasswordRoute> { inclusive = true }
                             }
                         } else {
                             onSetResultOkAndFinish()
@@ -169,8 +172,12 @@ fun NavGraphBuilder.askPasswordDestination(
                 title = { Text(stringResource(R.string.database_error_title)) },
                 text = { Text(stringResource(R.string.database_error_msg)) },
                 confirmButton = {
-                    TextButton(onClick = { onFinishActivity() }) { Text(stringResource(android.R.string.ok)) }
-                }
+                    TextButton(
+                        onClick = { onFinishActivity() },
+                    ) {
+                        Text(stringResource(android.R.string.ok))
+                    }
+                },
             )
         }
 
@@ -180,8 +187,12 @@ fun NavGraphBuilder.askPasswordDestination(
                 title = { Text(stringResource(R.string.database_version_error_title)) },
                 text = { Text(stringResource(R.string.database_version_error_msg)) },
                 confirmButton = {
-                    TextButton(onClick = { onFinishActivity() }) { Text(stringResource(android.R.string.ok)) }
-                }
+                    TextButton(
+                        onClick = { onFinishActivity() },
+                    ) {
+                        Text(stringResource(android.R.string.ok))
+                    }
+                },
             )
         }
 
@@ -196,7 +207,7 @@ fun NavGraphBuilder.askPasswordDestination(
             onKeypadDelete = { viewModel.onKeypadDelete() },
             onKeypadEnter = { viewModel.onKeypadEnter() },
             onRestoreClicked = { viewModel.onRestoreClicked() },
-            onBiometricUnlock = { activity -> viewModel.onBiometricUnlock(activity) }
+            onBiometricUnlock = viewModel::onBiometricUnlock,
         )
     }
 }
@@ -212,10 +223,10 @@ fun NavGraphBuilder.categoryListDestination(navController: NavHostController) {
             viewModel.loadCategories()
         }
 
-        var showAboutDialog by remember { mutableStateOf(false) }
-        var showExportConfirmDialog by remember { mutableStateOf(false) }
+        var showAboutDialog by remember { mutableStateOf(value = false) }
+        var showExportConfirmDialog by remember { mutableStateOf(value = false) }
         var pendingImportUri by remember { mutableStateOf<Uri?>(null) }
-        var showImportDeleteConfirmDialog by remember { mutableStateOf(false) }
+        var showImportDeleteConfirmDialog by remember { mutableStateOf(value = false) }
 
         val backupFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -245,7 +256,7 @@ fun NavGraphBuilder.categoryListDestination(navController: NavHostController) {
                 text = { Text(stringResource(R.string.version_label) + VersionUtils.getVersionNumber(context)) },
                 confirmButton = {
                     TextButton(onClick = { showAboutDialog = false }) { Text(stringResource(android.R.string.ok)) }
-                }
+                },
             )
         }
 
@@ -256,24 +267,32 @@ fun NavGraphBuilder.categoryListDestination(navController: NavHostController) {
                 title = { Text(stringResource(R.string.export_database)) },
                 text = { Text(stringResource(R.string.export_msg)) },
                 confirmButton = {
-                    TextButton(onClick = {
-                        showExportConfirmDialog = false
-                        val filename = Settings.getExportPath(context)
-                        val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
-                        try {
-                            exportFileLauncher.launch(intent)
-                        } catch (e: ActivityNotFoundException) {
-                            viewModel.exportDatabase(filename)
-                        }
-                    }) { Text(stringResource(R.string.yes)) }
+                    TextButton(
+                        onClick = {
+                            showExportConfirmDialog = false
+                            val filename = Settings.getExportPath(context)
+                            val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
+                            try {
+                                exportFileLauncher.launch(intent)
+                            } catch (_: ActivityNotFoundException) {
+                                viewModel.exportDatabase(filename)
+                            }
+                        },
+                    ) {
+                        Text(stringResource(R.string.yes))
+                    }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showExportConfirmDialog = false }) { Text(stringResource(R.string.no)) }
-                }
+                    TextButton(
+                        onClick = { showExportConfirmDialog = false },
+                    ) {
+                        Text(stringResource(R.string.no))
+                    }
+                },
             )
         }
 
-        if (showImportDeleteConfirmDialog && pendingImportUri != null) {
+        if (showImportDeleteConfirmDialog && (pendingImportUri != null)) {
             val uri = pendingImportUri!!
             AlertDialog(
                 onDismissRequest = {
@@ -283,19 +302,27 @@ fun NavGraphBuilder.categoryListDestination(navController: NavHostController) {
                 title = { Text(stringResource(R.string.dialog_import_title)) },
                 text = { Text(stringResource(R.string.dialog_import_msg, uri.toString())) },
                 confirmButton = {
-                    TextButton(onClick = {
-                        showImportDeleteConfirmDialog = false
-                        viewModel.importDatabase(uri, true)
-                        pendingImportUri = null
-                    }) { Text(stringResource(R.string.yes)) }
+                    TextButton(
+                        onClick = {
+                            showImportDeleteConfirmDialog = false
+                            viewModel.importDatabase(uri, deleteCurrent = true)
+                            pendingImportUri = null
+                        },
+                    ) {
+                        Text(stringResource(R.string.yes))
+                    }
                 },
                 dismissButton = {
-                    TextButton(onClick = {
-                        showImportDeleteConfirmDialog = false
-                        viewModel.importDatabase(uri, false)
-                        pendingImportUri = null
-                    }) { Text(stringResource(R.string.no)) }
-                }
+                    TextButton(
+                        onClick = {
+                            showImportDeleteConfirmDialog = false
+                            viewModel.importDatabase(uri, deleteCurrent = false)
+                            pendingImportUri = null
+                        },
+                    ) {
+                        Text(stringResource(R.string.no))
+                    }
+                },
             )
         }
 
@@ -306,14 +333,22 @@ fun NavGraphBuilder.categoryListDestination(navController: NavHostController) {
                 title = { Text(stringResource(R.string.import_delete_csv)) },
                 text = { Text(path) },
                 confirmButton = {
-                    TextButton(onClick = {
-                        viewModel.deleteImportedFile(path)
-                        viewModel.onImportedFileConsumed()
-                    }) { Text(stringResource(R.string.yes)) }
+                    TextButton(
+                        onClick = {
+                            viewModel.deleteImportedFile(path)
+                            viewModel.onImportedFileConsumed()
+                        },
+                    ) {
+                        Text(stringResource(R.string.yes))
+                    }
                 },
                 dismissButton = {
-                    TextButton(onClick = { viewModel.onImportedFileConsumed() }) { Text(stringResource(R.string.no)) }
-                }
+                    TextButton(
+                        onClick = { viewModel.onImportedFileConsumed() },
+                    ) {
+                        Text(stringResource(R.string.no))
+                    }
+                },
             )
         }
 
@@ -328,7 +363,7 @@ fun NavGraphBuilder.categoryListDestination(navController: NavHostController) {
                 val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_BACKUP, Settings.OISAFE_XML)
                 try {
                     backupFileLauncher.launch(intent)
-                } catch (e: ActivityNotFoundException) {
+                } catch (_: ActivityNotFoundException) {
                     viewModel.backupDatabase(Settings.getBackupPath(context))
                 }
             },
@@ -338,14 +373,14 @@ fun NavGraphBuilder.categoryListDestination(navController: NavHostController) {
                 val intent = Intents.createOpenDocumentIntents(Intents.MIME_TYPE_ANY_TEXT, Settings.getExportDocument(context) ?: "")
                 try {
                     importFileLauncher.launch(intent)
-                } catch (e: ActivityNotFoundException) {
+                } catch (_: ActivityNotFoundException) {
                     Toast.makeText(context, R.string.restore_error, Toast.LENGTH_LONG).show()
                 }
             },
             onChangePassword = { navController.navigate(ChangePassRoute) },
             onPreferences = { navController.navigate(SettingsRoute) },
             onAbout = { showAboutDialog = true },
-            onUserMessageDismiss = { viewModel.userMessageShown() }
+            onUserMessageDismiss = { viewModel.userMessageShown() },
         )
     }
 }
@@ -361,7 +396,7 @@ fun NavGraphBuilder.passListDestination(navController: NavHostController) {
             viewModel.load(route.categoryId)
         }
 
-        val reload = backStackEntry.savedStateHandle.getStateFlow("reload", false).collectAsState()
+        val reload = backStackEntry.savedStateHandle.getStateFlow(key = "reload", initialValue = false).collectAsState()
         LaunchedEffect(reload.value) {
             if (reload.value) {
                 viewModel.reload()
@@ -379,7 +414,7 @@ fun NavGraphBuilder.passListDestination(navController: NavHostController) {
                     viewModel.deleteEntry(entry)
                     showDeleteDialog = null
                 },
-                onDismiss = { showDeleteDialog = null }
+                onDismiss = { showDeleteDialog = null },
             )
         }
 
@@ -391,12 +426,12 @@ fun NavGraphBuilder.passListDestination(navController: NavHostController) {
                 onCategorySelected = { newCatId ->
                     val categoryName = categories.entries.find { it.value == newCatId }?.key
                     viewModel.moveEntry(entry, newCatId)
-                    if (categoryName != null) {
-                        Toast.makeText(context, context.applicationContext.getString(R.string.moved_to, categoryName), Toast.LENGTH_LONG).show()
+                    categoryName?.let {
+                        Toast.makeText(context, context.applicationContext.getString(R.string.moved_to, it), Toast.LENGTH_LONG).show()
                     }
                     showMoveDialog = null
                 },
-                onDismiss = { showMoveDialog = null }
+                onDismiss = { showMoveDialog = null },
             )
         }
 
@@ -413,8 +448,8 @@ fun NavGraphBuilder.passListDestination(navController: NavHostController) {
                         id = entry.id,
                         categoryId = route.categoryId,
                         rowIds = rowIds,
-                        position = position
-                    )
+                        position = position,
+                    ),
                 )
             },
             onEditPassword = { entry ->
@@ -422,7 +457,7 @@ fun NavGraphBuilder.passListDestination(navController: NavHostController) {
             },
             onDeletePassword = { entry -> showDeleteDialog = entry },
             onMovePassword = { entry -> showMoveDialog = entry },
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
         )
     }
 }
@@ -438,23 +473,23 @@ fun NavGraphBuilder.passViewDestination(navController: NavHostController) {
                 rowId = route.id,
                 categoryId = route.categoryId,
                 rowIds = route.rowIds.toLongArray(),
-                listPosition = route.position
+                listPosition = route.position,
             )
         }
 
-        val entryEdited = backStackEntry.savedStateHandle.getStateFlow("entry_edited", false).collectAsState()
+        val entryEdited = backStackEntry.savedStateHandle.getStateFlow("entry_edited", initialValue = false).collectAsState()
         LaunchedEffect(entryEdited.value) {
             if (entryEdited.value) {
                 viewModel.reloadCurrent()
-                navController.previousBackStackEntry?.savedStateHandle?.set("reload", true)
+                navController.previousBackStackEntry?.savedStateHandle?.set("reload", value = true)
                 backStackEntry.savedStateHandle["entry_edited"] = false
             }
         }
 
-        val entryDeleted = backStackEntry.savedStateHandle.getStateFlow("entry_deleted", false).collectAsState()
+        val entryDeleted = backStackEntry.savedStateHandle.getStateFlow("entry_deleted", initialValue = false).collectAsState()
         LaunchedEffect(entryDeleted.value) {
             if (entryDeleted.value) {
-                navController.previousBackStackEntry?.savedStateHandle?.set("reload", true)
+                navController.previousBackStackEntry?.savedStateHandle?.set("reload", value = true)
                 backStackEntry.savedStateHandle["entry_deleted"] = false
                 navController.popBackStack()
             }
@@ -462,7 +497,8 @@ fun NavGraphBuilder.passViewDestination(navController: NavHostController) {
 
         val passEntry by viewModel.currentPassEntry.collectAsState()
         val packageAccess by viewModel.packageAccess.collectAsState()
-        var showDeleteConfirmDialog by remember { mutableStateOf(false) }
+        val copiedToClipboardText = stringResource(R.string.copied_to_clipboard)
+        var showDeleteConfirmDialog by remember { mutableStateOf(value = false) }
 
         if (showDeleteConfirmDialog) {
             AlertDialog(
@@ -470,16 +506,24 @@ fun NavGraphBuilder.passViewDestination(navController: NavHostController) {
                 title = { Text(stringResource(R.string.dialog_delete_password_title)) },
                 text = { Text(stringResource(R.string.dialog_delete_password_msg)) },
                 confirmButton = {
-                    TextButton(onClick = {
-                        viewModel.deleteCurrentEntry()
-                        navController.previousBackStackEntry?.savedStateHandle?.set("reload", true)
-                        showDeleteConfirmDialog = false
-                        navController.popBackStack()
-                    }) { Text(stringResource(R.string.yes)) }
+                    TextButton(
+                        onClick = {
+                            viewModel.deleteCurrentEntry()
+                            navController.previousBackStackEntry?.savedStateHandle?.set("reload", value = true)
+                            showDeleteConfirmDialog = false
+                            navController.popBackStack()
+                        },
+                    ) {
+                        Text(stringResource(R.string.yes))
+                    }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showDeleteConfirmDialog = false }) { Text(stringResource(R.string.no)) }
-                }
+                    TextButton(
+                        onClick = { showDeleteConfirmDialog = false },
+                    ) {
+                        Text(stringResource(R.string.no))
+                    }
+                },
             )
         }
 
@@ -500,24 +544,25 @@ fun NavGraphBuilder.passViewDestination(navController: NavHostController) {
                         putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true)
                     }
                 }
+                @Suppress("UsePropertyAccessSyntax")
                 clipboard.setPrimaryClip(clipData)
                 viewModel.updateLastUsedPassword(text)
-                Toast.makeText(context, "$label ${context.getString(R.string.copied_to_clipboard)}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "$label $copiedToClipboardText", Toast.LENGTH_SHORT).show()
             },
             onLaunchUrl = { url ->
                 var finalUrl = url
-                if (finalUrl.isEmpty() || finalUrl == "http://") {
+                if ((finalUrl.isEmpty()) || (finalUrl == ("http" + "://"))) {
                     Toast.makeText(context, R.string.invalid_url, Toast.LENGTH_SHORT).show()
                 } else {
                     try {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl))
+                        val intent = Intent(Intent.ACTION_VIEW, finalUrl.toUri())
                         context.startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
+                    } catch (_: ActivityNotFoundException) {
                         try {
-                            finalUrl = "https://$finalUrl"
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl))
+                            finalUrl = "${"https"}://$finalUrl"
+                            val intent = Intent(Intent.ACTION_VIEW, finalUrl.toUri())
                             context.startActivity(intent)
-                        } catch (e2: ActivityNotFoundException) {
+                        } catch (_: ActivityNotFoundException) {
                             Toast.makeText(context, R.string.invalid_website, Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -526,7 +571,7 @@ fun NavGraphBuilder.passViewDestination(navController: NavHostController) {
             onNext = { viewModel.loadNext() },
             onPrev = { viewModel.loadPrevious() },
             hasNext = viewModel.hasNext(),
-            hasPrev = viewModel.hasPrevious()
+            hasPrev = viewModel.hasPrevious(),
         )
     }
 }
@@ -558,13 +603,13 @@ fun NavGraphBuilder.passEditDestination(navController: NavHostController) {
             onNoteChange = viewModel::onNoteChange,
             onSave = {
                 viewModel.save()
-                navController.previousBackStackEntry?.savedStateHandle?.set("entry_edited", true)
+                navController.previousBackStackEntry?.savedStateHandle?.set("entry_edited", value = true)
             },
             onDelete = viewModel::delete,
             onGeneratePassword = { navController.navigate(PassGenRoute) },
             onBack = { navController.popBackStack() },
             onConsumeSave = viewModel::consumeSaveEvent,
-            onConsumeDelete = viewModel::consumeDeleteEvent
+            onConsumeDelete = viewModel::consumeDeleteEvent,
         )
     }
 }
@@ -576,7 +621,7 @@ fun NavGraphBuilder.passGenDestination(navController: NavHostController) {
                 navController.previousBackStackEntry?.savedStateHandle?.set("new_pass", newPass)
                 navController.popBackStack()
             },
-            onCancel = { navController.popBackStack() }
+            onCancel = { navController.popBackStack() },
         )
     }
 }
@@ -595,11 +640,11 @@ fun NavGraphBuilder.searchDestination(navController: NavHostController) {
                         id = result.id,
                         categoryId = result.categoryId,
                         rowIds = listOf(result.id),
-                        position = 0
-                    )
+                        position = 0,
+                    ),
                 )
             },
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
         )
     }
 }
@@ -619,7 +664,7 @@ fun NavGraphBuilder.changePassDestination(navController: NavHostController) {
             uiState = uiState,
             onChangePassword = viewModel::changePassword,
             onBack = { navController.popBackStack() },
-            onClearErrors = viewModel::clearErrors
+            onClearErrors = viewModel::clearErrors,
         )
     }
 }
@@ -694,7 +739,7 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
                 val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_BACKUP, Settings.OISAFE_XML)
                 try {
                     backupPathLauncher.launch(intent)
-                } catch (e: ActivityNotFoundException) {
+                } catch (_: ActivityNotFoundException) {
                     Toast.makeText(context, R.string.restore_error, Toast.LENGTH_LONG).show()
                 }
             },
@@ -702,11 +747,11 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
                 val intent = Intents.createCreateDocumentIntent(Intents.MIME_TYPE_EXPORT, Settings.OISAFE_CSV)
                 try {
                     exportPathLauncher.launch(intent)
-                } catch (e: ActivityNotFoundException) {
+                } catch (_: ActivityNotFoundException) {
                     Toast.makeText(context, R.string.restore_error, Toast.LENGTH_LONG).show()
                 }
             },
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
         )
     }
 }
@@ -723,8 +768,8 @@ fun NavGraphBuilder.restoreDestination(navController: NavHostController) {
 
         LaunchedEffect(route.filePath) {
             if (route.filePath != null) {
-                val uri = Uri.parse(route.filePath)
-                if (uri.scheme == "content" || uri.scheme == "file") {
+                val uri = route.filePath.toUri()
+                if ((uri.scheme == "content") || (uri.scheme == "file")) {
                     viewModel.loadUri(uri)
                 } else {
                     viewModel.loadFile(route.filePath)
@@ -739,16 +784,17 @@ fun NavGraphBuilder.restoreDestination(navController: NavHostController) {
         }
 
         val uiState by viewModel.uiState.collectAsState()
+        val restoreCompleteText = stringResource(R.string.restore_complete, "Unknown")
 
         LaunchedEffect(uiState.status) {
             if (uiState.status == RestoreStatus.Success) {
-                Toast.makeText(context, context.getString(R.string.restore_complete, "Unknown"), Toast.LENGTH_LONG).show()
+                Toast.makeText(context, restoreCompleteText, Toast.LENGTH_LONG).show()
                 if (route.isFirstTime) {
                     navController.navigate(CategoryListRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 } else {
-                    navController.previousBackStackEntry?.savedStateHandle?.set("reload", true)
+                    navController.previousBackStackEntry?.savedStateHandle?.set("reload", value = true)
                     navController.popBackStack()
                 }
             }
@@ -756,15 +802,15 @@ fun NavGraphBuilder.restoreDestination(navController: NavHostController) {
 
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             RestoreScreen(
                 uiState = uiState,
-                onPasswordEntered = { viewModel.verifyPasswordAndDecrypt(it) },
-                onConfirmRestore = { viewModel.performRestore() },
+                onPasswordEntered = viewModel::verifyPasswordAndDecrypt,
+                onConfirmRestore = viewModel::performRestore,
                 onSelectFile = { openDocumentLauncher.launch(arrayOf("*/*")) },
                 onCancel = { navController.popBackStack() },
-                onErrorDismiss = { viewModel.clearError() }
+                onErrorDismiss = viewModel::clearError,
             )
         }
     }
@@ -792,7 +838,7 @@ fun NavGraphBuilder.restoreDestination(navController: NavHostController) {
                     navController.navigate(RestoreRoute(filePath = defaultPath, isFirstTime = true))
                 },
                 onChooseFile = { chooseFileLauncher.launch(arrayOf("*/*")) },
-                onCancel = { navController.popBackStack() }
+                onCancel = { navController.popBackStack() },
             )
         }
     }
@@ -823,18 +869,18 @@ fun NavGraphBuilder.helpDestination(navController: NavHostController) {
                         IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.close)
+                                contentDescription = stringResource(R.string.close),
                             )
                         }
-                    }
+                    },
                 )
-            }
+            },
         ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .consumeWindowInsets(innerPadding)
+                    .consumeWindowInsets(innerPadding),
             ) {
                 HelpScreen(helpText)
             }
@@ -854,20 +900,20 @@ fun NavGraphBuilder.logOffDestination(navController: NavHostController) {
             while (true) {
                 val remaining = AuthManager.getTimeRemainingMillis(timeoutMinutes)
                 timeRemaining = remaining
-                if (remaining <= 0L && AuthManager.isSignedIn()) {
+                if ((remaining <= 0L) && AuthManager.isSignedIn()) {
                     AuthManager.setSignedOut()
                     navController.navigate(AskPasswordRoute()) {
                         popUpTo(0) { inclusive = true }
                     }
                     break
                 }
-                delay(1000)
+                delay(1000.milliseconds)
             }
         }
 
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             LogOffScreenContent(
                 headerText = headerText,
@@ -878,7 +924,7 @@ fun NavGraphBuilder.logOffDestination(navController: NavHostController) {
                         val cb = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         if (cb.hasPrimaryClip()) {
                             val clip = cb.primaryClip
-                            if (clip != null && clip.itemCount > 0) {
+                            if ((clip != null) && (clip.itemCount > 0)) {
                                 val text = clip.getItemAt(0).text?.toString()
                                 if (text == AuthManager.lastUsedPassword) {
                                     cb.clearPrimaryClip()
@@ -903,7 +949,7 @@ fun NavGraphBuilder.logOffDestination(navController: NavHostController) {
                             popUpTo(0) { inclusive = true }
                         }
                     }
-                }
+                },
             )
         }
     }
