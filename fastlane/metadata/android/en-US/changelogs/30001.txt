@@ -1,0 +1,8 @@
+ModernSafe 3.0.0 (Initial Release):
+- Ground-up rewrite in 100% Kotlin with Jetpack Compose & Material 3.
+- Upgraded vault security to AES-256-GCM and PBKDF2 with automatic legacy migration.
+- Added Android Autofill Service support.
+- Added BiometricPrompt unlock (fingerprint and face recognition).
+- Dynamic theming, custom color palettes, and edge-to-edge layout.
+- Added automatic locking on screen off and session timeout.
+- Fully offline: zero network permissions.

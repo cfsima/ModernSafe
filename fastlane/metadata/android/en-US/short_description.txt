@@ -1,0 +1,1 @@
+Offline-first, encrypted password manager with autofill and biometric unlock.

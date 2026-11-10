@@ -1,0 +1,12 @@
+ModernSafe is a private, offline password vault for Android, succeeding the classic OI Safe with a complete modern rewrite.
+
+Key Features:
+
+* Fully Offline: ModernSafe has no internet permission. Your data never touches any cloud or remote server.
+* Strong Encryption: Uses AES-256-GCM authenticated encryption paired with PBKDF2 key derivation.
+* Android Autofill: Fill usernames and passwords seamlessly inside apps and web browsers.
+* Biometric Authentication: Unlock quickly and securely using fingerprint or face unlock.
+* Material 3 Design: Clean Jetpack Compose UI with dark mode, edge-to-edge support, and custom themes.
+* Auto-Lock: Protects your credentials by locking automatically when your screen turns off or after inactivity.
+* Legacy Support: Seamlessly import and transparently upgrade backups from original OI Safe vaults.
+* Backup & Export: Export encrypted backups or export to CSV.

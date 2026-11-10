@@ -13,7 +13,7 @@ buildscript {
 val ci: Boolean = "true" == System.getenv("CI")
 
 // Manifest version information!
-val versionMajor = 2
+val versionMajor = 3
 val versionMinor = 0
 val versionPatch = 0
 val versionBuild = 1
