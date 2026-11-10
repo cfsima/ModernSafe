@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+import kotlinx.coroutines.withContext
+
 data class PassEditUiState(
     val id: Long = -1,
     val categoryId: Long = -1,
@@ -32,43 +34,56 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
     val uiState: StateFlow<PassEditUiState> = _uiState.asStateFlow()
 
     private var initialEntry: PassEntry? = null
+    private var loadedId: Long? = null
+    private var loadedCategoryId: Long? = null
 
     fun load(id: Long, categoryId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentState = _uiState.value
-            _uiState.value = currentState.copy(isLoading = true, id = id, categoryId = categoryId)
+        if (loadedId == id && loadedCategoryId == categoryId) {
+            return
+        }
+        loadedId = id
+        loadedCategoryId = categoryId
 
-            if ((id != -1L) && (id != 0L)) {
-                // Load existing entry
-                val entry = Passwords.getPassEntry(id, decrypt = true, descriptionOnly = false)
-                if (entry != null) {
-                    initialEntry = entry
-                    _uiState.value = _uiState.value.copy(
-                        description = entry.plainDescription,
-                        website = entry.plainWebsite ?: "",
-                        username = entry.plainUsername ?: "",
-                        password = entry.plainPassword ?: "",
-                        note = entry.plainNote ?: "",
-                        isLoading = false,
-                        isModified = false,
-                    )
-                } else {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        error = "Entry not found",
-                    )
-                }
-            } else {
-                // New entry
-                initialEntry = null
+        val isExisting = (id != -1L) && (id != 0L)
+        if (!isExisting) {
+            // New entry: no background database query needed
+            initialEntry = null
+            _uiState.value = PassEditUiState(
+                id = id,
+                categoryId = categoryId,
+                description = "",
+                website = "",
+                username = "",
+                password = "",
+                note = "",
+                isLoading = false,
+                isModified = false,
+            )
+            return
+        }
+
+        _uiState.value = _uiState.value.copy(isLoading = true, id = id, categoryId = categoryId)
+        viewModelScope.launch {
+            val entry = withContext(Dispatchers.IO) {
+                Passwords.getPassEntry(id, decrypt = true, descriptionOnly = false)
+            }
+            if (entry != null) {
+                initialEntry = entry
                 _uiState.value = _uiState.value.copy(
-                    description = "",
-                    website = "",
-                    username = "",
-                    password = "",
-                    note = "",
+                    description = entry.plainDescription,
+                    website = entry.plainWebsite ?: "",
+                    username = entry.plainUsername ?: "",
+                    password = entry.plainPassword ?: "",
+                    note = entry.plainNote ?: "",
                     isLoading = false,
-                    isModified = false, // Not modified initially
+                    isModified = false,
+                )
+            } else {
+                loadedId = null
+                loadedCategoryId = null
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = "Entry not found",
                 )
             }
         }
