@@ -223,6 +223,19 @@ fun NavGraphBuilder.categoryListDestination(navController: NavHostController) {
             viewModel.loadCategories()
         }
 
+        val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+        DisposableEffect(lifecycleOwner) {
+            val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+                if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                    viewModel.loadCategories()
+                }
+            }
+            lifecycleOwner.lifecycle.addObserver(observer)
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+            }
+        }
+
         var showAboutDialog by remember { mutableStateOf(value = false) }
         var showExportConfirmDialog by remember { mutableStateOf(value = false) }
         var pendingImportUri by remember { mutableStateOf<Uri?>(null) }
@@ -397,10 +410,14 @@ fun NavGraphBuilder.passListDestination(navController: NavHostController) {
         }
 
         val reload = backStackEntry.savedStateHandle.getStateFlow(key = "reload", initialValue = false).collectAsState()
-        LaunchedEffect(reload.value) {
-            if (reload.value) {
+        val entryEdited = backStackEntry.savedStateHandle.getStateFlow(key = "entry_edited", initialValue = false).collectAsState()
+        val entryDeleted = backStackEntry.savedStateHandle.getStateFlow(key = "entry_deleted", initialValue = false).collectAsState()
+        LaunchedEffect(reload.value, entryEdited.value, entryDeleted.value) {
+            if (reload.value || entryEdited.value || entryDeleted.value) {
                 viewModel.reload()
                 backStackEntry.savedStateHandle["reload"] = false
+                backStackEntry.savedStateHandle["entry_edited"] = false
+                backStackEntry.savedStateHandle["entry_deleted"] = false
             }
         }
 
@@ -578,6 +595,7 @@ fun NavGraphBuilder.passViewDestination(navController: NavHostController) {
 
 fun NavGraphBuilder.passEditDestination(navController: NavHostController) {
     composable<PassEditRoute> { backStackEntry ->
+        val context = LocalContext.current
         val route = backStackEntry.toRoute<PassEditRoute>()
         val viewModel: PassEditViewModel = viewModel()
         val uiState by viewModel.uiState.collectAsState()
@@ -594,6 +612,13 @@ fun NavGraphBuilder.passEditDestination(navController: NavHostController) {
             }
         }
 
+        LaunchedEffect(uiState.error) {
+            uiState.error?.let { error ->
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                viewModel.clearError()
+            }
+        }
+
         PassEditScreen(
             uiState = uiState,
             onDescriptionChange = viewModel::onDescriptionChange,
@@ -601,15 +626,23 @@ fun NavGraphBuilder.passEditDestination(navController: NavHostController) {
             onUsernameChange = viewModel::onUsernameChange,
             onPasswordChange = viewModel::onPasswordChange,
             onNoteChange = viewModel::onNoteChange,
-            onSave = {
-                viewModel.save()
-                navController.previousBackStackEntry?.savedStateHandle?.set("entry_edited", value = true)
-            },
+            onSave = viewModel::save,
             onDelete = viewModel::delete,
             onGeneratePassword = { navController.navigate(PassGenRoute) },
             onBack = { navController.popBackStack() },
-            onConsumeSave = viewModel::consumeSaveEvent,
-            onConsumeDelete = viewModel::consumeDeleteEvent,
+            onConsumeSave = {
+                viewModel.consumeSaveEvent()
+                Toast.makeText(context, R.string.entry_saved, Toast.LENGTH_SHORT).show()
+                navController.previousBackStackEntry?.savedStateHandle?.set("entry_edited", value = true)
+                navController.previousBackStackEntry?.savedStateHandle?.set("reload", value = true)
+                navController.popBackStack()
+            },
+            onConsumeDelete = {
+                viewModel.consumeDeleteEvent()
+                navController.previousBackStackEntry?.savedStateHandle?.set("entry_deleted", value = true)
+                navController.previousBackStackEntry?.savedStateHandle?.set("reload", value = true)
+                navController.popBackStack()
+            },
         )
     }
 }
@@ -749,6 +782,11 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
                     exportPathLauncher.launch(intent)
                 } catch (_: ActivityNotFoundException) {
                     Toast.makeText(context, R.string.restore_error, Toast.LENGTH_LONG).show()
+                }
+            },
+            onResetStorage = {
+                viewModel.resetStorage {
+                    Toast.makeText(context, R.string.pref_reset_storage_success, Toast.LENGTH_SHORT).show()
                 }
             },
             onBack = { navController.popBackStack() },

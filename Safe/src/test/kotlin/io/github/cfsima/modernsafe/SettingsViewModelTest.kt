@@ -133,4 +133,28 @@ class SettingsViewModelTest {
         assertEquals(Settings.IO_METHOD_DOCUMENT_PROVIDER, settings.backupMethod)
         assertEquals(docUri, settings.displayBackupPath)
     }
+
+    @Test
+    fun testResetSettings() = testScope.runTest {
+        val (viewModel, repository) = createViewModel()
+
+        viewModel.setExternalAccess(enabled = true)
+        viewModel.setLockTimeout("10")
+        viewModel.setKeypad(enabled = true)
+        viewModel.setAutoBackup(enabled = false)
+
+        val modified = repository.settingsFlow.first { it.externalAccess && (it.lockTimeout == "10") }
+        assertTrue(modified.externalAccess)
+        assertEquals("10", modified.lockTimeout)
+
+        viewModel.resetSettings()
+
+        val reset = repository.settingsFlow.first { !it.externalAccess && (it.lockTimeout == "5") }
+        assertFalse(reset.externalAccess)
+        assertEquals("5", reset.lockTimeout)
+        assertTrue(reset.lockOnScreenLock)
+        assertFalse(reset.keypad)
+        assertTrue(reset.autoBackup)
+        assertEquals("7", reset.autoBackupDays)
+    }
 }

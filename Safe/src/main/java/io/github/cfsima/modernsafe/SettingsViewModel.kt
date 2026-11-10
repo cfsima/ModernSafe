@@ -6,8 +6,10 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.cfsima.modernsafe.biometric.BiometricHelper
+import io.github.cfsima.modernsafe.model.Passwords
 import io.github.cfsima.modernsafe.password.Master
 import io.github.cfsima.modernsafe.util.LanguageManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class SettingsUiState(
     val externalAccess: Boolean = false,
@@ -278,5 +281,24 @@ class SettingsViewModel @JvmOverloads constructor(
 
     fun refreshPaths() {
         // No-op: paths are reactively updated via Flow
+    }
+
+    fun resetSettings() {
+        BiometricHelper.deleteKey()
+        setLanguage("")
+        viewModelScope.launch {
+            settingsRepository.resetToDefaults()
+        }
+    }
+
+    fun resetStorage(onComplete: () -> Unit = {}) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val app = getApplication<Application>()
+            Passwords.Initialize(app)
+            Passwords.secureDeleteAll(app)
+            withContext(Dispatchers.Main) {
+                onComplete()
+            }
+        }
     }
 }

@@ -94,4 +94,9 @@ object Settings {
     fun setExportDocumentAndMethod(context: Context, uriString: String) {
         SettingsRepository.getInstance(context).updateExportDocumentAndMethodAsync(uriString)
     }
+
+    @JvmStatic
+    fun resetToDefaults(context: Context) {
+        SettingsRepository.getInstance(context).resetToDefaultsAsync()
+    }
 }

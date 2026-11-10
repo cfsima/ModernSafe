@@ -323,4 +323,11 @@
   <string name="pref_summary_language">Välj gränssnittsspråk</string>
   <string name="pref_dialog_title_language">Välj språk</string>
   <string name="pref_language_system_default">Systemstandard</string>
+
+  <string name="pref_title_reset_storage">Återställ data</string>
+  <string name="pref_summary_reset_storage">Radera alla sparade lösenord och kategorier säkert</string>
+  <string name="pref_dialog_title_reset_storage">Ta bort alla sparade poster?</string>
+  <string name="pref_dialog_msg_reset_storage">Är du säker på att du vill radera alla lösenord och kategorier säkert? Detta kan inte ångras.</string>
+  <string name="pref_reset_storage_menu">Ta bort alla poster</string>
+  <string name="pref_reset_storage_success">Alla poster har raderats säkert</string>
 </resources>

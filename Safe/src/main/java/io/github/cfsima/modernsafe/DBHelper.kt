@@ -210,6 +210,32 @@ class DBHelper(context: Context) {
         }
     }
 
+    fun secureDeleteDatabase() {
+        try {
+            db?.execSQL("PRAGMA secure_delete = ON;")
+            db?.execSQL("UPDATE $TABLE_PASSWORDS SET password = '', description = '', username = '', website = '', note = '', unique_name = '', lastdatetimeedit = '';")
+            db?.execSQL("UPDATE $TABLE_CATEGORIES SET name = '', lastdatetimeedit = '';")
+            db?.execSQL("UPDATE $TABLE_PACKAGE_ACCESS SET package = '';")
+
+            db?.execSQL("DELETE FROM $TABLE_PASSWORDS;")
+            db?.execSQL("DELETE FROM $TABLE_CATEGORIES;")
+            db?.execSQL("DELETE FROM $TABLE_PACKAGE_ACCESS;")
+
+            db?.execSQL(PASSWORDS_DROP)
+            db?.execSQL(PASSWORDS_CREATE)
+
+            db?.execSQL(CATEGORIES_DROP)
+            db?.execSQL(CATEGORIES_CREATE)
+
+            db?.execSQL(PACKAGE_ACCESS_DROP)
+            db?.execSQL(PACKAGE_ACCESS_CREATE)
+
+            db?.execSQL("VACUUM;")
+        } catch (e: SQLException) {
+            Log.d(TAG, "SQLite exception: " + e.localizedMessage)
+        }
+    }
+
     /**
      * Close database connection
      */

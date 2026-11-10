@@ -150,4 +150,36 @@ class SettingsRepositoryTest {
 
         assertEquals(2460000, settings.lastBackupJulian)
     }
+
+    @Test
+    fun testResetToDefaults() = testScope.runTest {
+        val (repository, _) = createRepository()
+
+        repository.setExternalAccess(enabled = true)
+        repository.setLockTimeout("15")
+        repository.setKeypad(enabled = true)
+        repository.setAutoBackup(enabled = false)
+        repository.setThemePalette("emerald")
+        repository.setDarkMode("dark")
+
+        val modified = repository.settingsFlow.first()
+        assertTrue(modified.externalAccess)
+        assertEquals("15", modified.lockTimeout)
+        assertTrue(modified.keypad)
+        assertFalse(modified.autoBackup)
+        assertEquals("emerald", modified.themePalette)
+        assertEquals("dark", modified.darkMode)
+
+        repository.resetToDefaults()
+
+        val resetSettings = repository.settingsFlow.first()
+        assertFalse("externalAccess should be reset to false", resetSettings.externalAccess)
+        assertEquals("lockTimeout should be reset to 5", "5", resetSettings.lockTimeout)
+        assertTrue("lockOnScreenLock should be reset to true", resetSettings.lockOnScreenLock)
+        assertFalse("keypad should be reset to false", resetSettings.keypad)
+        assertTrue("autoBackup should be reset to true", resetSettings.autoBackup)
+        assertEquals("autoBackupDays should be reset to 7", "7", resetSettings.autoBackupDays)
+        assertEquals("dynamic", resetSettings.themePalette)
+        assertEquals("system", resetSettings.darkMode)
+    }
 }

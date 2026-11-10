@@ -167,6 +167,15 @@ object Passwords {
         Reset()
     }
 
+    @Synchronized
+    fun secureDeleteAll(ctx: Context? = null) {
+        if ((dbHelper == null) && (ctx != null)) {
+            Initialize(ctx)
+        }
+        dbHelper?.secureDeleteDatabase()
+        Reset()
+    }
+
     @Suppress("unused")
     val prePopulate: Boolean
         get() = DBHelper.needsPrePopulation

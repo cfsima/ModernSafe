@@ -318,6 +318,18 @@ class SettingsRepository(
     fun getExportDocument(): String? = userSettings.value.exportDocument
     fun isExternalAccessAllowed(): Boolean = userSettings.value.externalAccess
 
+    suspend fun resetToDefaults() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
+
+    fun resetToDefaultsAsync() {
+        externalScope.launch {
+            resetToDefaults()
+        }
+    }
+
     companion object {
         @Volatile
         private var instance: SettingsRepository? = null

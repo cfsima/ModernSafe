@@ -14,7 +14,11 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -76,8 +80,11 @@ fun SettingsScreen(
     onBiometricChange: (Boolean) -> Unit = {},
     onThemePaletteChange: (String) -> Unit = {},
     onDarkModeChange: (String) -> Unit = {},
+    onResetStorage: () -> Unit = {},
 ) {
     val context = LocalContext.current
+    var showMenu by remember { mutableStateOf(value = false) }
+    var showResetDialog by remember { mutableStateOf(value = false) }
     val languageItems = remember(context) { LanguageManager.getLanguageItems(context) }
     val languageEntries = remember(languageItems) { languageItems.map { it.nativeName }.toTypedArray() }
     val languageEntryValues = remember(languageItems) { languageItems.map { it.tag }.toTypedArray() }
@@ -94,6 +101,28 @@ fun SettingsScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.close))
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { showMenu = !showMenu }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.menu))
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    stringResource(R.string.pref_reset_storage_menu),
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            },
+                            onClick = {
+                                showMenu = false
+                                showResetDialog = true
+                            },
+                        )
                     }
                 },
             )
@@ -296,8 +325,57 @@ fun SettingsScreen(
                     supportingContent = { Text(exportPath) },
                     modifier = Modifier.clickable(onClick = onExportPathClick),
                 )
+                HorizontalDivider()
+            }
+
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            stringResource(R.string.pref_title_reset_storage),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    },
+                    supportingContent = { Text(stringResource(R.string.pref_summary_reset_storage)) },
+                    modifier = Modifier.clickable { showResetDialog = true },
+                )
             }
         }
+    }
+
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDialog = false },
+            icon = {
+                Icon(
+                    Icons.Default.Warning,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                )
+            },
+            title = { Text(stringResource(R.string.pref_dialog_title_reset_storage)) },
+            text = { Text(stringResource(R.string.pref_dialog_msg_reset_storage)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showResetDialog = false
+                        onResetStorage()
+                    },
+                ) {
+                    Text(
+                        stringResource(R.string.password_delete),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showResetDialog = false },
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
     }
 }
 
