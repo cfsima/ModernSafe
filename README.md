@@ -4,7 +4,7 @@
 [![minSdk](https://img.shields.io/badge/minSdk-33%20%28Android%2013%2B%29-green.svg)](Safe/build.gradle.kts)
 [![targetSdk](https://img.shields.io/badge/targetSdk-35-orange.svg)](Safe/build.gradle.kts)
 
-ModernSafe is an offline, privacy-first password manager for Android. It is the modern successor to the classic open-source [OI Safe](https://www.openintents.org/safe) by OpenIntents, rebuilt from the ground up in 100% Kotlin with Jetpack Compose and state-of-the-art cryptography.
+ModernSafe is an offline, privacy-first password manager for Android. It is the modern successor to the open-source [OI Safe](https://www.openintents.org/safe) by OpenIntents, rebuilt from the ground up in 100% Kotlin with Jetpack Compose and state-of-the-art cryptography.
 
 ---
 
