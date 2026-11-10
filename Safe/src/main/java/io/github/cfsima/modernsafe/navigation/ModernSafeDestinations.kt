@@ -787,6 +787,7 @@ fun NavGraphBuilder.settingsDestination(navController: NavHostController) {
             onResetStorage = {
                 viewModel.resetStorage {
                     Toast.makeText(context, R.string.pref_reset_storage_success, Toast.LENGTH_SHORT).show()
+                    navController.popBackStack()
                 }
             },
             onBack = { navController.popBackStack() },

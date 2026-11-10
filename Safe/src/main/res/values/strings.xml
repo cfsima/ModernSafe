@@ -357,9 +357,9 @@
     <item>Light</item>
   </string-array>
 
-  <string name="pref_title_reset_storage">Reset safe data</string>
+  <string name="pref_title_reset_storage">Delete all entries</string>
   <string name="pref_summary_reset_storage">Securely delete all stored passwords and categories</string>
-  <string name="pref_dialog_title_reset_storage">Delete all safe entries?</string>
+  <string name="pref_dialog_title_reset_storage">Delete all entries?</string>
   <string name="pref_dialog_msg_reset_storage">Are you sure you want to securely delete all passwords and categories? This action cannot be undone.</string>
   <string name="pref_reset_storage_menu">Delete all entries</string>
   <string name="pref_reset_storage_success">All entries have been securely deleted</string>

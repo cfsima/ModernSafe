@@ -212,15 +212,38 @@ class DBHelper(context: Context) {
 
     fun secureDeleteDatabase() {
         try {
-            db?.execSQL("PRAGMA secure_delete = ON;")
-            db?.execSQL("UPDATE $TABLE_PASSWORDS SET password = '', description = '', username = '', website = '', note = '', unique_name = '', lastdatetimeedit = '';")
-            db?.execSQL("UPDATE $TABLE_CATEGORIES SET name = '', lastdatetimeedit = '';")
-            db?.execSQL("UPDATE $TABLE_PACKAGE_ACCESS SET package = '';")
+            db?.rawQuery("PRAGMA secure_delete = ON", null)?.close()
+        } catch (e: Exception) {
+            Log.w(TAG, "PRAGMA secure_delete error", e)
+        }
 
+        try {
+            db?.execSQL("UPDATE $TABLE_PASSWORDS SET password = '', description = '', username = '', website = '', note = '', unique_name = '', lastdatetimeedit = '';")
+        } catch (e: Exception) {
+            Log.w(TAG, "Overwrite passwords error", e)
+        }
+
+        try {
+            db?.execSQL("UPDATE $TABLE_CATEGORIES SET name = '', lastdatetimeedit = '';")
+        } catch (e: Exception) {
+            Log.w(TAG, "Overwrite categories error", e)
+        }
+
+        try {
+            db?.execSQL("UPDATE $TABLE_PACKAGE_ACCESS SET \"package\" = '';")
+        } catch (e: Exception) {
+            Log.w(TAG, "Overwrite package access error", e)
+        }
+
+        try {
             db?.execSQL("DELETE FROM $TABLE_PASSWORDS;")
             db?.execSQL("DELETE FROM $TABLE_CATEGORIES;")
             db?.execSQL("DELETE FROM $TABLE_PACKAGE_ACCESS;")
+        } catch (e: Exception) {
+            Log.w(TAG, "Delete rows error", e)
+        }
 
+        try {
             db?.execSQL(PASSWORDS_DROP)
             db?.execSQL(PASSWORDS_CREATE)
 
@@ -229,10 +252,14 @@ class DBHelper(context: Context) {
 
             db?.execSQL(PACKAGE_ACCESS_DROP)
             db?.execSQL(PACKAGE_ACCESS_CREATE)
-
-            db?.execSQL("VACUUM;")
         } catch (e: SQLException) {
-            Log.d(TAG, "SQLite exception: " + e.localizedMessage)
+            Log.e(TAG, "Delete tables error", e)
+        }
+
+        try {
+            db?.execSQL("VACUUM;")
+        } catch (e: Exception) {
+            Log.w(TAG, "VACUUM error", e)
         }
     }
 
