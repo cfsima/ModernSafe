@@ -60,7 +60,13 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
                 }
             } else {
                 // New entry
+                initialEntry = null
                 _uiState.value = _uiState.value.copy(
+                    description = "",
+                    website = "",
+                    username = "",
+                    password = "",
+                    note = "",
                     isLoading = false,
                     isModified = false, // Not modified initially
                 )
@@ -119,6 +125,8 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
     fun onNoteChange(value: String) = updateNote(value)
 
     fun save() {
+        if (_uiState.value.isLoading) return
+        _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
             val current = _uiState.value
             val entry = PassEntry()
@@ -140,20 +148,34 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
 
             val resultId = Passwords.putPassEntry(entry)
             if (resultId != -1L) {
-                _uiState.value = current.copy(isSaved = true, id = resultId)
+                _uiState.value = current.copy(
+                    isLoading = false,
+                    isSaved = true,
+                    id = resultId,
+                    isModified = false,
+                )
             } else {
-                _uiState.value = current.copy(error = "Failed to save entry")
+                _uiState.value = current.copy(
+                    isLoading = false,
+                    error = "Failed to save entry",
+                )
             }
         }
     }
 
     fun delete() {
+        if (_uiState.value.isLoading) return
+        _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
             val current = _uiState.value
             if ((current.id != -1L) && (current.id != 0L)) {
                 Passwords.deletePassEntry(current.id)
             }
-            _uiState.value = current.copy(isDeleted = true)
+            _uiState.value = current.copy(
+                isLoading = false,
+                isDeleted = true,
+                isModified = false,
+            )
         }
     }
 
@@ -163,10 +185,10 @@ class PassEditViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun consumeSaveEvent() {
-         _uiState.value = _uiState.value.copy(isSaved = false)
+        _uiState.value = _uiState.value.copy(isSaved = false, isModified = false)
     }
 
     fun consumeDeleteEvent() {
-         _uiState.value = _uiState.value.copy(isDeleted = false)
+        _uiState.value = _uiState.value.copy(isDeleted = false, isModified = false)
     }
 }

@@ -13,6 +13,13 @@ import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
@@ -24,9 +31,6 @@ import io.github.cfsima.modernsafe.navigation.LogOffRoute
 import io.github.cfsima.modernsafe.navigation.ModernSafeNavHost
 import io.github.cfsima.modernsafe.service.AutoLockService
 import io.github.cfsima.modernsafe.ui.theme.ModernSafeTheme
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 
 class MainActivity : AppCompatActivity() {
 
@@ -72,18 +76,23 @@ class MainActivity : AppCompatActivity() {
                 themePalette = userSettings.themePalette,
                 darkMode = userSettings.darkMode,
             ) {
-                val hostNavController = rememberNavController()
-                navController = hostNavController
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    val hostNavController = rememberNavController()
+                    navController = hostNavController
 
-                ModernSafeNavHost(
-                    navController = hostNavController,
-                    startDestination = startDestination,
-                    onFinishActivity = { finish() },
-                    onSetResultOkAndFinish = {
-                        setResult(RESULT_OK)
-                        finish()
-                    },
-                )
+                    ModernSafeNavHost(
+                        navController = hostNavController,
+                        startDestination = startDestination,
+                        onFinishActivity = { finish() },
+                        onSetResultOkAndFinish = {
+                            setResult(RESULT_OK)
+                            finish()
+                        },
+                    )
+                }
             }
         }
     }

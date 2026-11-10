@@ -3,12 +3,16 @@ package io.github.cfsima.modernsafe
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -25,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -36,6 +41,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -59,24 +66,32 @@ fun PassEditScreen(
     onConsumeDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     var showDiscardDialog by remember { mutableStateOf(value = false) }
     var showDeleteDialog by remember { mutableStateOf(value = false) }
     var passwordVisible by remember { mutableStateOf(value = false) }
 
     // Handle back press interception
-    BackHandler(enabled = uiState.isModified) {
+    BackHandler(enabled = uiState.isModified && !uiState.isSaved && !uiState.isDeleted) {
         showDiscardDialog = true
     }
 
     // Handle Save/Delete completion
     LaunchedEffect(uiState.isSaved) {
         if (uiState.isSaved) {
+            keyboardController?.hide()
+            focusManager.clearFocus()
+            showDiscardDialog = false
             onConsumeSave()
         }
     }
 
     LaunchedEffect(uiState.isDeleted) {
         if (uiState.isDeleted) {
+            showDiscardDialog = false
+            showDeleteDialog = false
             onConsumeDelete()
         }
     }
@@ -133,40 +148,56 @@ fun PassEditScreen(
 
     Scaffold(
         modifier = modifier,
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.ime),
         topBar = {
             TopAppBar(
                 title = { Text(if (uiState.id <= 0) stringResource(R.string.password_add) else stringResource(R.string.edit_entry)) },
+                windowInsets = WindowInsets.statusBars,
                 navigationIcon = {
-                    IconButton(onClick = {
-                        if (uiState.isModified) {
-                            showDiscardDialog = true
-                        } else {
-                            onBack()
-                        }
-                    }) {
+                    IconButton(
+                        onClick = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                            if (uiState.isModified && !uiState.isSaved && !uiState.isDeleted) {
+                                showDiscardDialog = true
+                            } else {
+                                onBack()
+                            }
+                        },
+                    ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
                     // Delete button (only for existing entries)
                     if (uiState.id > 0) {
-                        IconButton(onClick = { showDeleteDialog = true }) {
+                        IconButton(
+                            onClick = {
+                                keyboardController?.hide()
+                                focusManager.clearFocus()
+                                showDeleteDialog = true
+                            },
+                        ) {
                             Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.password_delete))
                         }
                     }
                     // Save button
                     IconButton(
-                        onClick = onSave,
-                        enabled = uiState.isModified &&
+                        onClick = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                            onSave()
+                        },
+                        enabled = !uiState.isLoading && uiState.isModified &&
                                   (uiState.description.isNotEmpty() || uiState.website.isNotEmpty() ||
                                    uiState.username.isNotEmpty() || uiState.password.isNotEmpty() ||
-                                   uiState.note.isNotEmpty())
+                                   uiState.note.isNotEmpty()),
                     ) {
                         Icon(Icons.Default.Check, contentDescription = stringResource(R.string.save))
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -175,7 +206,7 @@ fun PassEditScreen(
                 .consumeWindowInsets(paddingValues)
                 .imePadding()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             OutlinedTextField(
                 value = uiState.description,
@@ -226,8 +257,12 @@ fun PassEditScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
-                onClick = onGeneratePassword,
-                modifier = Modifier.align(Alignment.End)
+                onClick = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    onGeneratePassword()
+                },
+                modifier = Modifier.align(Alignment.End),
             ) {
                 Text(stringResource(R.string.generate_password))
             }
